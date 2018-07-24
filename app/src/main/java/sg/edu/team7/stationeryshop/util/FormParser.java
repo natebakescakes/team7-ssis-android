@@ -19,7 +19,7 @@ public class FormParser {
     public static AccessToken postLoginStream(String email, String password, String urlString) {
 
         URL url;
-        InputStream stream;
+        InputStream stream = null;
         HttpURLConnection urlConnection = null;
         AccessToken token = null;
 
@@ -64,7 +64,9 @@ public class FormParser {
 
         } catch (IOException | JSONException e) {
             try {
-                stream = urlConnection.getInputStream();
+                if (stream == null)
+                    return null;
+
                 BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"), 8);
 
                 StringBuilder sb = new StringBuilder();

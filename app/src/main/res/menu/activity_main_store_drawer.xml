@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item android:title="Store Clerk">
+        <menu>
+            <item
+                android:id="@+id/nav_stationery_retrievals"
+                android:icon="@drawable/ic_menu_camera"
+                android:title="@string/stationery_retrievals" />
+            <item
+                android:id="@+id/nav_disbursements"
+                android:icon="@drawable/ic_menu_gallery"
+                android:title="@string/disbursements" />
+            <item
+                android:id="@+id/nav_stock_adjustments"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="@string/stock_adjustments" />
+
+        </menu>
+    </item>
+
+    <item android:title="Manage">
+        <menu>
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_menu_share"
+                android:title="@string/settings" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/logout" />
+        </menu>
+    </item>
+
+</menu>

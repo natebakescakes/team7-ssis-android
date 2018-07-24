@@ -1,5 +1,6 @@
-package sg.edu.team7.stationeryshop;
+package sg.edu.team7.stationeryshop.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -12,6 +13,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import sg.edu.team7.stationeryshop.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -39,7 +47,29 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = findViewById(R.id.nav_view);
+
+        // Get roles from token and fill Navigation Menu Items
+        Map token = (Map) getIntent().getSerializableExtra("accessToken");
+        List rolesFromToken = (List) token.get("roles");
+
+        List<String> roles = new ArrayList<>();
+        rolesFromToken.forEach(x -> roles.add((String) x));
+
+        if (roles.stream()
+                .filter(role -> role.equals("Employee") || role.equals("DepartmentHead"))
+                .count() > 0) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.activity_main_department_drawer);
+        } else {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.activity_main_store_drawer);
+        }
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Show email address of logged in user
+        View headerView = navigationView.getHeaderView(0);
+        TextView navEmail = headerView.findViewById(R.id.textView);
+        navEmail.setText(token.get("email").toString());
     }
 
     @Override
@@ -77,19 +107,28 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        // TODO: If access token expires, revert to LoginActivity
+
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_stationery_retrievals) {
-            // Handle the camera action
+
         } else if (id == R.id.nav_disbursements) {
 
         } else if (id == R.id.nav_stock_adjustments) {
 
+        } else if (id == R.id.nav_requisition_request) {
+
+        } else if (id == R.id.nav_department_representative) {
+
+        } else if (id == R.id.nav_manager_delegation) {
+
         } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_logout) {
-
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

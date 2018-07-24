@@ -26,4 +26,10 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="requisition_request">Requisition Request</string>
+    <string name="department_representative">Assign Department Representative</string>
+    <string name="manager_delegation">Delegate Manager Role</string>
 </resources>

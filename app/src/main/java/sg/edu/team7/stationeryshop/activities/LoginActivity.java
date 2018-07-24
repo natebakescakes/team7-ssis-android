@@ -1,4 +1,4 @@
-package sg.edu.team7.stationeryshop;
+package sg.edu.team7.stationeryshop.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -26,6 +26,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import sg.edu.team7.stationeryshop.R;
 import sg.edu.team7.stationeryshop.models.AccessToken;
 import sg.edu.team7.stationeryshop.util.FormParser;
 import sg.edu.team7.stationeryshop.util.JSONParser;
@@ -189,7 +190,8 @@ public class LoginActivity extends AppCompatActivity {
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
-            urlString = "http://stationeryshopdebug.azurewebsites.net";
+//            urlString = "http://stationeryshopdebug.azurewebsites.net";
+            urlString = "http://172.17.185.218/StationeryShop";
             token = null;
         }
 
@@ -197,6 +199,9 @@ public class LoginActivity extends AppCompatActivity {
         protected Boolean doInBackground(Void... params) {
             // Get Access Token from Login method
             token = FormParser.postLoginStream(mEmail, mPassword, urlString + "/token");
+
+            if (token == null)
+                return false;
 
             Log.i("LOGIN TOKEN", token.toString());
 
@@ -226,6 +231,9 @@ public class LoginActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            // Add email in token
+            token.put("email", mEmail);
 
             Log.i("LOGIN TOKEN", token.toString());
 
