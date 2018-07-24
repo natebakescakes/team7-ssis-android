@@ -64,15 +64,20 @@ public class ManagerDelegationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        if (mListener != null) {
+            mListener.onFragmentInteraction("Delegate Manager Role");
+        }
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_manager_delegation, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+//        if (mListener != null) {
+//            mListener.onFragmentInteraction(uri);
+//        }
     }
 
     @Override
@@ -103,7 +108,6 @@ public class ManagerDelegationFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(String title);
     }
 }

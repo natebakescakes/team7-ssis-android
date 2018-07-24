@@ -1,7 +1,6 @@
 package sg.edu.team7.stationeryshop.activities;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -40,6 +39,10 @@ public class MainActivity extends AppCompatActivity
         StockAdjustmentFragment.OnFragmentInteractionListener {
 
     private Fragment currentFragment;
+
+    public void setActionBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,7 +188,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-
+    public void onFragmentInteraction(String title) {
+        getSupportActionBar().setTitle(title);
     }
 }
