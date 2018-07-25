@@ -2,13 +2,26 @@ package sg.edu.team7.stationeryshop.fragments;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import sg.edu.team7.stationeryshop.R;
+import sg.edu.team7.stationeryshop.models.Disbursement;
+import sg.edu.team7.stationeryshop.util.DisbursementAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +42,8 @@ public class DisbursementFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private List<Disbursement> disbursements;
 
     public DisbursementFragment() {
         // Required empty public constructor
@@ -69,8 +84,98 @@ public class DisbursementFragment extends Fragment {
             mListener.onFragmentInteraction("Disbursements");
         }
 
+        View view = inflater.inflate(R.layout.fragment_disbursement, container, false);
+
+        // Initialize Button
+        Button allButton = view.findViewById(R.id.button_all);
+        Button activeButton = view.findViewById(R.id.button_active);
+        allButton.setEnabled(false);
+        activeButton.setEnabled(true);
+
+        // Initialize RecyclerView
+        RecyclerView mRecyclerView = view.findViewById(R.id.disbursement_recycler_view);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        DisbursementAdapter mAdapter = new DisbursementAdapter(new ArrayList<>());
+        mRecyclerView.setAdapter(mAdapter);
+
+        new AsyncTask<Void, Void, List<Disbursement>>() {
+            @Override
+            protected List<Disbursement> doInBackground(Void... voids) {
+                try {
+                    return Disbursement.findAllDisbursements();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(List<Disbursement> disbursements) {
+                DisbursementFragment.this.disbursements = disbursements;
+                mAdapter.update(disbursements);
+            }
+        }.execute();
+
+        // Set Button onClickListener
+        allButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                allButton.setEnabled(false);
+                activeButton.setEnabled(true);
+                mAdapter.update(disbursements);
+            }
+        });
+
+        activeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                allButton.setEnabled(true);
+                activeButton.setEnabled(false);
+                mAdapter.update(disbursements.stream()
+                        .filter(d -> d.get("status").toString().equals("Ready For Collection"))
+                        .collect(Collectors.toList()));
+            }
+        });
+
+        // Initialize SearchView
+        SearchView searchView = view.findViewById(R.id.search_view);
+        searchView.setOnClickListener(v -> searchView.setIconified(false));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            // TODO: Will reset view not considering active button when changed to empty query
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if (activeButton.isEnabled())
+                    mAdapter.update(disbursements.stream()
+                            .filter(d -> d.get("status").toString().equals("Ready For Collection"))
+                            .filter(d -> d.get("disbursementId").toString().toLowerCase().contains(s.toLowerCase()) ||
+                                    d.get("department").toString().toLowerCase().contains(s.toLowerCase()))
+                            .collect(Collectors.toList()));
+                else
+                    mAdapter.update(disbursements.stream()
+                            .filter(d -> d.get("disbursementId").toString().toLowerCase().contains(s.toLowerCase()) ||
+                                    d.get("department").toString().toLowerCase().contains(s.toLowerCase()))
+                            .collect(Collectors.toList()));
+
+                return true;
+            }
+        });
+
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_disbursement, container, false);
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

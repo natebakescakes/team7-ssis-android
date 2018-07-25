@@ -190,8 +190,8 @@ public class LoginActivity extends AppCompatActivity {
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
-            urlString = "http://stationeryshopdebug.azurewebsites.net";
-//            urlString = "http://172.17.185.218/StationeryShop";
+//            urlString = "http://stationeryshopdebug.azurewebsites.net";
+            urlString = "http://192.168.1.22/StationeryShop";
             token = null;
         }
 
