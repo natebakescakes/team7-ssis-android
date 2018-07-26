@@ -54,7 +54,8 @@ public class DisbursementDetailActivity extends AppCompatActivity {
         genericList.forEach(x -> disbursementDetails.add(new DisbursementDetail(
                 ((Map) x).get("itemCode").toString(),
                 ((Map) x).get("itemName").toString(),
-                Integer.parseInt(((Map) x).get("quantity").toString())
+                Integer.parseInt(((Map) x).get("quantity").toString()),
+                ((Map) x).get("uom").toString()
         )));
 
         // Initialize RecyclerView

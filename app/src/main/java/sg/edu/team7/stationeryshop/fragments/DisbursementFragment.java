@@ -168,14 +168,14 @@ public class DisbursementFragment extends Fragment {
             // TODO: Will reset view not considering active button when changed to empty query
             @Override
             public boolean onQueryTextChange(String s) {
-                if (activeButton.isEnabled())
+                if (activeButton.isEnabled()) // ALL BUTTON IS SELECTED
                     mAdapter.update(disbursements.stream()
-                            .filter(d -> d.get("status").toString().equals("Ready For Collection"))
                             .filter(d -> d.get("disbursementId").toString().toLowerCase().contains(s.toLowerCase()) ||
                                     d.get("department").toString().toLowerCase().contains(s.toLowerCase()))
                             .collect(Collectors.toList()));
                 else
                     mAdapter.update(disbursements.stream()
+                            .filter(d -> d.get("status").toString().equals("Ready For Collection"))
                             .filter(d -> d.get("disbursementId").toString().toLowerCase().contains(s.toLowerCase()) ||
                                     d.get("department").toString().toLowerCase().contains(s.toLowerCase()))
                             .collect(Collectors.toList()));

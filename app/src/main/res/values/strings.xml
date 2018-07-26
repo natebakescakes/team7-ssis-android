@@ -110,9 +110,11 @@
     <string name="pref_title_hostname">Hostname</string>
     <string name="radio_button_active">Active</string>
     <string name="radio_button_all">All</string>
+    <string name="radio_button_pending">Pending</string>
     <string name="disbursement_id_label">ID:</string>
     <string name="department_name_label">Department:</string>
-    <string name="search_hint">Search by Department or Disbursement ID</string>
+    <string name="search_hint_requisition">Search by Requisition ID</string>
+    <string name="search_hint_disbursement">Search by Department or Disbursement ID</string>
     <string name="label_date">Created Date</string>
     <string name="label_department">Department</string>
     <string name="label_collection_point">Collection Point</string>
@@ -120,4 +122,7 @@
     <string name="management_report">Management Reports</string>
     <string name="department_usage">Department Usage</string>
     <string name="store_operations">Store Operations</string>
+    <string name="label_requested_date">Date Requested</string>
+    <string name="label_employee">Employee</string>
+    <string name="label_status">Status</string>
 </resources>

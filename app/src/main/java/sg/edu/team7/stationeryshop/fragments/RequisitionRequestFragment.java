@@ -1,14 +1,28 @@
 package sg.edu.team7.stationeryshop.fragments;
 
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import sg.edu.team7.stationeryshop.R;
+import sg.edu.team7.stationeryshop.activities.RequisitionDetailActivity;
+import sg.edu.team7.stationeryshop.models.Requisition;
+import sg.edu.team7.stationeryshop.util.RequisitionAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +43,10 @@ public class RequisitionRequestFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    public static RequisitionAdapter mAdapter;
+
+    private static List<Requisition> requisitions;
 
     public RequisitionRequestFragment() {
         // Required empty public constructor
@@ -66,25 +84,113 @@ public class RequisitionRequestFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         if (mListener != null) {
-            mListener.onFragmentInteraction("Requisitions");
+            mListener.onFragmentInteraction("Requisition Requests");
         }
 
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_requisition_request, container, false);
-    }
+        View view = inflater.inflate(R.layout.fragment_requisition_request, container, false);
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
+        // Initialize Button
+        Button allButton = view.findViewById(R.id.button_all);
+        Button pendingButton = view.findViewById(R.id.button_pending);
+        allButton.setEnabled(false);
+        pendingButton.setEnabled(true);
+
+        // Initialize RecyclerView
+        RecyclerView mRecyclerView = view.findViewById(R.id.requisition_recycler_view);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new RequisitionAdapter(new ArrayList<>(), new RequisitionAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getActivity(), RequisitionDetailActivity.class);
+                intent.putExtra("requisition", requisitions.get(position));
+                startActivity(intent);
+            }
+        });
+        mRecyclerView.setAdapter(mAdapter);
+
+        new AsyncTask<Void, Void, List<Requisition>>() {
+            @Override
+            protected List<Requisition> doInBackground(Void... voids) {
+                try {
+                    return Requisition.findAllRequisitions();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(List<Requisition> requisitions) {
+                RequisitionRequestFragment.requisitions = requisitions;
+                RequisitionRequestFragment.mAdapter.update(requisitions);
+            }
+        }.execute();
+
+        // Set Button onClickListener
+        allButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                allButton.setEnabled(false);
+                pendingButton.setEnabled(true);
+                mAdapter.update(requisitions);
+            }
+        });
+
+        pendingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                allButton.setEnabled(true);
+                pendingButton.setEnabled(false);
+                mAdapter.update(requisitions.stream()
+                        .filter(r -> r.get("status").toString().equals("Pending Approval"))
+                        .collect(Collectors.toList()));
+            }
+        });
+
+        // Initialize SearchView
+        SearchView searchView = view.findViewById(R.id.search_view);
+        searchView.setOnClickListener(v -> searchView.setIconified(false));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            // TODO: Will reset view not considering active button when changed to empty query
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if (pendingButton.isEnabled()) // ALL FILTER IS SELECTED
+                    mAdapter.update(requisitions.stream()
+                            .filter(r -> r.get("requisitionId").toString().toLowerCase().contains(s.toLowerCase()))
+                            .collect(Collectors.toList()));
+                else
+                    mAdapter.update(requisitions.stream()
+                            .filter(r -> r.get("status").toString().equals("Pending Approval"))
+                            .filter(r -> r.get("requisitionId").toString().toLowerCase().contains(s.toLowerCase()))
+                            .collect(Collectors.toList()));
+
+                return true;
+            }
+        });
+
+
+        // Inflate the layout for this fragment
+        return view;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof RequisitionRequestFragment.OnFragmentInteractionListener) {
+            mListener = (RequisitionRequestFragment.OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");

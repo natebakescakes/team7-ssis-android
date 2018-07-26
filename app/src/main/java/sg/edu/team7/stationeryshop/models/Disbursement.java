@@ -40,7 +40,8 @@ public class Disbursement extends HashMap<String, Object> implements Serializabl
                 DisbursementDetail disbursementDetail = new DisbursementDetail(
                         disbursementDetailJson.getString("ItemCode"),
                         disbursementDetailJson.getString("Description"),
-                        disbursementDetailJson.getInt("Qty")
+                        disbursementDetailJson.getInt("Qty"),
+                        disbursementDetailJson.getString("Uom")
                 );
 
                 disbursementDetails.add(disbursementDetail);

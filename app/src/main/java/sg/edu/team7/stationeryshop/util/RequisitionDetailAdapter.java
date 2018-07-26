@@ -10,41 +10,41 @@ import android.widget.TextView;
 import java.util.List;
 
 import sg.edu.team7.stationeryshop.R;
-import sg.edu.team7.stationeryshop.models.DisbursementDetail;
+import sg.edu.team7.stationeryshop.models.RequisitionDetail;
 
 
-public class DisbursementDetailAdapter extends RecyclerView.Adapter<DisbursementDetailAdapter.ViewHolder> {
-    private List<DisbursementDetail> disbursementDetails;
+public class RequisitionDetailAdapter extends RecyclerView.Adapter<RequisitionDetailAdapter.ViewHolder> {
+    private List<RequisitionDetail> requisitionDetails;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public DisbursementDetailAdapter(List<DisbursementDetail> disbursementDetails) {
-        this.disbursementDetails = disbursementDetails;
+    public RequisitionDetailAdapter(List<RequisitionDetail> requisitionDetails) {
+        this.requisitionDetails = requisitionDetails;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public DisbursementDetailAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RequisitionDetailAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.disbursement_detail_list_row, parent, false)
+                .inflate(R.layout.requisition_detail_list_row, parent, false)
         );
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(@NonNull DisbursementDetailAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull RequisitionDetailAdapter.ViewHolder viewHolder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        viewHolder.itemCode.setText(disbursementDetails.get(position).get("itemCode").toString());
-        viewHolder.itemName.setText(disbursementDetails.get(position).get("itemName").toString());
-        viewHolder.uom.setText(disbursementDetails.get(position).get("uom").toString());
-        viewHolder.quantity.setText(disbursementDetails.get(position).get("quantity").toString());
+        viewHolder.itemCode.setText(requisitionDetails.get(position).get("itemCode").toString());
+        viewHolder.itemName.setText(requisitionDetails.get(position).get("itemName").toString());
+        viewHolder.uom.setText(requisitionDetails.get(position).get("uom").toString());
+        viewHolder.quantity.setText(requisitionDetails.get(position).get("quantity").toString());
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return disbursementDetails != null ? disbursementDetails.size() : 0;
+        return requisitionDetails != null ? requisitionDetails.size() : 0;
     }
 
     // Provide a reference to the views for each data item
