@@ -33,8 +33,11 @@
             android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity" />>
+                android:value=".activities.MainActivity" />
+            >
         </activity>
+        <activity android:name=".activities.DepartmentUsageActivity" />
+        <activity android:name=".activities.StoreOperationActivity"></activity>
     </application>
 
 </manifest>

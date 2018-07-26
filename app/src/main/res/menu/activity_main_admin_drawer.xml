@@ -30,11 +30,24 @@
                 android:id="@+id/nav_disbursements"
                 android:icon="@drawable/ic_menu_gallery"
                 android:title="@string/disbursements" />
+        </menu>
+    </item>
+
+
+    <item android:title="Store Manager">
+        <menu>
             <item
                 android:id="@+id/nav_stock_adjustments"
-                android:icon="@drawable/ic_menu_slideshow"
+                android:icon="@drawable/ic_menu_camera"
                 android:title="@string/stock_adjustments" />
-
+            <item
+                android:id="@+id/nav_department_usage"
+                android:icon="@drawable/ic_menu_gallery"
+                android:title="@string/department_usage" />
+            <item
+                android:id="@+id/nav_store_operations"
+                android:icon="@drawable/ic_menu_gallery"
+                android:title="@string/store_operations" />
         </menu>
     </item>
 

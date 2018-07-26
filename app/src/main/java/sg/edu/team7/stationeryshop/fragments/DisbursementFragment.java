@@ -2,7 +2,6 @@ package sg.edu.team7.stationeryshop.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -188,13 +187,6 @@ public class DisbursementFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return view;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
     }
 
     @Override

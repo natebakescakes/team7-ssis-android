@@ -117,4 +117,7 @@
     <string name="label_department">Department</string>
     <string name="label_collection_point">Collection Point</string>
     <string name="preference_file_key">login_preferences</string>
+    <string name="management_report">Management Reports</string>
+    <string name="department_usage">Department Usage</string>
+    <string name="store_operations">Store Operations</string>
 </resources>

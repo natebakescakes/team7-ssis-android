@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         int expiresIn = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getInt("expiresIn", 0);
         String accessToken = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("accessToken", "");
 
-        if (!accessToken.equals("") && currentTime >= loginTime + expiresIn * 1000) {
+        if (!accessToken.equals("") && currentTime <= loginTime + expiresIn * 1000) {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
         }

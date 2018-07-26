@@ -68,8 +68,10 @@ public class MainActivity extends AppCompatActivity
 
         if (roles.contains("Employee") || roles.contains("DepartmentHead"))
             fragmentClass = RequisitionRequestFragment.class;
-        else
+        else if (roles.contains("StoreClerk"))
             fragmentClass = StationeryRetrievalFragment.class;
+        else
+            fragmentClass = StockAdjustmentFragment.class;
 
         try {
             currentFragment = (Fragment) fragmentClass.newInstance();
@@ -96,9 +98,12 @@ public class MainActivity extends AppCompatActivity
         if (roles.contains("Employee") || roles.contains("DepartmentHead")) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_main_department_drawer);
-        } else if (roles.contains("StoreClerk") || roles.contains("StoreManager")) {
+        } else if (roles.contains("StoreClerk")) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_main_store_drawer);
+        } else if (roles.contains("StoreSupervisor") || roles.contains("StoreManager")) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.activity_main_manager_drawer);
         } else {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_main_admin_drawer);
@@ -149,7 +154,6 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        Fragment fragment = null;
         Class fragmentClass = null;
 
         if (id == R.id.nav_stationery_retrievals) {
@@ -164,6 +168,12 @@ public class MainActivity extends AppCompatActivity
             fragmentClass = DepartmentRepresentativeFragment.class;
         } else if (id == R.id.nav_manager_delegation) {
             fragmentClass = ManagerDelegationFragment.class;
+        } else if (id == R.id.nav_department_usage) {
+            Intent intent = new Intent(MainActivity.this, DepartmentUsageActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_store_operations) {
+            Intent intent = new Intent(MainActivity.this, StoreOperationActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_settings) {
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intent);
