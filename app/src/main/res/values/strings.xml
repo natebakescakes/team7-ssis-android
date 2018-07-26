@@ -113,4 +113,8 @@
     <string name="disbursement_id_label">ID:</string>
     <string name="department_name_label">Department:</string>
     <string name="search_hint">Search by Department or Disbursement ID</string>
+    <string name="label_date">Created Date</string>
+    <string name="label_department">Department</string>
+    <string name="label_collection_point">Collection Point</string>
+    <string name="preference_file_key">login_preferences</string>
 </resources>

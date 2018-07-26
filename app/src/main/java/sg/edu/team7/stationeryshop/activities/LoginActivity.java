@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import sg.edu.team7.stationeryshop.R;
@@ -51,6 +53,18 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // If token has not yet expired, continue to main screen
+        long currentTime = System.currentTimeMillis();
+        long loginTime = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getLong("loginTime", 0);
+        int expiresIn = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getInt("expiresIn", 0);
+        String accessToken = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("accessToken", "");
+
+        if (!accessToken.equals("") && currentTime >= loginTime + expiresIn * 1000) {
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
+
         // Set up the login form.
         mEmailView = findViewById(R.id.email);
 
@@ -191,7 +205,7 @@ public class LoginActivity extends AppCompatActivity {
             mEmail = email;
             mPassword = password;
 //            urlString = "http://stationeryshopdebug.azurewebsites.net";
-            urlString = "http://192.168.1.22/StationeryShop";
+            urlString = "http://172.17.185.218/StationeryShop";
             token = null;
         }
 
@@ -202,6 +216,12 @@ public class LoginActivity extends AppCompatActivity {
 
             if (token == null)
                 return false;
+
+            SharedPreferences.Editor editor = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).edit();
+            editor.putString("email", mEmail);
+            editor.putString("accessToken", token.get("accessToken").toString());
+            editor.putInt("expiresIn", Integer.parseInt(token.get("expiresIn").toString()));
+            editor.putLong("loginTime", System.currentTimeMillis());
 
             Log.i("LOGIN TOKEN", token.toString());
 
@@ -227,16 +247,15 @@ public class LoginActivity extends AppCompatActivity {
                 for (int i = 0; i < rolesArray.length(); i++) {
                     roles.add(rolesArray.getString(i));
                 }
-                token.put("roles", roles);
+                editor.putStringSet("roles", new HashSet<>(roles));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            // Add email in token
-            token.put("email", mEmail);
+            // Apply Shared Preferences
+            editor.apply();
 
             Log.i("LOGIN TOKEN", token.toString());
-
             return token != null && !token.containsKey("error");
         }
 
@@ -247,7 +266,6 @@ public class LoginActivity extends AppCompatActivity {
 
             if (success) {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                intent.putExtra("accessToken", token);
                 startActivity(intent);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

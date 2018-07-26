@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/detail_item_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/detail_description"
+        android:layout_below="@+id/detail_description"
+        android:text="E030"
+        android:textSize="12sp"
+        android:textStyle="italic" />
+
+    <TextView
+        android:id="@+id/detail_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="Pilot Blue Pen 0.5mm"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/detail_uom"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/detail_description"
+        android:text="PCS"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/detail_quantity"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_alignTop="@+id/detail_description"
+        android:layout_toStartOf="@+id/detail_uom"
+        android:paddingRight="5dp"
+        android:text="50"
+        android:textSize="18sp" />
+
+</RelativeLayout>

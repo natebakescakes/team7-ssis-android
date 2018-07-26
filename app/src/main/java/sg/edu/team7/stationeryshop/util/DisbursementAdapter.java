@@ -15,19 +15,12 @@ import sg.edu.team7.stationeryshop.models.Disbursement;
 
 public class DisbursementAdapter extends RecyclerView.Adapter<DisbursementAdapter.ViewHolder> {
     private List<Disbursement> disbursements;
+    private OnItemClickListener onItemClickListener;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public DisbursementAdapter(List<Disbursement> disbursements) {
+    public DisbursementAdapter(List<Disbursement> disbursements, OnItemClickListener onItemClickListener) {
         this.disbursements = disbursements;
-    }
-
-    // Create new views (invoked by the layout manager)
-    @Override
-    public DisbursementAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater
-                .from(parent.getContext())
-                .inflate(R.layout.disbursement_list_row, parent, false)
-        );
+        this.onItemClickListener = onItemClickListener;
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -39,8 +32,25 @@ public class DisbursementAdapter extends RecyclerView.Adapter<DisbursementAdapte
         viewHolder.department.setText(disbursements.get(position).get("department").toString());
         viewHolder.createdDate.setText(disbursements.get(position).get("createdDate").toString());
 
-        // TODO: Set onClickListener to startActivity(intent of DisbursementDetails Activity)
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickListener.onItemClick(view, position);
+            }
+        });
+    }
 
+    // Create new views (invoked by the layout manager)
+    @Override
+    public DisbursementAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolder(LayoutInflater
+                .from(parent.getContext())
+                .inflate(R.layout.disbursement_list_row, parent, false)
+        );
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 
     // Return the size of your dataset (invoked by the layout manager)

@@ -1,6 +1,7 @@
 package sg.edu.team7.stationeryshop.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import sg.edu.team7.stationeryshop.R;
+import sg.edu.team7.stationeryshop.activities.DisbursementDetailActivity;
 import sg.edu.team7.stationeryshop.models.Disbursement;
 import sg.edu.team7.stationeryshop.util.DisbursementAdapter;
 
@@ -102,7 +104,15 @@ public class DisbursementFragment extends Fragment {
         // use a linear layout manager
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        DisbursementAdapter mAdapter = new DisbursementAdapter(new ArrayList<>());
+        DisbursementAdapter mAdapter = new DisbursementAdapter(new ArrayList<>(), new DisbursementAdapter.OnItemClickListener() {
+            // TODO: Incoming animation should be from right
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getActivity(), DisbursementDetailActivity.class);
+                intent.putExtra("disbursement", disbursements.get(position));
+                startActivity(intent);
+            }
+        });
         mRecyclerView.setAdapter(mAdapter);
 
         new AsyncTask<Void, Void, List<Disbursement>>() {

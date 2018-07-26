@@ -12,7 +12,7 @@ import java.util.List;
 import sg.edu.team7.stationeryshop.util.JSONParser;
 
 public class Disbursement extends HashMap<String, Object> implements Serializable {
-    private static String urlString = "http://192.168.1.22/StationeryShop";
+    private static String urlString = "http://172.17.185.218/StationeryShop";
 //    private static String urlString = "http://stationeryshopdebug.azurewebsites.net";
 
     public Disbursement(String disbursementId, String department, String collectionPoint, String createdDate, String status, List<DisbursementDetail> disbursementDetails) {

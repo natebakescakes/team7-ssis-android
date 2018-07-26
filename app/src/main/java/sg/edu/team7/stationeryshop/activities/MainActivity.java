@@ -1,6 +1,7 @@
 package sg.edu.team7.stationeryshop.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -17,9 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import sg.edu.team7.stationeryshop.R;
 import sg.edu.team7.stationeryshop.fragments.DepartmentRepresentativeFragment;
@@ -51,20 +50,13 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Get roles from token
-        Map token = (Map) getIntent().getSerializableExtra("accessToken");
-        List rolesFromToken = (List) token.get("roles");
-
-        List<String> roles = new ArrayList<>();
-        rolesFromToken.forEach(x -> roles.add((String) x));
-
         // Set Starting Fragment
         currentFragment = null;
         Class fragmentClass;
 
-        if (roles.stream()
-                .filter(role -> role.equals("Employee") || role.equals("DepartmentHead"))
-                .count() > 0)
+        Set<String> roles = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getStringSet("roles", null);
+
+        if (roles.contains("Employee") || roles.contains("DepartmentHead"))
             fragmentClass = RequisitionRequestFragment.class;
         else
             fragmentClass = StationeryRetrievalFragment.class;
@@ -91,14 +83,10 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
 
         // Fill Navigation Menu Items based on Roles
-        if (roles.stream()
-                .filter(role -> role.equals("Employee") || role.equals("DepartmentHead"))
-                .count() > 0) {
+        if (roles.contains("Employee") || roles.contains("DepartmentHead")) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_main_department_drawer);
-        } else if (roles.stream()
-                .filter(role -> role.equals("StoreClerk") || role.equals("StoreManager"))
-                .count() > 0) {
+        } else if (roles.contains("StoreClerk") || roles.contains("StoreManager")) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_main_store_drawer);
         } else {
@@ -110,7 +98,7 @@ public class MainActivity extends AppCompatActivity
         // Show email address of logged in user
         View headerView = navigationView.getHeaderView(0);
         TextView navEmail = headerView.findViewById(R.id.textView);
-        navEmail.setText(token.get("email").toString());
+        navEmail.setText(getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", "no email"));
     }
 
     @Override
@@ -170,6 +158,10 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_logout) {
+            SharedPreferences.Editor editor = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).edit();
+            editor.clear();
+            editor.apply();
+
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         }
