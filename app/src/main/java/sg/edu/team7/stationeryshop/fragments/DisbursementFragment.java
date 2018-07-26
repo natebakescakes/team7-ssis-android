@@ -45,7 +45,9 @@ public class DisbursementFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private List<Disbursement> disbursements;
+    public static DisbursementAdapter mAdapter;
+
+    private static List<Disbursement> disbursements;
 
     public DisbursementFragment() {
         // Required empty public constructor
@@ -104,7 +106,7 @@ public class DisbursementFragment extends Fragment {
         // use a linear layout manager
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        DisbursementAdapter mAdapter = new DisbursementAdapter(new ArrayList<>(), new DisbursementAdapter.OnItemClickListener() {
+        mAdapter = new DisbursementAdapter(new ArrayList<>(), new DisbursementAdapter.OnItemClickListener() {
             // TODO: Incoming animation should be from right
             @Override
             public void onItemClick(View view, int position) {
@@ -128,8 +130,8 @@ public class DisbursementFragment extends Fragment {
 
             @Override
             protected void onPostExecute(List<Disbursement> disbursements) {
-                DisbursementFragment.this.disbursements = disbursements;
-                mAdapter.update(disbursements);
+                DisbursementFragment.disbursements = disbursements;
+                DisbursementFragment.mAdapter.update(disbursements);
             }
         }.execute();
 

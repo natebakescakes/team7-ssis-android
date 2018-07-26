@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import sg.edu.team7.stationeryshop.R;
+import sg.edu.team7.stationeryshop.activities.MainActivity;
 import sg.edu.team7.stationeryshop.util.JSONParser;
 
 public class Disbursement extends HashMap<String, Object> implements Serializable {
-    private static String urlString = "http://172.17.185.218/StationeryShop";
-//    private static String urlString = "http://stationeryshopdebug.azurewebsites.net";
 
     public Disbursement(String disbursementId, String department, String collectionPoint, String createdDate, String status, List<DisbursementDetail> disbursementDetails) {
         put("disbursementId", disbursementId);
@@ -25,7 +25,7 @@ public class Disbursement extends HashMap<String, Object> implements Serializabl
     }
 
     public static List<Disbursement> findAllDisbursements() throws JSONException {
-        JSONArray data = JSONParser.getJSONArrayFromUrl(urlString + "/api/disbursement");
+        JSONArray data = JSONParser.getJSONArrayFromUrl(MainActivity.getContext().getString(R.string.default_hostname) + "/api/disbursement");
         List<Disbursement> disbursements = new ArrayList<>();
 
         // Loop through all JSON objects

@@ -1,11 +1,19 @@
 package sg.edu.team7.stationeryshop.activities;
 
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +22,7 @@ import java.util.Map;
 import sg.edu.team7.stationeryshop.R;
 import sg.edu.team7.stationeryshop.models.DisbursementDetail;
 import sg.edu.team7.stationeryshop.util.DisbursementDetailAdapter;
+import sg.edu.team7.stationeryshop.util.JSONParser;
 
 public class DisbursementDetailActivity extends AppCompatActivity {
 
@@ -59,6 +68,56 @@ public class DisbursementDetailActivity extends AppCompatActivity {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(new DisbursementDetailAdapter(disbursementDetails));
+
+        // Initialize loading UI
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Confirming Collection");
+        progressDialog.setMessage("Please wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+        // Initialize FAB
+        FloatingActionButton collectButton = findViewById(R.id.collect_delivery_fab);
+        collectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AsyncTask<Void, Void, String>() {
+                    @Override
+                    protected String doInBackground(Void... voids) {
+                        JSONObject disbursementId = new JSONObject();
+                        try {
+                            disbursementId.put("DisbursementId", disbursement.get("disbursementId").toString());
+
+                            String message = JSONParser.postStream(
+                                    MainActivity.getContext().getString(R.string.default_hostname) + "/api/disbursement/collect",
+                                    disbursementId.toString()
+                            );
+
+                            JSONObject result = new JSONObject(message);
+
+                            return result.getString("Message");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        return "Unknown error";
+                    }
+
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        progressDialog.show();
+                    }
+
+                    @Override
+                    protected void onPostExecute(String message) {
+                        progressDialog.dismiss();
+                        Toast.makeText(DisbursementDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                }.execute();
+            }
+        });
 
     }
 

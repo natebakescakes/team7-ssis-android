@@ -198,21 +198,18 @@ public class LoginActivity extends AppCompatActivity {
 
         private final String mEmail;
         private final String mPassword;
-        private final String urlString;
         private AccessToken token;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
-//            urlString = "http://stationeryshopdebug.azurewebsites.net";
-            urlString = "http://172.17.185.218/StationeryShop";
             token = null;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             // Get Access Token from Login method
-            token = FormParser.postLoginStream(mEmail, mPassword, urlString + "/token");
+            token = FormParser.postLoginStream(mEmail, mPassword, getString(R.string.default_hostname) + "/token");
 
             if (token == null)
                 return false;
@@ -233,7 +230,7 @@ public class LoginActivity extends AppCompatActivity {
             JSONObject roleObject = null;
             try {
                 emailJson.put("Email", mEmail);
-                String result = JSONParser.postStream(urlString + "/api/users/roles", emailJson.toString());
+                String result = JSONParser.postStream(getString(R.string.default_hostname) + "/api/users/roles", emailJson.toString());
                 roleObject = new JSONObject(result);
             } catch (JSONException e) {
                 e.printStackTrace();
