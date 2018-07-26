@@ -31,10 +31,12 @@ public class DisbursementDetailActivity extends AppCompatActivity {
         TextInputEditText createdDate = findViewById(R.id.detail_date);
         TextInputEditText department = findViewById(R.id.detail_department);
         TextInputEditText collectionPoint = findViewById(R.id.detail_collection_point);
+        TextInputEditText status = findViewById(R.id.detail_status);
 
         createdDate.setText(disbursement.get("createdDate").toString());
         department.setText(disbursement.get("department").toString());
         collectionPoint.setText(disbursement.get("collectionPoint").toString());
+        status.setText(disbursement.get("status").toString());
 
         // Get Item Details
         List genericList = (List) disbursement.get("disbursementDetails");
