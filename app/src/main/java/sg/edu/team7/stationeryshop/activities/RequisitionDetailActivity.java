@@ -112,7 +112,6 @@ public class RequisitionDetailActivity extends AppCompatActivity {
             approveButton.setEnabled(false);
             rejectButton.setEnabled(false);
         }
-
     }
 
     @Override

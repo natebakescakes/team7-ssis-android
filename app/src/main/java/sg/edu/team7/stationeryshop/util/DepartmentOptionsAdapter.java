@@ -1,35 +1,56 @@
 package sg.edu.team7.stationeryshop.util;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import sg.edu.team7.stationeryshop.R;
+import sg.edu.team7.stationeryshop.activities.MainActivity;
+import sg.edu.team7.stationeryshop.activities.RequisitionDetailActivity;
+import sg.edu.team7.stationeryshop.fragments.DepartmentOptionsFragment;
 import sg.edu.team7.stationeryshop.models.Delegation;
 import sg.edu.team7.stationeryshop.models.DepartmentOptions;
+import sg.edu.team7.stationeryshop.models.Employee;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 public class DepartmentOptionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
     private static final int TYPE_FOOTER = 2;
+
     private List<Delegation> delegations;
+    private List<Employee> employees;
     private DepartmentOptions departmentOptions;
+    private DepartmentOptionsFragment fragment;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public DepartmentOptionsAdapter(DepartmentOptions departmentOptions) {
+    public DepartmentOptionsAdapter(DepartmentOptions departmentOptions, DepartmentOptionsFragment fragment) {
         this.departmentOptions = departmentOptions;
+        this.fragment = fragment;
         this.delegations = new ArrayList<>();
+        this.employees = new ArrayList<>();
         List delegations = (List) departmentOptions.get("delegations");
+        List employees = (List) departmentOptions.get("employees");
         delegations.stream().forEach(d -> this.delegations.add((Delegation) d));
+        employees.stream().forEach(e -> this.employees.add((Employee) e));
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -41,11 +62,64 @@ public class DepartmentOptionsAdapter extends RecyclerView.Adapter<RecyclerView.
             ((HeaderViewHolder) viewHolder).edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // TODO: EDIT REPRESENTATIVE
+                    AlertDialog.Builder builder = new AlertDialog.Builder(fragment.getContext());
+                    builder.setTitle("Choose a Representative:");
+                    List<Employee> representatives = new ArrayList<>();
+                    representatives.add(new Employee("Nathan", "root@admin.com"));
+                    representatives.add(new Employee("Whatever", "CommerceEmp@email.com"));
+
+                    builder.setItems(
+                            representatives.stream().map(rep -> rep.get("name")).collect(Collectors.toList()).toArray(new String[representatives.size()]),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int position) {
+                                    new AsyncTask<Void, Void, String>() {
+                                        @Override
+                                        protected String doInBackground(Void... voids) {
+                                            JSONObject representative = new JSONObject();
+
+                                            try {
+
+                                                representative.put("RecipientEmail", representatives.stream().map(r -> r.get("email").toString()).collect(Collectors.toList()).get(position + 1));
+                                                representative.put("HeadEmail", fragment.getContext().getSharedPreferences(fragment.getContext().getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
+
+                                                String message = JSONParser.postStream(
+                                                        MainActivity.getContext().getString(R.string.default_hostname) + "/api/requisition/reject",
+                                                        representative.toString()
+                                                );
+
+                                                JSONObject result = new JSONObject(message);
+
+                                                return result.getString("Message");
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+
+                                            return "Unknown error";
+                                        }
+
+                                        @Override
+                                        protected void onPreExecute() {
+                                            super.onPreExecute();
+                                            RequisitionDetailActivity.progressDialog.setTitle("Changing representatives...");
+                                            RequisitionDetailActivity.progressDialog.show();
+                                        }
+
+                                        @Override
+                                        protected void onPostExecute(String message) {
+                                            RequisitionDetailActivity.progressDialog.dismiss();
+                                            Toast.makeText(fragment.getContext(), message, Toast.LENGTH_SHORT).show();
+                                            dialog.dismiss();
+                                        }
+                                    }.execute();
+                                    // Change Representative
+                                }
+                            });
+
+                    builder.show();
                 }
             });
         } else if (viewHolder instanceof ItemViewHolder) {
-            Log.i("DELEGATION STUFF", delegations.get(position - 1).toString());
             ((ItemViewHolder) viewHolder).recipient.setText(delegations.get(position - 1).get("recipient").toString());
             ((ItemViewHolder) viewHolder).startDate.setText(delegations.get(position - 1).get("startDate").toString());
             ((ItemViewHolder) viewHolder).endDate.setText(delegations.get(position - 1).get("endDate").toString());
@@ -54,7 +128,7 @@ public class DepartmentOptionsAdapter extends RecyclerView.Adapter<RecyclerView.
             ((FooterViewHolder) viewHolder).create.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // TODO: CREATE NEW DELEGATION
+                    fragment.showDelegateDialog("Delegate Manager Role", employees);
                 }
             });
         }

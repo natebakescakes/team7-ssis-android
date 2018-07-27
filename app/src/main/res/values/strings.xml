@@ -130,4 +130,5 @@
     <string name="department_options">Department Options</string>
     <string name="header_department_rep">Department Representative</string>
     <string name="header_delegation">Current Delegations</string>
+    <string name="delegate_dialog_title">Delegate Manager Role</string>
 </resources>

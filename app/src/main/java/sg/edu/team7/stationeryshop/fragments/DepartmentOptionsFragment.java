@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import java.util.List;
 import sg.edu.team7.stationeryshop.R;
 import sg.edu.team7.stationeryshop.models.Delegation;
 import sg.edu.team7.stationeryshop.models.DepartmentOptions;
+import sg.edu.team7.stationeryshop.models.Employee;
 import sg.edu.team7.stationeryshop.util.DepartmentOptionsAdapter;
 
 /**
@@ -100,17 +102,16 @@ public class DepartmentOptionsFragment extends Fragment {
         sampleDelegations.add(new Delegation(2, "Mr. Kathan Nhoo", "Wednesday, 1 August 2018", "Monday, 6 August 2018", "Enabled"));
         // SAMPLE DELEGATIONS
 
-        mAdapter = new DepartmentOptionsAdapter(new DepartmentOptions("English Department", "Mr. Nathan Khoo", sampleDelegations));
-//        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-//            @Override
-//            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-//                int totalWidth = parent.getWidth();
-//                int cardWidth = getResources().getDimensionPixelOffset(R.dimen.small_card_width);
-//                int sidePadding = (totalWidth - cardWidth) / 2;
-//                sidePadding = Math.max(0, sidePadding);
-//                outRect.set(sidePadding, 0, sidePadding, 0);
-//            }
-//        });
+        // SAMPLE EMPLOYEES
+        List<Employee> sampleEmployees = new ArrayList<>();
+        sampleEmployees.add(new Employee("Nathan Khoo", "root@admin.com"));
+        sampleEmployees.add(new Employee("Kathan Nhoo", "CommerceHead@email.com"));
+        // SAMPLE EMPLOYEES
+
+        mAdapter = new DepartmentOptionsAdapter(
+                new DepartmentOptions("English Department", "Mr. Nathan Khoo", sampleDelegations, sampleEmployees),
+                this
+        );
         mRecyclerView.setAdapter(mAdapter);
 
         return view;
@@ -139,6 +140,14 @@ public class DepartmentOptionsFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+    public void showDelegateDialog(String title, List<Employee> employees) {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        DelegateDialogFragment delegateDialogFragment = DelegateDialogFragment.newInstance(title);
+        delegateDialogFragment.setEmployees(employees);
+        delegateDialogFragment.show(fm, "fragment_edit_name");
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this

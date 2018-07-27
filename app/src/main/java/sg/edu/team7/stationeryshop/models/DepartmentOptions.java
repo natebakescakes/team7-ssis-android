@@ -6,9 +6,10 @@ import java.util.List;
 
 public class DepartmentOptions extends HashMap<String, Object> implements Serializable {
 
-    public DepartmentOptions(String department, String representative, List<Delegation> delegations) {
+    public DepartmentOptions(String department, String representative, List<Delegation> delegations, List<Employee> employees) {
         put("department", department);
         put("representative", representative);
         put("delegations", delegations);
+        put("employees", employees);
     }
 }
