@@ -1,134 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activities.DisbursementDetailActivity">
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/detail_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="false"
+            android:hint="@string/label_requested_date"
+            android:inputType="date"
+            android:text="2018/01/01" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/detail_employee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="false"
+            android:hint="@string/label_employee"
+            android:inputType="text"
+            android:text="Your Mother" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/detail_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="false"
+            android:hint="@string/label_status"
+            android:inputType="text"
+            android:text="Pending" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/detail_remarks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="false"
+            android:gravity="top|left"
+            android:hint="@string/label_remarks"
+            android:inputType="textMultiLine"
+            android:maxLines="3"
+            android:minLines="3"
+            android:scrollbars="vertical"
+            android:text="PLEASE APPROVE THIS" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/detail_layout_head_remarks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/detail_head_remarks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="false"
+            android:gravity="top|left"
+            android:inputType="textMultiLine"
+            android:maxLines="3"
+            android:minLines="3"
+            android:scrollbars="vertical"
+            android:text="THIS IS NOT GOOD" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/detail_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <android.support.design.widget.TextInputLayout
+        <Button
+            android:id="@+id/reject_button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight=".05"
-            android:paddingTop="20dp">
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:text="Reject" />
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/detail_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="false"
-                android:hint="@string/label_requested_date"
-                android:inputType="date"
-                android:text="2018/01/01" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
+        <Button
+            android:id="@+id/approve_button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.05">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/detail_employee"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="false"
-                android:hint="@string/label_employee"
-                android:inputType="text"
-                android:text="Your Mother" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight=".05">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/detail_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="false"
-                android:hint="@string/label_status"
-                android:inputType="text"
-                android:text="Pending" />
-
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight=".05">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/detail_remarks"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="false"
-                android:gravity="top|left"
-                android:hint="@string/label_remarks"
-                android:inputType="textMultiLine"
-                android:maxLines="3"
-                android:minLines="3"
-                android:scrollbars="vertical"
-                android:text="PLEASE APPROVE THIS" />
-
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/detail_layout_head_remarks"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight=".05">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/detail_head_remarks"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="false"
-                android:gravity="top|left"
-                android:inputType="textMultiLine"
-                android:maxLines="3"
-                android:minLines="3"
-                android:scrollbars="vertical"
-                android:text="THIS IS NOT GOOD" />
-
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/detail_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="512dp"
-            android:layout_weight="1" />
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:text="Approve" />
     </LinearLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/approve_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="19dp"
-        android:layout_marginEnd="170dp"
-        app:srcCompat="@drawable/ic_check_white_24dp" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/reject_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/approve_fab"
-        android:layout_gravity="bottom|left"
-        android:layout_marginStart="170dp"
-        app:srcCompat="@drawable/ic_clear_white_24dp" />
-
-</RelativeLayout>
+</LinearLayout>

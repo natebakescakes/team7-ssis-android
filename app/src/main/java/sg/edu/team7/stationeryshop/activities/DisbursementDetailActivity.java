@@ -3,13 +3,13 @@ package sg.edu.team7.stationeryshop.activities;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -78,7 +78,7 @@ public class DisbursementDetailActivity extends AppCompatActivity {
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // Initialize FAB
-        FloatingActionButton collectButton = findViewById(R.id.collect_delivery_fab);
+        Button collectButton = findViewById(R.id.confirm_collection_button);
         collectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

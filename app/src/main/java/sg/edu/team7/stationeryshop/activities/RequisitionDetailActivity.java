@@ -2,7 +2,6 @@ package sg.edu.team7.stationeryshop.activities;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentManager;
@@ -11,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +90,7 @@ public class RequisitionDetailActivity extends AppCompatActivity {
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // Initialize Approve FAB
-        FloatingActionButton approveButton = findViewById(R.id.approve_fab);
+        Button approveButton = findViewById(R.id.approve_button);
         approveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -99,7 +99,7 @@ public class RequisitionDetailActivity extends AppCompatActivity {
         });
 
         // Initialize Approve FAB
-        FloatingActionButton rejectButton = findViewById(R.id.reject_fab);
+        Button rejectButton = findViewById(R.id.reject_button);
         rejectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
