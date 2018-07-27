@@ -128,4 +128,6 @@
     <string name="label_approval_remarks">Approval Remarks</string>
     <string name="label_rejection_remarks">Rejection Remarks</string>
     <string name="department_options">Department Options</string>
+    <string name="header_department_rep">Department Representative</string>
+    <string name="header_delegation">Current Delegations</string>
 </resources>
