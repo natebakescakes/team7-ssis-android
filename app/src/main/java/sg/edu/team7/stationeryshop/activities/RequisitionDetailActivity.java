@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,11 +42,23 @@ public class RequisitionDetailActivity extends AppCompatActivity {
         TextInputEditText employeeName = findViewById(R.id.detail_employee);
         TextInputEditText status = findViewById(R.id.detail_status);
         TextInputEditText remarks = findViewById(R.id.detail_remarks);
+        TextInputEditText headRemarks = findViewById(R.id.detail_head_remarks);
+        TextInputLayout headRemarksLayout = findViewById(R.id.detail_layout_head_remarks);
 
         dateRequested.setText(requisition.get("requestedDate").toString());
         employeeName.setText(requisition.get("requestorName").toString());
         status.setText(requisition.get("status").toString());
         remarks.setText(requisition.get("remarks").toString());
+        if (!requisition.get("status").toString().equals("Rejected") &&
+                !requisition.get("status").toString().equals("Approved")) {
+            headRemarks.setVisibility(View.GONE);
+        } else if (requisition.get("status").toString().equals("Rejected")) {
+            headRemarksLayout.setHint(getString(R.string.label_rejection_remarks));
+            headRemarks.setText(requisition.get("headRemarks").toString());
+        } else {
+            headRemarksLayout.setHint(getString(R.string.label_approval_remarks));
+            headRemarks.setText(requisition.get("headRemarks").toString());
+        }
 
         // Get Item Details
         List genericList = (List) requisition.get("requisitionDetails");

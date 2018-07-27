@@ -126,4 +126,6 @@
     <string name="label_employee">Employee</string>
     <string name="label_status">Status</string>
     <string name="label_remarks">Remarks</string>
+    <string name="label_approval_remarks">Approval Remarks</string>
+    <string name="label_rejection_remarks">Rejection Remarks</string>
 </resources>
