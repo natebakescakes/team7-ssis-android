@@ -18,10 +18,11 @@ import sg.edu.team7.stationeryshop.util.JSONParser;
 
 public class Requisition extends HashMap<String, Object> implements Serializable {
 
-    public Requisition(String requisitionId, String requestorName, String requestedDate, String status, List<RequisitionDetail> requisitionDetails) {
+    public Requisition(String requisitionId, String requestorName, String requestedDate, String remarks, String status, List<RequisitionDetail> requisitionDetails) {
         put("requisitionId", requisitionId);
         put("requestorName", requestorName);
         put("requestedDate", requestedDate);
+        put("remarks", remarks);
         put("status", status);
         put("requisitionDetails", requisitionDetails);
     }
@@ -63,6 +64,7 @@ public class Requisition extends HashMap<String, Object> implements Serializable
                     requisitionJson.getString("RequisitionId"),
                     requisitionJson.getString("RequestorName"),
                     requisitionJson.getString("RequestedDate"),
+                    requisitionJson.getString("Remarks"),
                     requisitionJson.getString("Status"),
                     requisitionDetails
             );

@@ -40,10 +40,12 @@ public class RequisitionDetailActivity extends AppCompatActivity {
         TextInputEditText dateRequested = findViewById(R.id.detail_date);
         TextInputEditText employeeName = findViewById(R.id.detail_employee);
         TextInputEditText status = findViewById(R.id.detail_status);
+        TextInputEditText remarks = findViewById(R.id.detail_remarks);
 
         dateRequested.setText(requisition.get("requestedDate").toString());
         employeeName.setText(requisition.get("requestorName").toString());
         status.setText(requisition.get("status").toString());
+        remarks.setText(requisition.get("remarks").toString());
 
         // Get Item Details
         List genericList = (List) requisition.get("requisitionDetails");

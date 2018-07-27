@@ -125,4 +125,5 @@
     <string name="label_requested_date">Date Requested</string>
     <string name="label_employee">Employee</string>
     <string name="label_status">Status</string>
+    <string name="label_remarks">Remarks</string>
 </resources>

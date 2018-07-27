@@ -95,6 +95,9 @@ public class RequisitionRequestFragment extends Fragment {
         allButton.setEnabled(false);
         pendingButton.setEnabled(true);
 
+        // Initialize Requisition;
+        requisitions = new ArrayList<>();
+
         // Initialize RecyclerView
         RecyclerView mRecyclerView = view.findViewById(R.id.requisition_recycler_view);
 
@@ -128,8 +131,10 @@ public class RequisitionRequestFragment extends Fragment {
 
             @Override
             protected void onPostExecute(List<Requisition> requisitions) {
-                RequisitionRequestFragment.requisitions = requisitions;
-                RequisitionRequestFragment.mAdapter.update(requisitions);
+                if (requisitions != null) {
+                    RequisitionRequestFragment.requisitions = requisitions;
+                    RequisitionRequestFragment.mAdapter.update(requisitions);
+                }
             }
         }.execute();
 

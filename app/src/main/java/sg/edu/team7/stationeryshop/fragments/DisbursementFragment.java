@@ -95,6 +95,9 @@ public class DisbursementFragment extends Fragment {
         allButton.setEnabled(false);
         activeButton.setEnabled(true);
 
+        // Initialize Disbursements
+        disbursements = new ArrayList<>();
+
         // Initialize RecyclerView
         RecyclerView mRecyclerView = view.findViewById(R.id.disbursement_recycler_view);
 
@@ -129,8 +132,10 @@ public class DisbursementFragment extends Fragment {
 
             @Override
             protected void onPostExecute(List<Disbursement> disbursements) {
-                DisbursementFragment.disbursements = disbursements;
-                DisbursementFragment.mAdapter.update(disbursements);
+                if (disbursements != null) {
+                    DisbursementFragment.disbursements = disbursements;
+                    DisbursementFragment.mAdapter.update(disbursements);
+                }
             }
         }.execute();
 
