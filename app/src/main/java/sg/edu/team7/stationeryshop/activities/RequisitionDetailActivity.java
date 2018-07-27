@@ -1,31 +1,31 @@
 package sg.edu.team7.stationeryshop.activities;
 
 import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import sg.edu.team7.stationeryshop.R;
+import sg.edu.team7.stationeryshop.fragments.ApproveRequisitionDialogFragment;
+import sg.edu.team7.stationeryshop.fragments.RejectRequisitionDialogFragment;
 import sg.edu.team7.stationeryshop.models.RequisitionDetail;
-import sg.edu.team7.stationeryshop.util.JSONParser;
 import sg.edu.team7.stationeryshop.util.RequisitionDetailAdapter;
 
 public class RequisitionDetailActivity extends AppCompatActivity {
+
+    public static ProgressDialog progressDialog = null;
+    public static Map requisition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class RequisitionDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_requisition_detail);
 
         // Set Title
-        Map requisition = (Map) getIntent().getSerializableExtra("requisition");
+        requisition = (Map) getIntent().getSerializableExtra("requisition");
         getSupportActionBar().setTitle("Requisition - " + requisition.get("requisitionId").toString());
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -84,7 +84,7 @@ public class RequisitionDetailActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(new RequisitionDetailAdapter(requisitionDetails));
 
         // Initialize loading UI
-        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Please wait...");
         progressDialog.setCancelable(false);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -94,43 +94,7 @@ public class RequisitionDetailActivity extends AppCompatActivity {
         approveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AsyncTask<Void, Void, String>() {
-                    @Override
-                    protected String doInBackground(Void... voids) {
-                        JSONObject requisitionId = new JSONObject();
-                        try {
-                            requisitionId.put("RequisitionId", requisition.get("requisitionId").toString());
-                            requisitionId.put("Email", RequisitionDetailActivity.this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
-
-                            String message = JSONParser.postStream(
-                                    MainActivity.getContext().getString(R.string.default_hostname) + "/api/requisition/approve",
-                                    requisitionId.toString()
-                            );
-
-                            JSONObject result = new JSONObject(message);
-
-                            return result.getString("Message");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        return "Unknown error";
-                    }
-
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        progressDialog.setTitle("Approving requisition");
-                        progressDialog.show();
-                    }
-
-                    @Override
-                    protected void onPostExecute(String message) {
-                        progressDialog.dismiss();
-                        Toast.makeText(RequisitionDetailActivity.this, message, Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                }.execute();
+                showApproveDialog("Approving " + requisition.get("requisitionId").toString());
             }
         });
 
@@ -139,43 +103,7 @@ public class RequisitionDetailActivity extends AppCompatActivity {
         rejectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AsyncTask<Void, Void, String>() {
-                    @Override
-                    protected String doInBackground(Void... voids) {
-                        JSONObject requisitionId = new JSONObject();
-                        try {
-                            requisitionId.put("RequisitionId", requisition.get("requisitionId").toString());
-                            requisitionId.put("Email", RequisitionDetailActivity.this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
-
-                            String message = JSONParser.postStream(
-                                    MainActivity.getContext().getString(R.string.default_hostname) + "/api/requisition/reject",
-                                    requisitionId.toString()
-                            );
-
-                            JSONObject result = new JSONObject(message);
-
-                            return result.getString("Message");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        return "Unknown error";
-                    }
-
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        progressDialog.setTitle("Rejecting requisition");
-                        progressDialog.show();
-                    }
-
-                    @Override
-                    protected void onPostExecute(String message) {
-                        progressDialog.dismiss();
-                        Toast.makeText(RequisitionDetailActivity.this, message, Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                }.execute();
+                showRejectDialog("Rejecting " + requisition.get("requisitionId").toString());
             }
         });
 
@@ -196,5 +124,17 @@ public class RequisitionDetailActivity extends AppCompatActivity {
             default:
                 return true;
         }
+    }
+
+    private void showRejectDialog(String title) {
+        FragmentManager fm = getSupportFragmentManager();
+        RejectRequisitionDialogFragment rejectRequisitionDialogFragment = RejectRequisitionDialogFragment.newInstance(title);
+        rejectRequisitionDialogFragment.show(fm, "fragment_edit_name");
+    }
+
+    private void showApproveDialog(String title) {
+        FragmentManager fm = getSupportFragmentManager();
+        ApproveRequisitionDialogFragment approveRequisitionDialogFragment = ApproveRequisitionDialogFragment.newInstance(title);
+        approveRequisitionDialogFragment.show(fm, "fragment_edit_name");
     }
 }
