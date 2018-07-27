@@ -4,11 +4,21 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import sg.edu.team7.stationeryshop.R;
+import sg.edu.team7.stationeryshop.models.Delegation;
+import sg.edu.team7.stationeryshop.models.DepartmentOptions;
+import sg.edu.team7.stationeryshop.models.Employee;
+import sg.edu.team7.stationeryshop.util.DepartmentOptionsAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +39,10 @@ public class DepartmentOptionsFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    public static DepartmentOptionsAdapter mAdapter;
+
+    private static List<Delegation> delegations;
 
     public DepartmentOptionsFragment() {
         // Required empty public constructor
@@ -69,7 +83,38 @@ public class DepartmentOptionsFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction("Department Options");
         }
-        return inflater.inflate(R.layout.fragment_department_representative, container, false);
+        View view = inflater.inflate(R.layout.fragment_department_options, container, false);
+
+        // Initialize RecyclerView
+        RecyclerView mRecyclerView = view.findViewById(R.id.department_options_recycler_view);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        // SAMPLE DELEGATIONS
+        List<Delegation> sampleDelegations = new ArrayList<>();
+        sampleDelegations.add(new Delegation(1, "Mr. Nathan Khoo", "Wednesday, 1 August 2018", "Friday, 3 August 2018", "Enabled"));
+        sampleDelegations.add(new Delegation(2, "Mr. Kathan Nhoo", "Wednesday, 1 August 2018", "Monday, 6 August 2018", "Enabled"));
+        // SAMPLE DELEGATIONS
+
+        // SAMPLE EMPLOYEES
+        List<Employee> sampleEmployees = new ArrayList<>();
+        sampleEmployees.add(new Employee("Nathan Khoo", "root@admin.com"));
+        sampleEmployees.add(new Employee("Kathan Nhoo", "CommerceHead@email.com"));
+        // SAMPLE EMPLOYEES
+
+        mAdapter = new DepartmentOptionsAdapter(
+                new DepartmentOptions("English Department", "Mr. Nathan Khoo", sampleDelegations, sampleEmployees),
+                this
+        );
+        mRecyclerView.setAdapter(mAdapter);
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -95,6 +140,14 @@ public class DepartmentOptionsFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+    public void showDelegateDialog(String title, List<Employee> employees) {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        DelegateDialogFragment delegateDialogFragment = DelegateDialogFragment.newInstance(title);
+        delegateDialogFragment.setEmployees(employees);
+        delegateDialogFragment.show(fm, "fragment_edit_name");
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this

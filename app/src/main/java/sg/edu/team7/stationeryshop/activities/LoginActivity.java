@@ -62,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (!accessToken.equals("") && currentTime <= loginTime + expiresIn * 1000) {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
 
@@ -263,6 +264,7 @@ public class LoginActivity extends AppCompatActivity {
 
             if (success) {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
