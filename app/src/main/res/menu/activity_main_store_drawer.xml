@@ -13,6 +13,10 @@
                 android:id="@+id/nav_disbursements"
                 android:icon="@drawable/ic_menu_gallery"
                 android:title="@string/disbursements" />
+            <item
+                android:id="@+id/nav_make_stock_adjustments"
+                android:icon="@drawable/ic_menu_gallery"
+                android:title="@string/make_stock_adjustments" />
         </menu>
     </item>
 
@@ -28,5 +32,4 @@
                 android:title="@string/logout" />
         </menu>
     </item>
-
 </menu>

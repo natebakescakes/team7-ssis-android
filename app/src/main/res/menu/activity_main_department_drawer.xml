@@ -10,13 +10,9 @@
                 android:icon="@drawable/ic_menu_camera"
                 android:title="@string/requisition_request" />
             <item
-                android:id="@+id/nav_department_representative"
+                android:id="@+id/nav_department_options"
                 android:icon="@drawable/ic_menu_gallery"
-                android:title="@string/department_representative" />
-            <item
-                android:id="@+id/nav_manager_delegation"
-                android:icon="@drawable/ic_menu_slideshow"
-                android:title="@string/manager_delegation" />
+                android:title="@string/department_options" />
         </menu>
     </item>
 

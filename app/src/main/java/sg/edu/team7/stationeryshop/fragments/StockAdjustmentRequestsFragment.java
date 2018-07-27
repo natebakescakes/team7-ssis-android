@@ -13,12 +13,12 @@ import sg.edu.team7.stationeryshop.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link DepartmentRepresentativeFragment.OnFragmentInteractionListener} interface
+ * {@link StockAdjustmentRequestsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link DepartmentRepresentativeFragment#newInstance} factory method to
+ * Use the {@link StockAdjustmentRequestsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DepartmentRepresentativeFragment extends Fragment {
+public class StockAdjustmentRequestsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -30,7 +30,7 @@ public class DepartmentRepresentativeFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public DepartmentRepresentativeFragment() {
+    public StockAdjustmentRequestsFragment() {
         // Required empty public constructor
     }
 
@@ -40,11 +40,11 @@ public class DepartmentRepresentativeFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment DepartmentRepresentativeFragment.
+     * @return A new instance of fragment StockAdjustmentFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static DepartmentRepresentativeFragment newInstance(String param1, String param2) {
-        DepartmentRepresentativeFragment fragment = new DepartmentRepresentativeFragment();
+    public static StockAdjustmentRequestsFragment newInstance(String param1, String param2) {
+        StockAdjustmentRequestsFragment fragment = new StockAdjustmentRequestsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -55,7 +55,6 @@ public class DepartmentRepresentativeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -65,11 +64,13 @@ public class DepartmentRepresentativeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         if (mListener != null) {
-            mListener.onFragmentInteraction("Assign Department Rep");
+            mListener.onFragmentInteraction("Stock Adjustment Requests");
         }
-        return inflater.inflate(R.layout.fragment_department_representative, container, false);
+
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_stock_adjustment_requests, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -107,7 +108,6 @@ public class DepartmentRepresentativeFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(String title);
     }
 }

@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -22,21 +20,21 @@ import android.widget.TextView;
 import java.util.Set;
 
 import sg.edu.team7.stationeryshop.R;
-import sg.edu.team7.stationeryshop.fragments.DepartmentRepresentativeFragment;
+import sg.edu.team7.stationeryshop.fragments.DepartmentOptionsFragment;
 import sg.edu.team7.stationeryshop.fragments.DisbursementFragment;
-import sg.edu.team7.stationeryshop.fragments.ManagerDelegationFragment;
+import sg.edu.team7.stationeryshop.fragments.MakeStockAdjustmentFragment;
 import sg.edu.team7.stationeryshop.fragments.RequisitionRequestFragment;
 import sg.edu.team7.stationeryshop.fragments.StationeryRetrievalFragment;
-import sg.edu.team7.stationeryshop.fragments.StockAdjustmentFragment;
+import sg.edu.team7.stationeryshop.fragments.StockAdjustmentRequestsFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         RequisitionRequestFragment.OnFragmentInteractionListener,
-        DepartmentRepresentativeFragment.OnFragmentInteractionListener,
-        ManagerDelegationFragment.OnFragmentInteractionListener,
+        DepartmentOptionsFragment.OnFragmentInteractionListener,
         StationeryRetrievalFragment.OnFragmentInteractionListener,
         DisbursementFragment.OnFragmentInteractionListener,
-        StockAdjustmentFragment.OnFragmentInteractionListener {
+        StockAdjustmentRequestsFragment.OnFragmentInteractionListener,
+        MakeStockAdjustmentFragment.OnFragmentInteractionListener {
 
     private Fragment currentFragment;
 
@@ -71,7 +69,7 @@ public class MainActivity extends AppCompatActivity
         else if (roles.contains("StoreClerk"))
             fragmentClass = StationeryRetrievalFragment.class;
         else
-            fragmentClass = StockAdjustmentFragment.class;
+            fragmentClass = StockAdjustmentRequestsFragment.class;
 
         try {
             currentFragment = (Fragment) fragmentClass.newInstance();
@@ -82,9 +80,9 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, currentFragment).commit();
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
+//        FloatingActionButton fab = findViewById(R.id.fab);
+//        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                .setAction("Action", null).show());
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -149,8 +147,6 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // TODO: If access token expires, revert to LoginActivity
-
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -160,14 +156,14 @@ public class MainActivity extends AppCompatActivity
             fragmentClass = StationeryRetrievalFragment.class;
         } else if (id == R.id.nav_disbursements) {
             fragmentClass = DisbursementFragment.class;
-        } else if (id == R.id.nav_stock_adjustments) {
-            fragmentClass = StockAdjustmentFragment.class;
+        } else if (id == R.id.nav_make_stock_adjustments) {
+            fragmentClass = MakeStockAdjustmentFragment.class;
         } else if (id == R.id.nav_requisition_request) {
             fragmentClass = RequisitionRequestFragment.class;
-        } else if (id == R.id.nav_department_representative) {
-            fragmentClass = DepartmentRepresentativeFragment.class;
-        } else if (id == R.id.nav_manager_delegation) {
-            fragmentClass = ManagerDelegationFragment.class;
+        } else if (id == R.id.nav_department_options) {
+            fragmentClass = DepartmentOptionsFragment.class;
+        } else if (id == R.id.nav_stock_adjustment_requests) {
+            fragmentClass = StockAdjustmentRequestsFragment.class;
         } else if (id == R.id.nav_department_usage) {
             Intent intent = new Intent(MainActivity.this, DepartmentUsageActivity.class);
             startActivity(intent);

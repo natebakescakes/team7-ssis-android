@@ -16,7 +16,8 @@
     </string>
     <string name="stationery_retrievals">Stationery Retrievals</string>
     <string name="disbursements">Disbursements</string>
-    <string name="stock_adjustments">Stock Adjustments</string>
+    <string name="stock_adjustment_requests">Stock Adjustment Requests</string>
+    <string name="make_stock_adjustments">Make Stock Adjustment</string>
     <string name="logout">Logout</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -28,10 +29,8 @@
     <string name="settings">Settings</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment">UNDER CONSTRUCTION</string>
     <string name="requisition_request">Requisition Request</string>
-    <string name="department_representative">Assign Department Representative</string>
-    <string name="manager_delegation">Delegate Manager Role</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->
@@ -128,4 +127,5 @@
     <string name="label_remarks">Remarks</string>
     <string name="label_approval_remarks">Approval Remarks</string>
     <string name="label_rejection_remarks">Rejection Remarks</string>
+    <string name="department_options">Department Options</string>
 </resources>

@@ -13,12 +13,12 @@ import sg.edu.team7.stationeryshop.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ManagerDelegationFragment.OnFragmentInteractionListener} interface
+ * {@link DepartmentOptionsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ManagerDelegationFragment#newInstance} factory method to
+ * Use the {@link DepartmentOptionsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ManagerDelegationFragment extends Fragment {
+public class DepartmentOptionsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -30,7 +30,7 @@ public class ManagerDelegationFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public ManagerDelegationFragment() {
+    public DepartmentOptionsFragment() {
         // Required empty public constructor
     }
 
@@ -40,11 +40,11 @@ public class ManagerDelegationFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ManagerDelegationFragment.
+     * @return A new instance of fragment DepartmentOptionsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ManagerDelegationFragment newInstance(String param1, String param2) {
-        ManagerDelegationFragment fragment = new ManagerDelegationFragment();
+    public static DepartmentOptionsFragment newInstance(String param1, String param2) {
+        DepartmentOptionsFragment fragment = new DepartmentOptionsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -55,6 +55,7 @@ public class ManagerDelegationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -64,13 +65,11 @@ public class ManagerDelegationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        if (mListener != null) {
-            mListener.onFragmentInteraction("Delegate Manager Role");
-        }
-
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_manager_delegation, container, false);
+        if (mListener != null) {
+            mListener.onFragmentInteraction("Department Options");
+        }
+        return inflater.inflate(R.layout.fragment_department_representative, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -108,6 +107,7 @@ public class ManagerDelegationFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
         void onFragmentInteraction(String title);
     }
 }
