@@ -131,4 +131,8 @@
     <string name="header_department_rep">Department Representative</string>
     <string name="header_delegation">Current Delegations</string>
     <string name="delegate_dialog_title">Delegate Manager Role</string>
+    <string name="search_hint_stock_adjustment_request">Search by ID or Name</string>
+    <string name="original_quantity_label">Original Quantity</string>
+    <string name="after_quantity_label">After Quantity</string>
+    <string name="detail_reason_hint">Reason</string>
 </resources>

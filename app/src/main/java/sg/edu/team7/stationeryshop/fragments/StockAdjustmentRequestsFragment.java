@@ -1,14 +1,29 @@
 package sg.edu.team7.stationeryshop.fragments;
 
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import sg.edu.team7.stationeryshop.R;
+import sg.edu.team7.stationeryshop.activities.StockAdjustmentRequestDetailActivity;
+import sg.edu.team7.stationeryshop.models.StockAdjustmentRequest;
+import sg.edu.team7.stationeryshop.models.StockAdjustmentRequestDetail;
+import sg.edu.team7.stationeryshop.util.StockAdjustmentRequestAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +44,10 @@ public class StockAdjustmentRequestsFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private StockAdjustmentRequestAdapter mAdapter;
+
+    private List<StockAdjustmentRequest> stockAdjustmentRequests;
 
     public StockAdjustmentRequestsFragment() {
         // Required empty public constructor
@@ -69,15 +88,120 @@ public class StockAdjustmentRequestsFragment extends Fragment {
             mListener.onFragmentInteraction("Stock Adjustment Requests");
         }
 
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_stock_adjustment_requests, container, false);
-    }
+        View view = inflater.inflate(R.layout.fragment_stock_adjustment_requests, container, false);
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
+        // Initialize Button
+        Button allButton = view.findViewById(R.id.button_all);
+        Button pendingButton = view.findViewById(R.id.button_pending);
+        allButton.setEnabled(false);
+        pendingButton.setEnabled(true);
+
+        // Initialize Requisition;
+        stockAdjustmentRequests = new ArrayList<>();
+
+        // Initialize RecyclerView
+        RecyclerView mRecyclerView = view.findViewById(R.id.stock_adjustment_requests_recycler_view);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new StockAdjustmentRequestAdapter(new ArrayList<>(), new StockAdjustmentRequestAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getActivity(), StockAdjustmentRequestDetailActivity.class);
+                intent.putExtra("stockAdjustment", stockAdjustmentRequests.get(position));
+                startActivity(intent);
+            }
+        });
+        mRecyclerView.setAdapter(mAdapter);
+
+        new AsyncTask<Void, Void, List<StockAdjustmentRequest>>() {
+            @Override
+            protected List<StockAdjustmentRequest> doInBackground(Void... voids) {
+                try {
+//                    return StockAdjustmentRequest.findAllStockAdjustments(StockAdjustmentRequestsFragment.this);
+                    // SAMPLE STOCKADJUSTMENT
+                    List<StockAdjustmentRequest> stockAdjustmentRequests = new ArrayList<>();
+                    List<StockAdjustmentRequestDetail> stockAdjustmentRequestDetails = new ArrayList<>();
+
+                    stockAdjustmentRequestDetails.add(new StockAdjustmentRequestDetail("E030", "Pilot G2 Blue", "20", "30", "I FOUND IT"));
+                    stockAdjustmentRequestDetails.add(new StockAdjustmentRequestDetail("E031", "Pilot G2 Black", "30", "20", "I LOST THEM"));
+
+                    stockAdjustmentRequests.add(new StockAdjustmentRequest("ADJ-201801-001", "Nathan Khoo", "2018-01-01", "SOME CHANGES", "Approved", stockAdjustmentRequestDetails));
+                    if (1 != 1)
+                        throw new JSONException("This is bad");
+                    return stockAdjustmentRequests;
+                    // SAMPLE STOCK ADJUSTMENT
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(List<StockAdjustmentRequest> stockAdjustmentRequests) {
+                if (stockAdjustmentRequests != null) {
+                    StockAdjustmentRequestsFragment.this.stockAdjustmentRequests = stockAdjustmentRequests;
+                    StockAdjustmentRequestsFragment.this.mAdapter.update(stockAdjustmentRequests);
+                }
+            }
+        }.execute();
+
+        // Set Button onClickListener
+        allButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                allButton.setEnabled(false);
+                pendingButton.setEnabled(true);
+                mAdapter.update(stockAdjustmentRequests);
+            }
+        });
+
+        pendingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                allButton.setEnabled(true);
+                pendingButton.setEnabled(false);
+                mAdapter.update(stockAdjustmentRequests.stream()
+                        .filter(r -> r.get("status").toString().equals("Pending Approval"))
+                        .collect(Collectors.toList()));
+            }
+        });
+
+        // Initialize SearchView
+        SearchView searchView = view.findViewById(R.id.search_view);
+        searchView.setOnClickListener(v -> searchView.setIconified(false));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            // TODO: Will reset view not considering active button when changed to empty query
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if (pendingButton.isEnabled()) // ALL FILTER IS SELECTED
+                    mAdapter.update(stockAdjustmentRequests.stream()
+                            .filter(r -> r.get("stockAdjustmentId").toString().toLowerCase().contains(s.toLowerCase()))
+                            .collect(Collectors.toList()));
+                else
+                    mAdapter.update(stockAdjustmentRequests.stream()
+                            .filter(r -> r.get("status").toString().equals("Pending Approval"))
+                            .filter(r -> r.get("stockAdjustmentId").toString().toLowerCase().contains(s.toLowerCase()))
+                            .collect(Collectors.toList()));
+
+                return true;
+            }
+        });
+
+
+        // Inflate the layout for this fragment
+        return view;
     }
 
     @Override
