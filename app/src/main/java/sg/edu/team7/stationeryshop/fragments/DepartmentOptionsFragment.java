@@ -1,7 +1,9 @@
 package sg.edu.team7.stationeryshop.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,6 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +24,7 @@ import sg.edu.team7.stationeryshop.models.Delegation;
 import sg.edu.team7.stationeryshop.models.DepartmentOptions;
 import sg.edu.team7.stationeryshop.models.Employee;
 import sg.edu.team7.stationeryshop.util.DepartmentOptionsAdapter;
+import sg.edu.team7.stationeryshop.util.JSONParser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,16 +39,13 @@ public class DepartmentOptionsFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private static List<Delegation> delegations;
+    public DepartmentOptionsAdapter mAdapter;
+    public ProgressDialog progressDialog;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
-
-    public static DepartmentOptionsAdapter mAdapter;
-
-    private static List<Delegation> delegations;
 
     public DepartmentOptionsFragment() {
         // Required empty public constructor
@@ -96,23 +99,10 @@ public class DepartmentOptionsFragment extends Fragment {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        // SAMPLE DELEGATIONS
-        List<Delegation> sampleDelegations = new ArrayList<>();
-        sampleDelegations.add(new Delegation(1, "Mr. Nathan Khoo", "Wednesday, 1 August 2018", "Friday, 3 August 2018", "Enabled"));
-        sampleDelegations.add(new Delegation(2, "Mr. Kathan Nhoo", "Wednesday, 1 August 2018", "Monday, 6 August 2018", "Enabled"));
-        // SAMPLE DELEGATIONS
+        new DepartmentOptionsTask(mRecyclerView).execute();
 
-        // SAMPLE EMPLOYEES
-        List<Employee> sampleEmployees = new ArrayList<>();
-        sampleEmployees.add(new Employee("Nathan Khoo", "root@admin.com"));
-        sampleEmployees.add(new Employee("Kathan Nhoo", "CommerceHead@email.com"));
-        // SAMPLE EMPLOYEES
-
-        mAdapter = new DepartmentOptionsAdapter(
-                new DepartmentOptions("English Department", "Mr. Nathan Khoo", sampleDelegations, sampleEmployees),
-                this
-        );
-        mRecyclerView.setAdapter(mAdapter);
+        // Initialize Progress Dialog
+        progressDialog = new ProgressDialog(getContext());
 
         return view;
     }
@@ -144,8 +134,84 @@ public class DepartmentOptionsFragment extends Fragment {
     public void showDelegateDialog(String title, List<Employee> employees) {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         DelegateDialogFragment delegateDialogFragment = DelegateDialogFragment.newInstance(title);
+        delegateDialogFragment.setCallingFragment(this);
         delegateDialogFragment.setEmployees(employees);
         delegateDialogFragment.show(fm, "fragment_edit_name");
+    }
+
+    public class DepartmentOptionsTask extends AsyncTask<Void, Void, DepartmentOptions> {
+
+        private RecyclerView recyclerView;
+
+        public DepartmentOptionsTask(RecyclerView recyclerView) {
+            this.recyclerView = recyclerView;
+        }
+
+        @Override
+        protected DepartmentOptions doInBackground(Void... voids) {
+            JSONObject email = new JSONObject();
+            try {
+                email.put("Email", getContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE).getString("email", ""));
+                String response = JSONParser.postStream(getString(R.string.default_hostname) + "/api/departmentoptions", email.toString());
+                JSONObject departmentOptionsJson = new JSONObject(response);
+
+                List<Delegation> delegations = new ArrayList<>();
+                List<Employee> employees = new ArrayList<>();
+
+                for (int i = 0; i < departmentOptionsJson.getJSONArray("Delegations").length(); i++) {
+                    JSONObject delegationJson = departmentOptionsJson.getJSONArray("Delegations").getJSONObject(i);
+
+                    Delegation delegation = new Delegation(
+                            delegationJson.getInt("DelegationId"),
+                            delegationJson.getString("Recipient"),
+                            delegationJson.getString("StartDate"),
+                            delegationJson.getString("EndDate"),
+                            delegationJson.getString("Status"));
+
+                    delegations.add(delegation);
+                }
+
+                for (int i = 0; i < departmentOptionsJson.getJSONArray("Employees").length(); i++) {
+                    JSONObject employeeJson = departmentOptionsJson.getJSONArray("Employees").getJSONObject(i);
+
+                    Employee employee = new Employee(
+                            employeeJson.getString("Name"),
+                            employeeJson.getString("Email"));
+
+                    employees.add(employee);
+                }
+
+                DepartmentOptions departmentOptions = new DepartmentOptions(
+                        departmentOptionsJson.getString("Department"),
+                        departmentOptionsJson.getString("Representative"),
+                        delegations,
+                        employees);
+
+                return departmentOptions;
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(DepartmentOptions departmentOptions) {
+            List<Delegation> delegations = new ArrayList<>();
+            List<Employee> employees = new ArrayList<>();
+            ((List) departmentOptions.get("delegations")).stream().forEach(d -> delegations.add((Delegation) d));
+            ((List) departmentOptions.get("employees")).stream().forEach(e -> employees.add((Employee) e));
+
+            mAdapter = new DepartmentOptionsAdapter(
+                    new DepartmentOptions(
+                            departmentOptions.get("department").toString(),
+                            departmentOptions.get("representative").toString(),
+                            delegations,
+                            employees),
+                    DepartmentOptionsFragment.this);
+            recyclerView.setAdapter(mAdapter);
+        }
     }
 
 

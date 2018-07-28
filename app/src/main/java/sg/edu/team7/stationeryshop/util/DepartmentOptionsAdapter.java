@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 
 import sg.edu.team7.stationeryshop.R;
 import sg.edu.team7.stationeryshop.activities.MainActivity;
-import sg.edu.team7.stationeryshop.activities.RequisitionDetailActivity;
 import sg.edu.team7.stationeryshop.fragments.DepartmentOptionsFragment;
 import sg.edu.team7.stationeryshop.models.Delegation;
 import sg.edu.team7.stationeryshop.models.DepartmentOptions;
@@ -64,12 +63,8 @@ public class DepartmentOptionsAdapter extends RecyclerView.Adapter<RecyclerView.
                 public void onClick(View view) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(fragment.getContext());
                     builder.setTitle("Choose a Representative:");
-                    List<Employee> representatives = new ArrayList<>();
-                    representatives.add(new Employee("Nathan", "root@admin.com"));
-                    representatives.add(new Employee("Whatever", "CommerceEmp@email.com"));
-
                     builder.setItems(
-                            representatives.stream().map(rep -> rep.get("name")).collect(Collectors.toList()).toArray(new String[representatives.size()]),
+                            employees.stream().map(rep -> rep.get("name")).collect(Collectors.toList()).toArray(new String[employees.size()]),
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int position) {
@@ -79,12 +74,11 @@ public class DepartmentOptionsAdapter extends RecyclerView.Adapter<RecyclerView.
                                             JSONObject representative = new JSONObject();
 
                                             try {
-
-                                                representative.put("RecipientEmail", representatives.stream().map(r -> r.get("email").toString()).collect(Collectors.toList()).get(position + 1));
+                                                representative.put("RepresentativeEmail", employees.stream().map(r -> r.get("email").toString()).collect(Collectors.toList()).get(position));
                                                 representative.put("HeadEmail", fragment.getContext().getSharedPreferences(fragment.getContext().getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
 
                                                 String message = JSONParser.postStream(
-                                                        MainActivity.getContext().getString(R.string.default_hostname) + "/api/requisition/reject",
+                                                        MainActivity.getContext().getString(R.string.default_hostname) + "/api/departmentoptions/representative",
                                                         representative.toString()
                                                 );
 
@@ -101,13 +95,13 @@ public class DepartmentOptionsAdapter extends RecyclerView.Adapter<RecyclerView.
                                         @Override
                                         protected void onPreExecute() {
                                             super.onPreExecute();
-                                            RequisitionDetailActivity.progressDialog.setTitle("Changing representatives...");
-                                            RequisitionDetailActivity.progressDialog.show();
+                                            fragment.progressDialog.setTitle("Changing representatives...");
+                                            fragment.progressDialog.show();
                                         }
 
                                         @Override
                                         protected void onPostExecute(String message) {
-                                            RequisitionDetailActivity.progressDialog.dismiss();
+                                            fragment.progressDialog.dismiss();
                                             Toast.makeText(fragment.getContext(), message, Toast.LENGTH_SHORT).show();
                                             dialog.dismiss();
                                         }

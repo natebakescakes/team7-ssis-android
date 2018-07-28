@@ -23,7 +23,6 @@ import java.util.List;
 
 import sg.edu.team7.stationeryshop.R;
 import sg.edu.team7.stationeryshop.activities.MainActivity;
-import sg.edu.team7.stationeryshop.activities.RequisitionDetailActivity;
 import sg.edu.team7.stationeryshop.models.Employee;
 import sg.edu.team7.stationeryshop.util.JSONParser;
 
@@ -33,6 +32,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class DelegateDialogFragment extends DialogFragment {
 
     private List<Employee> employees;
+    private DepartmentOptionsFragment callingFragment;
 
     public DelegateDialogFragment() {
         // Empty constructor is required for DialogFragment
@@ -97,14 +97,13 @@ public class DelegateDialogFragment extends DialogFragment {
                         JSONObject delegation = new JSONObject();
 
                         try {
-
-                            delegation.put("RecipientEmail", RequisitionDetailActivity.requisition.get("requisitionId").toString());
+                            delegation.put("RecipientEmail", employees.get(spinner.getSelectedItemPosition() - 1).get("email"));
                             delegation.put("HeadEmail", getActivity().getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
                             delegation.put("StartDate", calendar.getSelectedDates().get(0).toString());
-                            delegation.put("EndDate", calendar.getSelectedDates().get(calendar.getSelectedDates().size() - 1));
+                            delegation.put("EndDate", calendar.getSelectedDates().get(calendar.getSelectedDates().size() - 1).toString());
 
                             String message = JSONParser.postStream(
-                                    MainActivity.getContext().getString(R.string.default_hostname) + "/api/requisition/reject",
+                                    MainActivity.getContext().getString(R.string.default_hostname) + "/api/departmentoptions/delegate",
                                     delegation.toString()
                             );
 
@@ -121,15 +120,15 @@ public class DelegateDialogFragment extends DialogFragment {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
-                        RequisitionDetailActivity.progressDialog.setTitle("Delegating manager role...");
-                        RequisitionDetailActivity.progressDialog.show();
+                        callingFragment.progressDialog.setTitle("Delegating manager role...");
+                        callingFragment.progressDialog.show();
                     }
 
                     @Override
                     protected void onPostExecute(String message) {
-                        RequisitionDetailActivity.progressDialog.dismiss();
+                        callingFragment.progressDialog.dismiss();
                         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-                        getActivity().finish();
+                        getDialog().dismiss();
                     }
                 }.execute();
             }
@@ -140,5 +139,9 @@ public class DelegateDialogFragment extends DialogFragment {
 
     public void setEmployees(List<Employee> employees) {
         this.employees = employees;
+    }
+
+    public void setCallingFragment(DepartmentOptionsFragment callingFragment) {
+        this.callingFragment = callingFragment;
     }
 }
