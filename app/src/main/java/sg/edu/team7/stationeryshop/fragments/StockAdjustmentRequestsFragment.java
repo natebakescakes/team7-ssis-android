@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 import sg.edu.team7.stationeryshop.R;
 import sg.edu.team7.stationeryshop.activities.StockAdjustmentRequestDetailActivity;
 import sg.edu.team7.stationeryshop.models.StockAdjustmentRequest;
-import sg.edu.team7.stationeryshop.models.StockAdjustmentRequestDetail;
 import sg.edu.team7.stationeryshop.util.StockAdjustmentRequestAdapter;
 
 /**
@@ -123,19 +122,7 @@ public class StockAdjustmentRequestsFragment extends Fragment {
             @Override
             protected List<StockAdjustmentRequest> doInBackground(Void... voids) {
                 try {
-//                    return StockAdjustmentRequest.findAllStockAdjustments(StockAdjustmentRequestsFragment.this);
-                    // SAMPLE STOCKADJUSTMENT
-                    List<StockAdjustmentRequest> stockAdjustmentRequests = new ArrayList<>();
-                    List<StockAdjustmentRequestDetail> stockAdjustmentRequestDetails = new ArrayList<>();
-
-                    stockAdjustmentRequestDetails.add(new StockAdjustmentRequestDetail("E030", "Pilot G2 Blue", "20", "30", "I FOUND IT"));
-                    stockAdjustmentRequestDetails.add(new StockAdjustmentRequestDetail("E031", "Pilot G2 Black", "30", "20", "I LOST THEM"));
-
-                    stockAdjustmentRequests.add(new StockAdjustmentRequest("ADJ-201801-001", "Nathan Khoo", "2018-01-01", "SOME CHANGES", "Approved", stockAdjustmentRequestDetails));
-                    if (1 != 1)
-                        throw new JSONException("This is bad");
-                    return stockAdjustmentRequests;
-                    // SAMPLE STOCK ADJUSTMENT
+                    return StockAdjustmentRequest.findAllStockAdjustments(StockAdjustmentRequestsFragment.this);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     return null;

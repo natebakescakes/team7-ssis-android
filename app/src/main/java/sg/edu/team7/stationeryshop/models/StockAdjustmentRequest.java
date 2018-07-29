@@ -34,7 +34,7 @@ public class StockAdjustmentRequest extends HashMap<String, Object> implements S
                 fragment.getContext().getSharedPreferences(MainActivity.getContext().getString(R.string.preference_file_key), Context.MODE_PRIVATE).getString("email", ""));
         Log.i("EMAIL", emailJson.getString("Email"));
         String result = JSONParser.postStream(
-                MainActivity.getContext().getString(R.string.default_hostname) + "/api/stockadjustmentrequests",
+                MainActivity.getContext().getString(R.string.default_hostname) + "/api/stockadjustment/supervisor",
                 emailJson.toString()
         );
 
@@ -48,22 +48,22 @@ public class StockAdjustmentRequest extends HashMap<String, Object> implements S
 
             List<StockAdjustmentRequestDetail> stockAdjustmentDetails = new ArrayList<>();
 
-            for (int j = 0; j < stockAdjustmentJson.getJSONArray("StockAdjustmentDetails").length(); j++) {
-                JSONObject stockAdjustmentDetailJson = stockAdjustmentJson.getJSONArray("StockAdjustmentDetails").getJSONObject(i);
+            for (int j = 0; j < stockAdjustmentJson.getJSONArray("StockAdjustmentRequestDetails").length(); j++) {
+                JSONObject stockAdjustmentDetailJson = stockAdjustmentJson.getJSONArray("StockAdjustmentRequestDetails").getJSONObject(i);
 
                 StockAdjustmentRequestDetail stockAdustmentDetail = new StockAdjustmentRequestDetail(
                         stockAdjustmentDetailJson.getString("ItemCode"),
-                        stockAdjustmentDetailJson.getString("Description"),
+                        stockAdjustmentDetailJson.getString("ItemName"),
                         stockAdjustmentDetailJson.getString("OriginalQuantity"),
                         stockAdjustmentDetailJson.getString("AfterQuantity"),
-                        stockAdjustmentDetailJson.getString("Remarks")
+                        stockAdjustmentDetailJson.getString("Reason")
                 );
 
                 stockAdjustmentDetails.add(stockAdustmentDetail);
             }
 
             StockAdjustmentRequest stockAdjustment = new StockAdjustmentRequest(
-                    stockAdjustmentJson.getString("stockAdjustmentId"),
+                    stockAdjustmentJson.getString("StockAdjustmentId"),
                     stockAdjustmentJson.getString("RequestorName"),
                     stockAdjustmentJson.getString("RequestedDate"),
                     stockAdjustmentJson.getString("Remarks"),

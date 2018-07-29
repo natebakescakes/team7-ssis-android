@@ -95,7 +95,7 @@ public class StockAdjustmentRequestDetailActivity extends AppCompatActivity {
                             stockAdjustmentId.put("Email", StockAdjustmentRequestDetailActivity.this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
 
                             String message = JSONParser.postStream(
-                                    StockAdjustmentRequestDetailActivity.this.getString(R.string.default_hostname) + "/api/stockadjustment/approve",
+                                    StockAdjustmentRequestDetailActivity.this.getString(R.string.default_hostname) + "/api/stockadjustment/supervisor/approve",
                                     stockAdjustmentId.toString()
                             );
 
@@ -112,13 +112,13 @@ public class StockAdjustmentRequestDetailActivity extends AppCompatActivity {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
-                        RequisitionDetailActivity.progressDialog.setTitle("Approving stock adjustment");
-                        RequisitionDetailActivity.progressDialog.show();
+                        StockAdjustmentRequestDetailActivity.this.progressDialog.setTitle("Approving stock adjustment");
+                        StockAdjustmentRequestDetailActivity.this.progressDialog.show();
                     }
 
                     @Override
                     protected void onPostExecute(String message) {
-                        RequisitionDetailActivity.progressDialog.dismiss();
+                        StockAdjustmentRequestDetailActivity.this.progressDialog.dismiss();
                         Toast.makeText(StockAdjustmentRequestDetailActivity.this, message, Toast.LENGTH_SHORT).show();
                         StockAdjustmentRequestDetailActivity.this.finish();
                     }
@@ -140,7 +140,7 @@ public class StockAdjustmentRequestDetailActivity extends AppCompatActivity {
                             stockAdjustmentId.put("Email", StockAdjustmentRequestDetailActivity.this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
 
                             String message = JSONParser.postStream(
-                                    StockAdjustmentRequestDetailActivity.this.getString(R.string.default_hostname) + "/api/stockadjustment/approve",
+                                    StockAdjustmentRequestDetailActivity.this.getString(R.string.default_hostname) + "/api/stockadjustment/supervisor/reject",
                                     stockAdjustmentId.toString()
                             );
 
@@ -157,13 +157,13 @@ public class StockAdjustmentRequestDetailActivity extends AppCompatActivity {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
-                        RequisitionDetailActivity.progressDialog.setTitle("Rejecting stock adjustment");
-                        RequisitionDetailActivity.progressDialog.show();
+                        StockAdjustmentRequestDetailActivity.this.progressDialog.setTitle("Rejecting stock adjustment");
+                        StockAdjustmentRequestDetailActivity.this.progressDialog.show();
                     }
 
                     @Override
                     protected void onPostExecute(String message) {
-                        RequisitionDetailActivity.progressDialog.dismiss();
+                        StockAdjustmentRequestDetailActivity.this.progressDialog.dismiss();
                         Toast.makeText(StockAdjustmentRequestDetailActivity.this, message, Toast.LENGTH_SHORT).show();
                         StockAdjustmentRequestDetailActivity.this.finish();
                     }
