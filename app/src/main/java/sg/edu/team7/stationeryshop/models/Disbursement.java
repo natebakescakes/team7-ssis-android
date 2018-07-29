@@ -28,6 +28,9 @@ public class Disbursement extends HashMap<String, Object> implements Serializabl
         JSONArray data = JSONParser.getJSONArrayFromUrl(MainActivity.getContext().getString(R.string.default_hostname) + "/api/disbursement");
         List<Disbursement> disbursements = new ArrayList<>();
 
+        if (data == null)
+            return new ArrayList<>();
+
         // Loop through all JSON objects
         for (int i = 0; i < data.length(); i++) {
             JSONObject disbursementJson = data.getJSONObject(i);
