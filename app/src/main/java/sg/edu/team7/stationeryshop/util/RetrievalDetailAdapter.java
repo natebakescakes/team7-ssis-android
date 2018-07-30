@@ -16,10 +16,8 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import sg.edu.team7.stationeryshop.R;
 import sg.edu.team7.stationeryshop.activities.RetrievalDetailActivity;
@@ -33,28 +31,13 @@ public class RetrievalDetailAdapter extends RecyclerView.Adapter<RetrievalDetail
     private final RetrievalDetailActivity activity;
 
     private final List<RetrievalDetail> retrievalDetails;
-    private final Map retrieval;
     private List<RetrievalDetailByDept> retrievalDetailByDepts;
+    private String retrievalId;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public RetrievalDetailAdapter(Map retrieval, RetrievalDetailActivity activity) {
-        this.retrieval = retrieval;
-
-        // Get Item Details
-        List genericList = (List) retrieval.get("retrievalDetails");
-        retrievalDetailByDepts = new ArrayList<>();
-//
-        genericList.forEach(x -> retrievalDetailByDepts.add(new RetrievalDetailByDept(
-                ((Map) x).get("department").toString(),
-                ((Map) x).get("departmentCode").toString(),
-                ((Map) x).get("itemCode").toString(),
-                ((Map) x).get("itemName").toString(),
-                ((Map) x).get("bin").toString(),
-                ((Map) x).get("uom").toString(),
-                ((Map) x).get("status").toString(),
-                Integer.parseInt(((Map) x).get("planQuantity").toString()),
-                Integer.parseInt(((Map) x).get("actualQuantity").toString())
-        )));
+    public RetrievalDetailAdapter(String retrievalId, List<RetrievalDetailByDept> retrievalDetailByDepts, RetrievalDetailActivity activity) {
+        this.retrievalDetailByDepts = retrievalDetailByDepts;
+        this.retrievalId = retrievalId;
 
         // Consolidate By ItemCode
         retrievalDetails = new ArrayList<>();
@@ -133,7 +116,7 @@ public class RetrievalDetailAdapter extends RecyclerView.Adapter<RetrievalDetail
             public void onClick(View view) {
                 Intent intent = new Intent(activity, RetrievalDetailByDeptActivity.class);
 
-                intent.putExtra("retrieval", (Serializable) retrieval);
+                intent.putExtra("retrievalId", retrievalId);
                 intent.putExtra("itemCode", retrievalDetails.get(position).get("itemCode").toString());
                 activity.startActivity(intent);
             }
@@ -147,7 +130,7 @@ public class RetrievalDetailAdapter extends RecyclerView.Adapter<RetrievalDetail
                     protected String doInBackground(Void... voids) {
                         JSONObject retrieval = new JSONObject();
                         try {
-                            retrieval.put("RetrievalId", RetrievalDetailAdapter.this.retrieval.get("retrievalId").toString());
+                            retrieval.put("RetrievalId", RetrievalDetailAdapter.this.retrievalId);
                             retrieval.put("Email", activity.getSharedPreferences(activity.getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
                             retrieval.put("ItemCode", retrievalDetails.get(position).get("itemCode").toString());
 

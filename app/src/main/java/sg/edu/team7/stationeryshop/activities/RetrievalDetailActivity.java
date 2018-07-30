@@ -16,17 +16,20 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import sg.edu.team7.stationeryshop.R;
+import sg.edu.team7.stationeryshop.fragments.StationeryRetrievalFragment;
 import sg.edu.team7.stationeryshop.models.RetrievalDetailByDept;
 import sg.edu.team7.stationeryshop.util.JSONParser;
 import sg.edu.team7.stationeryshop.util.RetrievalDetailAdapter;
+import sg.edu.team7.stationeryshop.util.RetrievalDetailByDeptAdapter;
 
 public class RetrievalDetailActivity extends AppCompatActivity {
 
-    private Map retrieval;
+    private static List<RetrievalDetailByDept> retrievalDetailByDepts;
+    private static RetrievalDetailByDeptAdapter mAdapter;
     private ProgressDialog progressDialog;
+    private String retrievalId;
 
     public ProgressDialog getProgressDialog() {
         return progressDialog;
@@ -38,25 +41,11 @@ public class RetrievalDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_retrieval_detail);
 
         // Set Title
-        retrieval = (Map) getIntent().getSerializableExtra("retrieval");
-        getSupportActionBar().setTitle("Retrieval - " + retrieval.get("retrievalId").toString());
+        retrievalId = getIntent().getStringExtra("retrievalId");
+        getSupportActionBar().setTitle("Retrieval - " + getIntent().getStringExtra("retrievalId"));
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        // Get Item Details
-        List genericList = (List) retrieval.get("retrievalDetails");
-        List<RetrievalDetailByDept> retrievalDetails = new ArrayList<>();
-//
-        genericList.forEach(x -> retrievalDetails.add(new RetrievalDetailByDept(
-                ((Map) x).get("department").toString(),
-                ((Map) x).get("departmentCode").toString(),
-                ((Map) x).get("itemCode").toString(),
-                ((Map) x).get("itemName").toString(),
-                ((Map) x).get("bin").toString(),
-                ((Map) x).get("uom").toString(),
-                ((Map) x).get("status").toString(),
-                Integer.parseInt(((Map) x).get("planQuantity").toString()),
-                Integer.parseInt(((Map) x).get("actualQuantity").toString())
-        )));
+        new UpdateRetrievalDetail(getIntent().getStringExtra("retrievalId"));
 
         // Initialize RecyclerView
         RecyclerView mRecyclerView = findViewById(R.id.retrieval_detail_recycler_view);
@@ -67,8 +56,9 @@ public class RetrievalDetailActivity extends AppCompatActivity {
 
         // use a linear layout manager
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        retrievalDetailByDepts = new ArrayList<>();
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(new RetrievalDetailAdapter(retrieval, this));
+        mRecyclerView.setAdapter(new RetrievalDetailAdapter(retrievalId, retrievalDetailByDepts, this));
 
         // Initialize loading UI
         progressDialog = new ProgressDialog(this);
@@ -86,7 +76,7 @@ public class RetrievalDetailActivity extends AppCompatActivity {
                     protected String doInBackground(Void... voids) {
                         JSONObject retrievalId = new JSONObject();
                         try {
-                            retrievalId.put("RetrievalId", RetrievalDetailActivity.this.retrieval.get("retrievalId").toString());
+                            retrievalId.put("RetrievalId", RetrievalDetailActivity.this.retrievalId);
                             retrievalId.put("Email", RetrievalDetailActivity.this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
 
                             String message = JSONParser.postStream(
@@ -115,14 +105,41 @@ public class RetrievalDetailActivity extends AppCompatActivity {
                     protected void onPostExecute(String message) {
                         RetrievalDetailActivity.this.progressDialog.dismiss();
                         Toast.makeText(RetrievalDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                        new StationeryRetrievalFragment.UpdateRetrievals().execute();
                         RetrievalDetailActivity.this.finish();
                     }
                 }.execute();
             }
         });
 
-        if (retrieval.get("status").toString().equals("Retrieved"))
-            confirmButton.setEnabled(false);
+//        if (retrieval.get("status").toString().equals("Retrieved"))
+//            confirmButton.setEnabled(false);
+    }
+
+    public static class UpdateRetrievalDetail extends AsyncTask<Void, Void, List<RetrievalDetailByDept>> {
+        private final String retrievalId;
+
+        public UpdateRetrievalDetail(String retrievalId) {
+            this.retrievalId = retrievalId;
+        }
+
+        @Override
+        protected List<RetrievalDetailByDept> doInBackground(Void... voids) {
+            try {
+                return RetrievalDetailByDept.findRetrieval(this.retrievalId);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<RetrievalDetailByDept> retrievalDetailByDepts) {
+            if (retrievalDetailByDepts != null) {
+                RetrievalDetailActivity.retrievalDetailByDepts = retrievalDetailByDepts;
+                RetrievalDetailActivity.mAdapter.update(retrievalDetailByDepts);
+            }
+        }
     }
 
     @Override

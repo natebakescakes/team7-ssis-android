@@ -11,7 +11,6 @@ import java.util.List;
 
 import sg.edu.team7.stationeryshop.R;
 import sg.edu.team7.stationeryshop.activities.MainActivity;
-import sg.edu.team7.stationeryshop.fragments.StationeryRetrievalFragment;
 import sg.edu.team7.stationeryshop.util.JSONParser;
 
 public class Retrieval extends HashMap<String, Object> implements Serializable {
@@ -24,7 +23,7 @@ public class Retrieval extends HashMap<String, Object> implements Serializable {
         put("retrievalDetails", retrievalDetails);
     }
 
-    public static List<Retrieval> findAllRetrievals(StationeryRetrievalFragment fragment) throws JSONException {
+    public static List<Retrieval> findAllRetrievals() throws JSONException {
         JSONArray data = JSONParser.getJSONArrayFromUrl(MainActivity.getContext().getString(R.string.default_hostname) + "/api/retrievals");
 
         List<Retrieval> retrievals = new ArrayList<>();
