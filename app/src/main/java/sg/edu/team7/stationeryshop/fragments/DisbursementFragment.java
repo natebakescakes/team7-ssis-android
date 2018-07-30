@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -37,16 +38,13 @@ public class DisbursementFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    public static DisbursementAdapter mAdapter;
+    private static List<Disbursement> disbursements;
+    private static SwipeRefreshLayout mSwipeRefreshLayout;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
-
-    public static DisbursementAdapter mAdapter;
-
-    private static List<Disbursement> disbursements;
 
     public DisbursementFragment() {
         // Required empty public constructor
@@ -68,6 +66,10 @@ public class DisbursementFragment extends Fragment {
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public List<Disbursement> getDisbursements() {
+        return disbursements;
     }
 
     @Override
@@ -119,25 +121,18 @@ public class DisbursementFragment extends Fragment {
         });
         mRecyclerView.setAdapter(mAdapter);
 
-        new AsyncTask<Void, Void, List<Disbursement>>() {
-            @Override
-            protected List<Disbursement> doInBackground(Void... voids) {
-                try {
-                    return Disbursement.findAllDisbursements();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
+        new UpdateDisbursements().execute();
 
+        // Set SwipeLayoutRefresh
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            protected void onPostExecute(List<Disbursement> disbursements) {
-                if (disbursements != null) {
-                    DisbursementFragment.disbursements = disbursements;
-                    DisbursementFragment.mAdapter.update(disbursements);
-                }
+            public void onRefresh() {
+                new UpdateDisbursements().execute();
+                if (mSwipeRefreshLayout.isRefreshing())
+                    mSwipeRefreshLayout.setRefreshing(false);
             }
-        }.execute();
+        });
 
         // Set Button onClickListener
         allButton.setOnClickListener(new View.OnClickListener() {
@@ -197,6 +192,7 @@ public class DisbursementFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -223,5 +219,25 @@ public class DisbursementFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(String title);
+    }
+
+    public static class UpdateDisbursements extends AsyncTask<Void, Void, List<Disbursement>> {
+        @Override
+        protected List<Disbursement> doInBackground(Void... voids) {
+            try {
+                return Disbursement.findAllDisbursements();
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<Disbursement> disbursements) {
+            if (disbursements != null) {
+                DisbursementFragment.disbursements = disbursements;
+                DisbursementFragment.mAdapter.update(disbursements);
+            }
+        }
     }
 }

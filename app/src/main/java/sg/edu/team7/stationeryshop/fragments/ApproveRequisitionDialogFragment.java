@@ -113,7 +113,5 @@ public class ApproveRequisitionDialogFragment extends DialogFragment {
                 }.execute();
             }
         });
-
-
     }
 }
