@@ -78,19 +78,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/detail_head_remarks"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="false"
-            android:gravity="top|left"
-            android:inputType="textMultiLine"
-            android:maxLines="3"
-            android:minLines="3"
-            android:scrollbars="vertical"
-            android:text="THIS IS NOT GOOD" />
-
     </android.support.design.widget.TextInputLayout>
 
     <android.support.v7.widget.RecyclerView

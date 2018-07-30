@@ -17,7 +17,8 @@
     </string>
     <string name="stationery_retrievals">Stationery Retrievals</string>
     <string name="disbursements">Disbursements</string>
-    <string name="stock_adjustments">Stock Adjustments</string>
+    <string name="stock_adjustment_requests">Stock Adjustment Requests</string>
+    <string name="make_stock_adjustments">Make Stock Adjustment</string>
     <string name="logout">Logout</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -29,10 +30,8 @@
     <string name="settings">Settings</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment">UNDER CONSTRUCTION</string>
     <string name="requisition_request">Requisition Request</string>
-    <string name="department_representative">Assign Department Representative</string>
-    <string name="manager_delegation">Delegate Manager Role</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->
@@ -107,7 +106,8 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="menu_option_1">Settings</string>
-    <string name="default_hostname">http://172.17.185.218/StationeryShop</string>
+    <string name="default_hostname">http://stationeryshopdebug.azurewebsites.net/</string>
+    <!--<string name="default_hostname">http://192.168.1.19/StationeryShop</string>-->
     <string name="pref_title_hostname">Hostname</string>
     <string name="radio_button_active">Active</string>
     <string name="radio_button_all">All</string>
@@ -129,4 +129,22 @@
     <string name="label_remarks">Remarks</string>
     <string name="label_approval_remarks">Approval Remarks</string>
     <string name="label_rejection_remarks">Rejection Remarks</string>
+    <string name="department_options">Department Options</string>
+    <string name="header_department_rep">Department Representative</string>
+    <string name="header_delegation">Current Delegations</string>
+    <string name="delegate_dialog_title">Delegate Manager Role</string>
+    <string name="search_hint_stock_adjustment_request">Search by ID or Name</string>
+    <string name="original_quantity_label">Original Quantity</string>
+    <string name="after_quantity_label">After Quantity</string>
+    <string name="detail_reason_hint">Reason</string>
+
+    <!--strings for Make Stock Adjustment-->
+    <string name="add_item">Add Item</string>
+    <string name="item_code">Item Code</string>
+    <string name="adjusted_quantity">Qty Adjusted</string>
+    <string name="reason">Reason</string>
+    <string name="submit">Submit</string>
+    <string name="add">Add</string>
+
+
 </resources>

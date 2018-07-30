@@ -6,9 +6,9 @@
     <item android:title="Store Manager">
         <menu>
             <item
-                android:id="@+id/nav_stock_adjustments"
+                android:id="@+id/nav_stock_adjustment_requests"
                 android:icon="@drawable/ic_menu_camera"
-                android:title="@string/stock_adjustments" />
+                android:title="@string/stock_adjustment_requests" />
             <item
                 android:id="@+id/nav_department_usage"
                 android:icon="@drawable/ic_menu_gallery"
