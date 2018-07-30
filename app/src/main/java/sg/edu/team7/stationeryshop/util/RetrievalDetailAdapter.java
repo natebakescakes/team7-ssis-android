@@ -3,6 +3,7 @@ package sg.edu.team7.stationeryshop.util;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,6 +26,8 @@ import sg.edu.team7.stationeryshop.activities.RetrievalDetailActivity;
 import sg.edu.team7.stationeryshop.activities.RetrievalDetailByDeptActivity;
 import sg.edu.team7.stationeryshop.models.RetrievalDetail;
 import sg.edu.team7.stationeryshop.models.RetrievalDetailByDept;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class RetrievalDetailAdapter extends RecyclerView.Adapter<RetrievalDetailAdapter.ViewHolder> {
     private final RetrievalDetailActivity activity;
@@ -138,14 +142,46 @@ public class RetrievalDetailAdapter extends RecyclerView.Adapter<RetrievalDetail
         viewHolder.retrieveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                JSONObject retrieval = new JSONObject();
-                try {
-                    retrieval.put("RetrievalId", "");
-                    retrieval.put("Email", "");
-                    retrieval.put("itemCode", "");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                new AsyncTask<Void, Void, String>() {
+                    @Override
+                    protected String doInBackground(Void... voids) {
+                        JSONObject retrieval = new JSONObject();
+                        try {
+                            retrieval.put("RetrievalId", RetrievalDetailAdapter.this.retrieval.get("retrievalId").toString());
+                            retrieval.put("Email", activity.getSharedPreferences(activity.getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
+                            retrieval.put("ItemCode", retrievalDetails.get(position).get("itemCode").toString());
+
+
+                            String message = JSONParser.postStream(
+                                    RetrievalDetailAdapter.this.activity.getString(R.string.default_hostname) + "/api/retrieval/retrieveitem",
+                                    retrieval.toString()
+                            );
+
+                            JSONObject result = new JSONObject(message);
+
+                            return result.getString("Message");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        return "Unknown error";
+                    }
+
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        RetrievalDetailAdapter.this.activity.getProgressDialog().setTitle("Retrieving item");
+                        RetrievalDetailAdapter.this.activity.getProgressDialog().show();
+                    }
+
+                    @Override
+                    protected void onPostExecute(String message) {
+                        super.onPostExecute(message);
+                        RetrievalDetailAdapter.this.activity.getProgressDialog().dismiss();
+                        Toast.makeText(RetrievalDetailAdapter.this.activity, message, Toast.LENGTH_SHORT).show();
+                    }
+                }.execute();
+
             }
         });
     }

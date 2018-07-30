@@ -1,13 +1,15 @@
 package sg.edu.team7.stationeryshop.util;
 
+import android.content.Context;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,31 +79,62 @@ public class RetrievalDetailByDeptAdapter extends RecyclerView.Adapter<Retrieval
     }
 
     public void updateActualQuantity() {
-        JSONObject retrieval = new JSONObject();
+        new AsyncTask<Void, Void, String>() {
 
-        try {
-            retrieval.put("RetrievalId", "");
-            retrieval.put("Email", "");
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                RetrievalDetailByDeptAdapter.this.activity.getProgressDialog().setTitle("Updating actual quantity...");
+                RetrievalDetailByDeptAdapter.this.activity.getProgressDialog().show();
+            }
 
-            JSONArray retrievalDetails = new JSONArray();
+            @Override
+            protected String doInBackground(Void... voids) {
+                JSONObject updateActualQuantity = new JSONObject();
 
-            views.forEach(view -> {
-                JSONObject retrievalDetail = new JSONObject();
                 try {
-                    retrievalDetail.put("Department", "");
-                    retrievalDetail.put("ItemCode", "");
-                    retrievalDetail.put("ActualQuantity", "");
-                    retrieval.put("RetrievalDetails", retrievalDetails);
+                    updateActualQuantity.put("RetrievalId", activity.getRetrieval().get("retrievalId").toString());
+                    updateActualQuantity.put("Email", activity.getSharedPreferences(activity.getString(R.string.preference_file_key), Context.MODE_PRIVATE).getString("email", ""));
+                    updateActualQuantity.put("ItemCode", activity.getItemCode());
+
+                    JSONArray departmentDetails = new JSONArray();
+
+                    views.forEach(view -> {
+                        JSONObject departmentDetail = new JSONObject();
+                        try {
+                            departmentDetail.put("DeptId", view.departmentCode.getText().toString());
+                            departmentDetail.put("Actual", view.actualQuantity.getText().toString());
+                            departmentDetails.put(departmentDetail);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    });
+
+                    updateActualQuantity.put("RetrievalDetails", departmentDetails);
+
+                    String message = JSONParser.postStream(
+                            RetrievalDetailByDeptAdapter.this.activity.getString(R.string.default_hostname) + "/api/retrieval/updatequantity",
+                            updateActualQuantity.toString()
+                    );
+
+                    JSONObject result = new JSONObject(message);
+
+                    return result.getString("Message");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            });
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
-        Log.i("RETRIEVAL", retrieval.toString());
-        activity.finish();
+                return "Unknown error";
+            }
+
+            @Override
+            protected void onPostExecute(String message) {
+                super.onPostExecute(message);
+                RetrievalDetailByDeptAdapter.this.activity.getProgressDialog().dismiss();
+                Toast.makeText(RetrievalDetailByDeptAdapter.this.activity, message, Toast.LENGTH_SHORT).show();
+                RetrievalDetailByDeptAdapter.this.activity.finish();
+            }
+        }.execute();
     }
 
     // Provide a reference to the views for each data item

@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 import sg.edu.team7.stationeryshop.R;
 import sg.edu.team7.stationeryshop.activities.RetrievalDetailActivity;
 import sg.edu.team7.stationeryshop.models.Retrieval;
-import sg.edu.team7.stationeryshop.models.RetrievalDetailByDept;
 import sg.edu.team7.stationeryshop.util.RetrievalAdapter;
 
 /**
@@ -122,21 +121,21 @@ public class StationeryRetrievalFragment extends Fragment {
             @Override
             protected List<Retrieval> doInBackground(Void... voids) {
                 try {
-//                    return Retrieval.findAllRetrievals(StationeryRetrievalFragment.this);
-                    List<RetrievalDetailByDept> details = new ArrayList<>();
-
-                    details.add(new RetrievalDetailByDept("English Dept", "ENGL", "E030", "Pilot G2 Pen - Black", "#10", "PCS", "Awaiting Picking", 20, 20));
-                    details.add(new RetrievalDetailByDept("English Dept", "ENGL", "E031", "Pilot G2 Pen - Blue", "#11", "PCS", "Picked", 30, 20));
-                    details.add(new RetrievalDetailByDept("Registra Dept", "ENGL", "E030", "Pilot G2 Pen - Black", "#10", "PCS", "Awaiting Picking", 20, 20));
-
-                    List<Retrieval> retrievals = new ArrayList<>();
-
-                    retrievals.add(new Retrieval("RET-201801-001", "Nathan Khoo", "2018-01-01", "Pending Retrieval", details));
-
-                    if (1 != 1)
-                        throw new JSONException("Fake JSONException");
-
-                    return retrievals;
+                    return Retrieval.findAllRetrievals(StationeryRetrievalFragment.this);
+//                    List<RetrievalDetailByDept> details = new ArrayList<>();
+//
+//                    details.add(new RetrievalDetailByDept("English Dept", "ENGL", "E030", "Pilot G2 Pen - Black", "#10", "PCS", "Awaiting Picking", 20, 20));
+//                    details.add(new RetrievalDetailByDept("English Dept", "ENGL", "E031", "Pilot G2 Pen - Blue", "#11", "PCS", "Picked", 30, 20));
+//                    details.add(new RetrievalDetailByDept("Registra Dept", "ENGL", "E030", "Pilot G2 Pen - Black", "#10", "PCS", "Awaiting Picking", 20, 20));
+//
+//                    List<Retrieval> retrievals = new ArrayList<>();
+//
+//                    retrievals.add(new Retrieval("RET-201801-001", "Nathan Khoo", "2018-01-01", "Pending Retrieval", details));
+//
+//                    if (1 != 1)
+//                        throw new JSONException("Fake JSONException");
+//
+//                    return retrievals;
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -193,7 +192,7 @@ public class StationeryRetrievalFragment extends Fragment {
                             .collect(Collectors.toList()));
                 else
                     mAdapter.update(retrievals.stream()
-                            .filter(r -> r.get("status").toString().equals("Pending Approval"))
+                            .filter(r -> r.get("status").toString().equals("Pending Retrieval"))
                             .filter(r -> r.get("retrievalId").toString().toLowerCase().contains(s.toLowerCase()))
                             .collect(Collectors.toList()));
 

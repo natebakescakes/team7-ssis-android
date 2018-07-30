@@ -28,6 +28,14 @@ public class RetrievalDetailByDeptActivity extends AppCompatActivity {
     private FloatingActionButton confirmButton;
     private RetrievalDetailByDeptAdapter mAdapter;
 
+    public String getItemCode() {
+        return itemCode;
+    }
+
+    public Map getRetrieval() {
+        return retrieval;
+    }
+
     public ProgressDialog getProgressDialog() {
         return progressDialog;
     }

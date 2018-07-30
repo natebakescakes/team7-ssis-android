@@ -26,8 +26,11 @@ import sg.edu.team7.stationeryshop.util.RetrievalDetailAdapter;
 public class RetrievalDetailActivity extends AppCompatActivity {
 
     private Map retrieval;
-
     private ProgressDialog progressDialog;
+
+    public ProgressDialog getProgressDialog() {
+        return progressDialog;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +90,7 @@ public class RetrievalDetailActivity extends AppCompatActivity {
                             retrievalId.put("Email", RetrievalDetailActivity.this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
 
                             String message = JSONParser.postStream(
-                                    RetrievalDetailActivity.this.getString(R.string.default_hostname) + "/api/stockadjustment/supervisor/reject",
+                                    RetrievalDetailActivity.this.getString(R.string.default_hostname) + "/api/retrieval/confirm",
                                     retrievalId.toString()
                             );
 
@@ -104,7 +107,7 @@ public class RetrievalDetailActivity extends AppCompatActivity {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
-                        RetrievalDetailActivity.this.progressDialog.setTitle("Rejecting stock adjustment");
+                        RetrievalDetailActivity.this.progressDialog.setTitle("Confirming retrieval");
                         RetrievalDetailActivity.this.progressDialog.show();
                     }
 
