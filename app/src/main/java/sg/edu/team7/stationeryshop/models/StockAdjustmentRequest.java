@@ -49,7 +49,7 @@ public class StockAdjustmentRequest extends HashMap<String, Object> implements S
             List<StockAdjustmentRequestDetail> stockAdjustmentDetails = new ArrayList<>();
 
             for (int j = 0; j < stockAdjustmentJson.getJSONArray("StockAdjustmentRequestDetails").length(); j++) {
-                JSONObject stockAdjustmentDetailJson = stockAdjustmentJson.getJSONArray("StockAdjustmentRequestDetails").getJSONObject(i);
+                JSONObject stockAdjustmentDetailJson = stockAdjustmentJson.getJSONArray("StockAdjustmentRequestDetails").getJSONObject(j);
 
                 StockAdjustmentRequestDetail stockAdustmentDetail = new StockAdjustmentRequestDetail(
                         stockAdjustmentDetailJson.getString("ItemCode"),

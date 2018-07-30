@@ -39,7 +39,7 @@ public class Retrieval extends HashMap<String, Object> implements Serializable {
             List<RetrievalDetailByDept> retrievalDetails = new ArrayList<>();
 
             for (int j = 0; j < retrievalJson.getJSONArray("RetrievalDetails").length(); j++) {
-                JSONObject retrievalDetailJson = retrievalJson.getJSONArray("RetrievalDetails").getJSONObject(i);
+                JSONObject retrievalDetailJson = retrievalJson.getJSONArray("RetrievalDetails").getJSONObject(j);
 
                 RetrievalDetailByDept retrievalDetail = new RetrievalDetailByDept(
                         retrievalDetailJson.getString("Department"),
