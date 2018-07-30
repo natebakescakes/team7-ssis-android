@@ -115,8 +115,7 @@ public class RequisitionDetailActivity extends AppCompatActivity {
             }
         });
 
-        if (requisition.get("status").toString().equals("Approved") ||
-                requisition.get("status").toString().equals("Rejected")) {
+        if (!requisition.get("status").toString().equals("Pending Approval")) {
             approveButton.setEnabled(false);
             rejectButton.setEnabled(false);
         }

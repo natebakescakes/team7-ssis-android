@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -46,6 +47,8 @@ public class DepartmentOptionsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private OnFragmentInteractionListener mListener;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerView mRecyclerView;
 
     public DepartmentOptionsFragment() {
         // Required empty public constructor
@@ -69,6 +72,10 @@ public class DepartmentOptionsFragment extends Fragment {
         return fragment;
     }
 
+    public RecyclerView getmRecyclerView() {
+        return mRecyclerView;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,7 +96,7 @@ public class DepartmentOptionsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_department_options, container, false);
 
         // Initialize RecyclerView
-        RecyclerView mRecyclerView = view.findViewById(R.id.department_options_recycler_view);
+        mRecyclerView = view.findViewById(R.id.department_options_recycler_view);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -103,6 +110,17 @@ public class DepartmentOptionsFragment extends Fragment {
 
         // Initialize Progress Dialog
         progressDialog = new ProgressDialog(getContext());
+
+        // Set SwipeLayoutRefresh
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new DepartmentOptionsTask(mRecyclerView).execute();
+                if (mSwipeRefreshLayout.isRefreshing())
+                    mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         return view;
     }
@@ -137,6 +155,21 @@ public class DepartmentOptionsFragment extends Fragment {
         delegateDialogFragment.setCallingFragment(this);
         delegateDialogFragment.setEmployees(employees);
         delegateDialogFragment.show(fm, "fragment_edit_name");
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(String title);
     }
 
     public class DepartmentOptionsTask extends AsyncTask<Void, Void, DepartmentOptions> {
@@ -212,21 +245,5 @@ public class DepartmentOptionsFragment extends Fragment {
                     DepartmentOptionsFragment.this);
             recyclerView.setAdapter(mAdapter);
         }
-    }
-
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(String title);
     }
 }
