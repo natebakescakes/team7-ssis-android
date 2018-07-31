@@ -48,6 +48,7 @@ public class Retrieval extends HashMap<String, Object> implements Serializable {
                         retrievalDetailJson.getString("Bin"),
                         retrievalDetailJson.getString("Uom"),
                         retrievalDetailJson.getString("Status"),
+                        retrievalDetailJson.getString("RetrievalStatus"),
                         retrievalDetailJson.getInt("PlanQuantity"),
                         retrievalDetailJson.getInt("ActualQuantity")
                 );

@@ -12,6 +12,7 @@ import android.view.View;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,7 +74,7 @@ public class RetrievalDetailByDeptActivity extends AppCompatActivity {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new RetrievalDetailByDeptAdapter(retrievalId,
-                retrievalDetailByDepts.stream().filter(x -> x.get("itemCode").toString().equals(this.itemCode)).collect(Collectors.toList()),
+                new ArrayList<>(),
                 this);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -100,6 +101,8 @@ public class RetrievalDetailByDeptActivity extends AppCompatActivity {
                 mAdapter.updateActualQuantity();
             }
         });
+
+        new UpdateRetrievalByDeptActivity().execute();
     }
 
     @Override
@@ -128,7 +131,10 @@ public class RetrievalDetailByDeptActivity extends AppCompatActivity {
         protected void onPostExecute(List<RetrievalDetailByDept> retrievalDetailByDepts) {
             if (retrievalDetailByDepts != null) {
                 RetrievalDetailByDeptActivity.this.retrievalDetailByDepts = retrievalDetailByDepts;
-                RetrievalDetailByDeptActivity.this.mAdapter.update(retrievalDetailByDepts);
+                RetrievalDetailByDeptActivity.this.mAdapter.update(retrievalDetailByDepts.stream().filter(x -> x.get("itemCode").toString().equals(RetrievalDetailByDeptActivity.this.itemCode)).collect(Collectors.toList()));
+                if (RetrievalDetailByDeptActivity.this.retrievalDetailByDepts.stream().findFirst().get().get("status").equals("Picked"))
+                    editButton.hide();
+
             }
         }
     }

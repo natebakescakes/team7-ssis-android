@@ -15,7 +15,7 @@ import sg.edu.team7.stationeryshop.util.JSONParser;
 
 public class RetrievalDetailByDept extends HashMap<String, Object> implements Serializable {
 
-    public RetrievalDetailByDept(String department, String departmentCode, String itemCode, String itemName, String bin, String uom, String status, int planQuantity, int actualQuantity) {
+    public RetrievalDetailByDept(String department, String departmentCode, String itemCode, String itemName, String bin, String uom, String status, String retrievalStatus, int planQuantity, int actualQuantity) {
         put("department", department);
         put("departmentCode", departmentCode);
         put("itemCode", itemCode);
@@ -23,6 +23,7 @@ public class RetrievalDetailByDept extends HashMap<String, Object> implements Se
         put("bin", bin);
         put("uom", uom);
         put("status", status);
+        put("retrievalStatus", retrievalStatus);
         put("planQuantity", planQuantity);
         put("actualQuantity", actualQuantity);
     }
@@ -32,8 +33,8 @@ public class RetrievalDetailByDept extends HashMap<String, Object> implements Se
         retrievalIdJson.put("RetrievalId", retrievalId);
 
         String result = JSONParser.postStream(
-                MainActivity.getContext().getString(R.string.default_hostname) + "/api/requisition/department",
-                retrievalId.toString()
+                MainActivity.getContext().getString(R.string.default_hostname) + "/api/retrieval/individual",
+                retrievalIdJson.toString()
         );
 
         JSONArray data = new JSONArray(result);
@@ -52,6 +53,7 @@ public class RetrievalDetailByDept extends HashMap<String, Object> implements Se
                     retrievalDetailByDeptJson.getString("Bin"),
                     retrievalDetailByDeptJson.getString("Uom"),
                     retrievalDetailByDeptJson.getString("Status"),
+                    retrievalDetailByDeptJson.getString("RetrievalStatus"),
                     retrievalDetailByDeptJson.getInt("PlanQuantity"),
                     retrievalDetailByDeptJson.getInt("ActualQuantity")
             );

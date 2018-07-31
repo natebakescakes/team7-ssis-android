@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -46,6 +47,7 @@ public class StationeryRetrievalFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private static List<Retrieval> retrievals;
     private static RetrievalAdapter mAdapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public StationeryRetrievalFragment() {
         // Required empty public constructor
@@ -164,6 +166,17 @@ public class StationeryRetrievalFragment extends Fragment {
                             .collect(Collectors.toList()));
 
                 return true;
+            }
+        });
+
+        // Set SwipeLayoutRefresh
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new UpdateRetrievals().execute();
+                if (mSwipeRefreshLayout.isRefreshing())
+                    mSwipeRefreshLayout.setRefreshing(false);
             }
         });
 

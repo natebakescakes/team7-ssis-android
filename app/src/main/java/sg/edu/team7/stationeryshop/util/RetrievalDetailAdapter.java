@@ -169,6 +169,42 @@ public class RetrievalDetailAdapter extends RecyclerView.Adapter<RetrievalDetail
         });
     }
 
+    public void update(List<RetrievalDetailByDept> retrievalDetailByDepts) {
+        this.retrievalDetails.clear();
+        retrievalDetailByDepts.forEach(retrievalDetailByDept -> {
+            // if retrievalDetails contains retrievalDetail that has same itemCode key
+            // add quantity to key
+            // else
+            // create new retrievalDetail with item key
+            String itemCode = retrievalDetailByDept.get("itemCode").toString();
+            int planQuantity = Integer.parseInt(retrievalDetailByDept.get("planQuantity").toString());
+            int actualQuanttiy = Integer.parseInt(retrievalDetailByDept.get("actualQuantity").toString());
+
+            // if retrievalDetails contains retrievalDetail that has same itemCode key
+            if (this.retrievalDetails.stream().filter(rd -> rd.get("itemCode").toString().equals(itemCode)).count() > 0) {
+                // Get RetrievalDetail that has same itemCode
+                RetrievalDetail retrievalDetail = retrievalDetails.stream().filter(rd -> rd.get("itemCode").toString().equals(itemCode)).findFirst().get();
+
+                // Get current RetrievalDetail quantity
+                int currentPlanQuantity = Integer.parseInt(retrievalDetail.get("planQuantity").toString());
+                int currentActualQuantity = Integer.parseInt(retrievalDetail.get("actualQuantity").toString());
+                // Add RetrievalDetailByDept quantity
+                retrievalDetail.put("planQuantity", currentPlanQuantity + planQuantity);
+                retrievalDetail.put("actualQuantity", currentActualQuantity + actualQuanttiy);
+            } else {
+                this.retrievalDetails.add(new RetrievalDetail(
+                        itemCode,
+                        retrievalDetailByDept.get("itemName").toString(),
+                        retrievalDetailByDept.get("bin").toString(),
+                        retrievalDetailByDept.get("uom").toString(),
+                        retrievalDetailByDept.get("status").toString(),
+                        planQuantity,
+                        actualQuanttiy));
+            }
+        });
+        notifyDataSetChanged();
+    }
+
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {

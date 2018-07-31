@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -22,12 +23,12 @@ import sg.edu.team7.stationeryshop.fragments.StationeryRetrievalFragment;
 import sg.edu.team7.stationeryshop.models.RetrievalDetailByDept;
 import sg.edu.team7.stationeryshop.util.JSONParser;
 import sg.edu.team7.stationeryshop.util.RetrievalDetailAdapter;
-import sg.edu.team7.stationeryshop.util.RetrievalDetailByDeptAdapter;
 
 public class RetrievalDetailActivity extends AppCompatActivity {
 
     private static List<RetrievalDetailByDept> retrievalDetailByDepts;
-    private static RetrievalDetailByDeptAdapter mAdapter;
+    private static RetrievalDetailAdapter mAdapter;
+    private static Button confirmButton;
     private ProgressDialog progressDialog;
     private String retrievalId;
 
@@ -58,7 +59,8 @@ public class RetrievalDetailActivity extends AppCompatActivity {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         retrievalDetailByDepts = new ArrayList<>();
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(new RetrievalDetailAdapter(retrievalId, retrievalDetailByDepts, this));
+        mAdapter = new RetrievalDetailAdapter(retrievalId, retrievalDetailByDepts, this);
+        mRecyclerView.setAdapter(mAdapter);
 
         // Initialize loading UI
         progressDialog = new ProgressDialog(this);
@@ -67,7 +69,7 @@ public class RetrievalDetailActivity extends AppCompatActivity {
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // Initialize Confirm Retrieval Button
-        Button confirmButton = findViewById(R.id.confirm_retrieval);
+        confirmButton = findViewById(R.id.confirm_retrieval);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,9 +114,13 @@ public class RetrievalDetailActivity extends AppCompatActivity {
             }
         });
 
-//        if (retrieval.get("status").toString().equals("Retrieved"))
+        new UpdateRetrievalDetail(retrievalId).execute();
+
+//        Log.i("RETRIEVALDETAIL", retrievalDetailByDepts.stream().findFirst().get().toString());
+//        if (retrievalDetailByDepts.stream().findFirst().get().get("retrievalStatus").toString().equals("Retrieved"))
 //            confirmButton.setEnabled(false);
     }
+
 
     public static class UpdateRetrievalDetail extends AsyncTask<Void, Void, List<RetrievalDetailByDept>> {
         private final String retrievalId;
@@ -137,7 +143,10 @@ public class RetrievalDetailActivity extends AppCompatActivity {
         protected void onPostExecute(List<RetrievalDetailByDept> retrievalDetailByDepts) {
             if (retrievalDetailByDepts != null) {
                 RetrievalDetailActivity.retrievalDetailByDepts = retrievalDetailByDepts;
+                Log.i("RETRIEVALDETAIL", retrievalDetailByDepts.toString());
                 RetrievalDetailActivity.mAdapter.update(retrievalDetailByDepts);
+                if (retrievalDetailByDepts.stream().findFirst().get().get("retrievalStatus").toString().equals("Retrieved"))
+                    RetrievalDetailActivity.confirmButton.setEnabled(false);
             }
         }
     }
