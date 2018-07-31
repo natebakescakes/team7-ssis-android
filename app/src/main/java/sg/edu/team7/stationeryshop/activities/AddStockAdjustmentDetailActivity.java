@@ -1,19 +1,18 @@
 package sg.edu.team7.stationeryshop.activities;
 
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import sg.edu.team7.stationeryshop.R;
-import sg.edu.team7.stationeryshop.fragments.MakeStockAdjustmentFragment;
 
-public class AddStockAdjustmentDetailActivity extends AppCompatActivity implements MakeStockAdjustmentFragment.OnFragmentInteractionListener {
+
+public class AddStockAdjustmentDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,14 +40,11 @@ public class AddStockAdjustmentDetailActivity extends AppCompatActivity implemen
                 intent.putExtra("aft_qty",aft_qty.getText().toString());
                 intent.putExtra("reason",reason.getText().toString());
 
-                startActivity(intent);
+                setResult(RESULT_OK, intent);
+                finish();
 
             }
         });
     }
 
-    @Override
-    public void onFragmentInteraction(String title) {
-
-    }
 }

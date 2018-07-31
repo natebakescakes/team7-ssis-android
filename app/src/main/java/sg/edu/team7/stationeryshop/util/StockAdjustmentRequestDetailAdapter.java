@@ -1,5 +1,6 @@
 package sg.edu.team7.stationeryshop.util;
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +18,7 @@ import sg.edu.team7.stationeryshop.models.StockAdjustmentRequestDetail;
 
 public class StockAdjustmentRequestDetailAdapter extends RecyclerView.Adapter<StockAdjustmentRequestDetailAdapter.ViewHolder> {
     private List<StockAdjustmentRequestDetail> stockAdjustmentDetails;
-    private StockAdjustmentRequestDetailActivity activity;
+    private Activity activity;
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public StockAdjustmentRequestDetailAdapter(List<StockAdjustmentRequestDetail> stockAdjustmentDetails, StockAdjustmentRequestDetailActivity activity) {
@@ -27,7 +28,7 @@ public class StockAdjustmentRequestDetailAdapter extends RecyclerView.Adapter<St
 
     public StockAdjustmentRequestDetailAdapter(List<StockAdjustmentRequestDetail> stockAdjustmentDetails,NewStockAdjustmentActivity activity) {
         this.stockAdjustmentDetails = stockAdjustmentDetails;
-
+        this.activity = activity;
     }
 
     // Create new views (invoked by the layout manager)
@@ -83,5 +84,12 @@ public class StockAdjustmentRequestDetailAdapter extends RecyclerView.Adapter<St
             afterQuantity = itemView.findViewById(R.id.after_quantity_value);
             reason = itemView.findViewById(R.id.detail_reason);
         }
+    }
+
+    public void update(List<StockAdjustmentRequestDetail> list) {
+       // this.stockAdjustmentDetails.clear();
+        //this.stockAdjustmentDetails.addAll(list);
+        this.stockAdjustmentDetails = list;
+        notifyDataSetChanged();
     }
 }

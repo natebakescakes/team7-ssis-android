@@ -38,7 +38,7 @@
         android:text="Date:" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/label_requester"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -59,7 +59,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/textView5"
+        android:layout_alignTop="@+id/label_requester"
         android:layout_marginStart="137dp"
         android:text="TextView" />
 
@@ -67,8 +67,9 @@
 
         android:id="@+id/sa_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"></android.support.v7.widget.RecyclerView>
+        android:layout_height="403dp"
+        android:layout_below="@+id/addItem_btn"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"></android.support.v7.widget.RecyclerView>
 
 </RelativeLayout>

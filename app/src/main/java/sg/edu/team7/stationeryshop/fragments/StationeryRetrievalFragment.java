@@ -1,14 +1,30 @@
 package sg.edu.team7.stationeryshop.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import sg.edu.team7.stationeryshop.R;
+import sg.edu.team7.stationeryshop.activities.RetrievalDetailActivity;
+import sg.edu.team7.stationeryshop.models.Retrieval;
+import sg.edu.team7.stationeryshop.util.RetrievalAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +45,9 @@ public class StationeryRetrievalFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private static List<Retrieval> retrievals;
+    private static RetrievalAdapter mAdapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public StationeryRetrievalFragment() {
         // Required empty public constructor
@@ -69,8 +88,101 @@ public class StationeryRetrievalFragment extends Fragment {
             mListener.onFragmentInteraction("Stationery Retrievals");
         }
 
+        View view = inflater.inflate(R.layout.fragment_stationery_retrieval, container, false);
+
+        // Initialize Button
+        Button allButton = view.findViewById(R.id.button_all);
+        Button pendingButton = view.findViewById(R.id.button_pending);
+        allButton.setEnabled(false);
+        pendingButton.setEnabled(true);
+
+        // Initialize Requisition;
+        retrievals = new ArrayList<>();
+
+        // Initialize RecyclerView
+        RecyclerView mRecyclerView = view.findViewById(R.id.retrieval_recycler_view);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new RetrievalAdapter(new ArrayList<>(), new RetrievalAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getActivity(), RetrievalDetailActivity.class);
+                intent.putExtra("retrievalId", retrievals.get(position).get("retrievalId").toString());
+                startActivity(intent);
+            }
+        });
+        mRecyclerView.setAdapter(mAdapter);
+
+        new UpdateRetrievals().execute();
+
+        // Set Button onClickListener
+        allButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                allButton.setEnabled(false);
+                pendingButton.setEnabled(true);
+                mAdapter.update(retrievals);
+            }
+        });
+
+        pendingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                allButton.setEnabled(true);
+                pendingButton.setEnabled(false);
+                mAdapter.update(retrievals.stream()
+                        .filter(r -> r.get("status").toString().equals("Pending Retrieval"))
+                        .collect(Collectors.toList()));
+            }
+        });
+
+        // Initialize SearchView
+        SearchView searchView = view.findViewById(R.id.search_view);
+        searchView.setOnClickListener(v -> searchView.setIconified(false));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            // TODO: Will reset view not considering active button when changed to empty query
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if (pendingButton.isEnabled()) // ALL FILTER IS SELECTED
+                    mAdapter.update(retrievals.stream()
+                            .filter(r -> r.get("retrievalId").toString().toLowerCase().contains(s.toLowerCase()))
+                            .collect(Collectors.toList()));
+                else
+                    mAdapter.update(retrievals.stream()
+                            .filter(r -> r.get("status").toString().equals("Pending Retrieval"))
+                            .filter(r -> r.get("retrievalId").toString().toLowerCase().contains(s.toLowerCase()))
+                            .collect(Collectors.toList()));
+
+                return true;
+            }
+        });
+
+        // Set SwipeLayoutRefresh
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new UpdateRetrievals().execute();
+                if (mSwipeRefreshLayout.isRefreshing())
+                    mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_stationery_retrieval, container, false);
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -95,6 +207,26 @@ public class StationeryRetrievalFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public static class UpdateRetrievals extends AsyncTask<Void, Void, List<Retrieval>> {
+        @Override
+        protected void onPostExecute(List<Retrieval> retrievals) {
+            if (retrievals != null) {
+                StationeryRetrievalFragment.retrievals = retrievals;
+                StationeryRetrievalFragment.mAdapter.update(retrievals);
+            }
+        }
+
+        @Override
+        protected List<Retrieval> doInBackground(Void... voids) {
+            try {
+                return Retrieval.findAllRetrievals();
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
     }
 
     /**
