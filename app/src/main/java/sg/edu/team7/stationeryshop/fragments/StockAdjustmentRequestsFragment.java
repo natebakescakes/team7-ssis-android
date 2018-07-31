@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -37,16 +38,13 @@ public class StockAdjustmentRequestsFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private static StockAdjustmentRequestAdapter mAdapter;
+    private static List<StockAdjustmentRequest> stockAdjustmentRequests;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
-
-    private StockAdjustmentRequestAdapter mAdapter;
-
-    private List<StockAdjustmentRequest> stockAdjustmentRequests;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public StockAdjustmentRequestsFragment() {
         // Required empty public constructor
@@ -118,25 +116,7 @@ public class StockAdjustmentRequestsFragment extends Fragment {
         });
         mRecyclerView.setAdapter(mAdapter);
 
-        new AsyncTask<Void, Void, List<StockAdjustmentRequest>>() {
-            @Override
-            protected List<StockAdjustmentRequest> doInBackground(Void... voids) {
-                try {
-                    return StockAdjustmentRequest.findAllStockAdjustments(StockAdjustmentRequestsFragment.this);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(List<StockAdjustmentRequest> stockAdjustmentRequests) {
-                if (stockAdjustmentRequests != null) {
-                    StockAdjustmentRequestsFragment.this.stockAdjustmentRequests = stockAdjustmentRequests;
-                    StockAdjustmentRequestsFragment.this.mAdapter.update(stockAdjustmentRequests);
-                }
-            }
-        }.execute();
+        new UpdateStockAdjustment().execute();
 
         // Set Button onClickListener
         allButton.setOnClickListener(new View.OnClickListener() {
@@ -186,6 +166,17 @@ public class StockAdjustmentRequestsFragment extends Fragment {
             }
         });
 
+        // Set SwipeLayoutRefresh
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new UpdateStockAdjustment().execute();
+                if (mSwipeRefreshLayout.isRefreshing())
+                    mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
 
         // Inflate the layout for this fragment
         return view;
@@ -220,5 +211,25 @@ public class StockAdjustmentRequestsFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(String title);
+    }
+
+    public static class UpdateStockAdjustment extends AsyncTask<Void, Void, List<StockAdjustmentRequest>> {
+        @Override
+        protected void onPostExecute(List<StockAdjustmentRequest> stockAdjustmentRequests) {
+            if (stockAdjustmentRequests != null) {
+                StockAdjustmentRequestsFragment.stockAdjustmentRequests = stockAdjustmentRequests;
+                StockAdjustmentRequestsFragment.mAdapter.update(stockAdjustmentRequests);
+            }
+        }
+
+        @Override
+        protected List<StockAdjustmentRequest> doInBackground(Void... voids) {
+            try {
+                return StockAdjustmentRequest.findAllStockAdjustments();
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 package sg.edu.team7.stationeryshop.activities;
 
 import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -9,9 +10,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import sg.edu.team7.stationeryshop.R;
@@ -20,20 +22,20 @@ import sg.edu.team7.stationeryshop.util.RetrievalDetailByDeptAdapter;
 
 public class RetrievalDetailByDeptActivity extends AppCompatActivity {
 
-    private Map retrieval;
+    private String retrievalId;
     private ProgressDialog progressDialog;
-    private List<RetrievalDetailByDept> retrievalDetails;
     private String itemCode;
     private FloatingActionButton editButton;
     private FloatingActionButton confirmButton;
     private RetrievalDetailByDeptAdapter mAdapter;
+    private List<RetrievalDetailByDept> retrievalDetailByDepts;
+
+    public String getRetrievalId() {
+        return retrievalId;
+    }
 
     public String getItemCode() {
         return itemCode;
-    }
-
-    public Map getRetrieval() {
-        return retrieval;
     }
 
     public ProgressDialog getProgressDialog() {
@@ -53,24 +55,8 @@ public class RetrievalDetailByDeptActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_retrieval_detail_by_dept);
 
-        // Get Retrieval
-        retrieval = (Map) getIntent().getSerializableExtra("retrieval");
-
-        // Get Item Details
-        List genericList = (List) retrieval.get("retrievalDetails");
-        retrievalDetails = new ArrayList<>();
-
-        genericList.forEach(x -> retrievalDetails.add(new RetrievalDetailByDept(
-                ((Map) x).get("department").toString(),
-                ((Map) x).get("departmentCode").toString(),
-                ((Map) x).get("itemCode").toString(),
-                ((Map) x).get("itemName").toString(),
-                ((Map) x).get("bin").toString(),
-                ((Map) x).get("uom").toString(),
-                ((Map) x).get("status").toString(),
-                Integer.parseInt(((Map) x).get("planQuantity").toString()),
-                Integer.parseInt(((Map) x).get("actualQuantity").toString())
-        )));
+        // Get RetrievalId
+        retrievalId = getIntent().getStringExtra("retrievalId");
 
         // Set Title
         itemCode = getIntent().getStringExtra("itemCode");
@@ -87,8 +73,8 @@ public class RetrievalDetailByDeptActivity extends AppCompatActivity {
         // use a linear layout manager
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new RetrievalDetailByDeptAdapter(
-                retrievalDetails.stream().filter(x -> x.get("itemCode").toString().equals(this.itemCode)).collect(Collectors.toList()),
+        mAdapter = new RetrievalDetailByDeptAdapter(retrievalId,
+                new ArrayList<>(),
                 this);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -115,6 +101,8 @@ public class RetrievalDetailByDeptActivity extends AppCompatActivity {
                 mAdapter.updateActualQuantity();
             }
         });
+
+        new UpdateRetrievalByDeptActivity().execute();
     }
 
     @Override
@@ -125,6 +113,29 @@ public class RetrievalDetailByDeptActivity extends AppCompatActivity {
                 return true;
             default:
                 return true;
+        }
+    }
+
+    public class UpdateRetrievalByDeptActivity extends AsyncTask<Void, Void, List<RetrievalDetailByDept>> {
+        @Override
+        protected List<RetrievalDetailByDept> doInBackground(Void... voids) {
+            try {
+                return RetrievalDetailByDept.findRetrieval(RetrievalDetailByDeptActivity.this.retrievalId);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<RetrievalDetailByDept> retrievalDetailByDepts) {
+            if (retrievalDetailByDepts != null) {
+                RetrievalDetailByDeptActivity.this.retrievalDetailByDepts = retrievalDetailByDepts;
+                RetrievalDetailByDeptActivity.this.mAdapter.update(retrievalDetailByDepts.stream().filter(x -> x.get("itemCode").toString().equals(RetrievalDetailByDeptActivity.this.itemCode)).collect(Collectors.toList()));
+                if (RetrievalDetailByDeptActivity.this.retrievalDetailByDepts.stream().findFirst().get().get("status").equals("Picked"))
+                    editButton.hide();
+
+            }
         }
     }
 }

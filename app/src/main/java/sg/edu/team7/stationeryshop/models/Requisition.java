@@ -49,7 +49,7 @@ public class Requisition extends HashMap<String, Object> implements Serializable
             List<RequisitionDetail> requisitionDetails = new ArrayList<>();
 
             for (int j = 0; j < requisitionJson.getJSONArray("RequisitionDetails").length(); j++) {
-                JSONObject requisitionDetailJson = requisitionJson.getJSONArray("RequisitionDetails").getJSONObject(i);
+                JSONObject requisitionDetailJson = requisitionJson.getJSONArray("RequisitionDetails").getJSONObject(j);
 
                 RequisitionDetail requisitionDetail = new RequisitionDetail(
                         requisitionDetailJson.getString("ItemCode"),

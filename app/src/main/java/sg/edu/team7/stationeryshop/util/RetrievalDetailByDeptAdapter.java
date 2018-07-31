@@ -19,19 +19,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sg.edu.team7.stationeryshop.R;
+import sg.edu.team7.stationeryshop.activities.RetrievalDetailActivity;
 import sg.edu.team7.stationeryshop.activities.RetrievalDetailByDeptActivity;
 import sg.edu.team7.stationeryshop.models.RetrievalDetailByDept;
 
 public class RetrievalDetailByDeptAdapter extends RecyclerView.Adapter<RetrievalDetailByDeptAdapter.ViewHolder> {
     private final RetrievalDetailByDeptActivity activity;
-    private final List<RetrievalDetailByDept> retrievalDetails;
-
+    private final String retrievalId;
     private List<RetrievalDetailByDept> retrievalDetailByDepts;
     private List<ViewHolder> views;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public RetrievalDetailByDeptAdapter(List<RetrievalDetailByDept> retrievalDetails, RetrievalDetailByDeptActivity activity) {
-        this.retrievalDetails = retrievalDetails;
+    public RetrievalDetailByDeptAdapter(String retrievalId, List<RetrievalDetailByDept> retrievalDetailByDepts, RetrievalDetailByDeptActivity activity) {
+        this.retrievalDetailByDepts = retrievalDetailByDepts;
+        this.retrievalId = retrievalId;
         this.activity = activity;
 
         this.views = new ArrayList<>();
@@ -51,14 +52,14 @@ public class RetrievalDetailByDeptAdapter extends RecyclerView.Adapter<Retrieval
     public void onBindViewHolder(@NonNull RetrievalDetailByDeptAdapter.ViewHolder viewHolder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        viewHolder.department.setText(retrievalDetails.get(position).get("department").toString());
-        viewHolder.departmentCode.setText(retrievalDetails.get(position).get("departmentCode").toString());
+        viewHolder.department.setText(retrievalDetailByDepts.get(position).get("department").toString());
+        viewHolder.departmentCode.setText(retrievalDetailByDepts.get(position).get("departmentCode").toString());
 
-        viewHolder.planQuantity.setText(retrievalDetails.get(position).get("planQuantity").toString());
-        viewHolder.planQuantity.setHint("Plan - " + retrievalDetails.get(position).get("uom").toString());
+        viewHolder.planQuantity.setText(retrievalDetailByDepts.get(position).get("planQuantity").toString());
+        viewHolder.planQuantity.setHint("Plan - " + retrievalDetailByDepts.get(position).get("uom").toString());
 
-        viewHolder.actualQuantity.setText(retrievalDetails.get(position).get("actualQuantity").toString());
-        viewHolder.actualQuantity.setHint("Actual - " + retrievalDetails.get(position).get("uom").toString());
+        viewHolder.actualQuantity.setText(retrievalDetailByDepts.get(position).get("actualQuantity").toString());
+        viewHolder.actualQuantity.setHint("Actual - " + retrievalDetailByDepts.get(position).get("uom").toString());
 
         views.add(viewHolder);
     }
@@ -75,7 +76,7 @@ public class RetrievalDetailByDeptAdapter extends RecyclerView.Adapter<Retrieval
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return retrievalDetails != null ? retrievalDetails.size() : 0;
+        return retrievalDetailByDepts != null ? retrievalDetailByDepts.size() : 0;
     }
 
     public void updateActualQuantity() {
@@ -93,7 +94,7 @@ public class RetrievalDetailByDeptAdapter extends RecyclerView.Adapter<Retrieval
                 JSONObject updateActualQuantity = new JSONObject();
 
                 try {
-                    updateActualQuantity.put("RetrievalId", activity.getRetrieval().get("retrievalId").toString());
+                    updateActualQuantity.put("RetrievalId", activity.getRetrievalId());
                     updateActualQuantity.put("Email", activity.getSharedPreferences(activity.getString(R.string.preference_file_key), Context.MODE_PRIVATE).getString("email", ""));
                     updateActualQuantity.put("ItemCode", activity.getItemCode());
 
@@ -133,8 +134,15 @@ public class RetrievalDetailByDeptAdapter extends RecyclerView.Adapter<Retrieval
                 RetrievalDetailByDeptAdapter.this.activity.getProgressDialog().dismiss();
                 Toast.makeText(RetrievalDetailByDeptAdapter.this.activity, message, Toast.LENGTH_SHORT).show();
                 RetrievalDetailByDeptAdapter.this.activity.finish();
+                new RetrievalDetailActivity.UpdateRetrievalDetail(RetrievalDetailByDeptAdapter.this.retrievalId).execute();
             }
         }.execute();
+    }
+
+    public void update(List<RetrievalDetailByDept> retrievalDetailByDepts) {
+        this.retrievalDetailByDepts.clear();
+        this.retrievalDetailByDepts.addAll(retrievalDetailByDepts);
+        notifyDataSetChanged();
     }
 
     // Provide a reference to the views for each data item

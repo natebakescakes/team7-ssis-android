@@ -11,7 +11,6 @@ import java.util.List;
 
 import sg.edu.team7.stationeryshop.R;
 import sg.edu.team7.stationeryshop.activities.MainActivity;
-import sg.edu.team7.stationeryshop.fragments.StationeryRetrievalFragment;
 import sg.edu.team7.stationeryshop.util.JSONParser;
 
 public class Retrieval extends HashMap<String, Object> implements Serializable {
@@ -24,7 +23,7 @@ public class Retrieval extends HashMap<String, Object> implements Serializable {
         put("retrievalDetails", retrievalDetails);
     }
 
-    public static List<Retrieval> findAllRetrievals(StationeryRetrievalFragment fragment) throws JSONException {
+    public static List<Retrieval> findAllRetrievals() throws JSONException {
         JSONArray data = JSONParser.getJSONArrayFromUrl(MainActivity.getContext().getString(R.string.default_hostname) + "/api/retrievals");
 
         List<Retrieval> retrievals = new ArrayList<>();
@@ -39,7 +38,7 @@ public class Retrieval extends HashMap<String, Object> implements Serializable {
             List<RetrievalDetailByDept> retrievalDetails = new ArrayList<>();
 
             for (int j = 0; j < retrievalJson.getJSONArray("RetrievalDetails").length(); j++) {
-                JSONObject retrievalDetailJson = retrievalJson.getJSONArray("RetrievalDetails").getJSONObject(i);
+                JSONObject retrievalDetailJson = retrievalJson.getJSONArray("RetrievalDetails").getJSONObject(j);
 
                 RetrievalDetailByDept retrievalDetail = new RetrievalDetailByDept(
                         retrievalDetailJson.getString("Department"),
@@ -49,6 +48,7 @@ public class Retrieval extends HashMap<String, Object> implements Serializable {
                         retrievalDetailJson.getString("Bin"),
                         retrievalDetailJson.getString("Uom"),
                         retrievalDetailJson.getString("Status"),
+                        retrievalDetailJson.getString("RetrievalStatus"),
                         retrievalDetailJson.getInt("PlanQuantity"),
                         retrievalDetailJson.getInt("ActualQuantity")
                 );

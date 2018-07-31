@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -44,8 +45,9 @@ public class StationeryRetrievalFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    private List<Retrieval> retrievals;
-    private RetrievalAdapter mAdapter;
+    private static List<Retrieval> retrievals;
+    private static RetrievalAdapter mAdapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public StationeryRetrievalFragment() {
         // Required empty public constructor
@@ -111,46 +113,13 @@ public class StationeryRetrievalFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(getActivity(), RetrievalDetailActivity.class);
-                intent.putExtra("retrieval", retrievals.get(position));
+                intent.putExtra("retrievalId", retrievals.get(position).get("retrievalId").toString());
                 startActivity(intent);
             }
         });
         mRecyclerView.setAdapter(mAdapter);
 
-        new AsyncTask<Void, Void, List<Retrieval>>() {
-            @Override
-            protected List<Retrieval> doInBackground(Void... voids) {
-                try {
-                    return Retrieval.findAllRetrievals(StationeryRetrievalFragment.this);
-//                    List<RetrievalDetailByDept> details = new ArrayList<>();
-//
-//                    details.add(new RetrievalDetailByDept("English Dept", "ENGL", "E030", "Pilot G2 Pen - Black", "#10", "PCS", "Awaiting Picking", 20, 20));
-//                    details.add(new RetrievalDetailByDept("English Dept", "ENGL", "E031", "Pilot G2 Pen - Blue", "#11", "PCS", "Picked", 30, 20));
-//                    details.add(new RetrievalDetailByDept("Registra Dept", "ENGL", "E030", "Pilot G2 Pen - Black", "#10", "PCS", "Awaiting Picking", 20, 20));
-//
-//                    List<Retrieval> retrievals = new ArrayList<>();
-//
-//                    retrievals.add(new Retrieval("RET-201801-001", "Nathan Khoo", "2018-01-01", "Pending Retrieval", details));
-//
-//                    if (1 != 1)
-//                        throw new JSONException("Fake JSONException");
-//
-//                    return retrievals;
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(List<Retrieval> retrievals) {
-                if (retrievals != null) {
-                    StationeryRetrievalFragment.this.retrievals = retrievals;
-                    StationeryRetrievalFragment.this.mAdapter.update(retrievals);
-                }
-            }
-        }.execute();
+        new UpdateRetrievals().execute();
 
         // Set Button onClickListener
         allButton.setOnClickListener(new View.OnClickListener() {
@@ -200,6 +169,17 @@ public class StationeryRetrievalFragment extends Fragment {
             }
         });
 
+        // Set SwipeLayoutRefresh
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new UpdateRetrievals().execute();
+                if (mSwipeRefreshLayout.isRefreshing())
+                    mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
 
         // Inflate the layout for this fragment
         return view;
@@ -227,6 +207,26 @@ public class StationeryRetrievalFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public static class UpdateRetrievals extends AsyncTask<Void, Void, List<Retrieval>> {
+        @Override
+        protected void onPostExecute(List<Retrieval> retrievals) {
+            if (retrievals != null) {
+                StationeryRetrievalFragment.retrievals = retrievals;
+                StationeryRetrievalFragment.mAdapter.update(retrievals);
+            }
+        }
+
+        @Override
+        protected List<Retrieval> doInBackground(Void... voids) {
+            try {
+                return Retrieval.findAllRetrievals();
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
     }
 
     /**

@@ -9,6 +9,8 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:paddingTop="20dp">
 
         <android.support.design.widget.TextInputEditText
@@ -24,7 +26,9 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/detail_employee"
@@ -39,7 +43,9 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/detail_status"
@@ -55,7 +61,9 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/detail_remarks"
@@ -76,7 +84,9 @@
     <android.support.design.widget.TextInputLayout
         android:id="@+id/detail_layout_head_remarks"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/detail_head_remarks"

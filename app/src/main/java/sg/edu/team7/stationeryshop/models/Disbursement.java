@@ -38,7 +38,7 @@ public class Disbursement extends HashMap<String, Object> implements Serializabl
             List<DisbursementDetail> disbursementDetails = new ArrayList<>();
 
             for (int j = 0; j < disbursementJson.getJSONArray("DisbursementDetails").length(); j++) {
-                JSONObject disbursementDetailJson = disbursementJson.getJSONArray("DisbursementDetails").getJSONObject(i);
+                JSONObject disbursementDetailJson = disbursementJson.getJSONArray("DisbursementDetails").getJSONObject(j);
 
                 DisbursementDetail disbursementDetail = new DisbursementDetail(
                         disbursementDetailJson.getString("ItemCode"),
