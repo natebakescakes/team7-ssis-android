@@ -63,7 +63,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MainActivity" />
         </activity>
-        <activity android:name=".activities.New_SA_Item"></activity>
+        <activity android:name=".activities.AddStockAdjustmentDetailActivity" />
+        <activity android:name=".activities.NewStockAdjustmentActivity"></activity>
     </application>
 
 </manifest>

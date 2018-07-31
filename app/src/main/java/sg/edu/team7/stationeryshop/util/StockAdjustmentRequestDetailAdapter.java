@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import sg.edu.team7.stationeryshop.R;
+import sg.edu.team7.stationeryshop.activities.NewStockAdjustmentActivity;
 import sg.edu.team7.stationeryshop.activities.StockAdjustmentRequestDetailActivity;
 import sg.edu.team7.stationeryshop.models.StockAdjustmentRequestDetail;
 
@@ -22,6 +23,11 @@ public class StockAdjustmentRequestDetailAdapter extends RecyclerView.Adapter<St
     public StockAdjustmentRequestDetailAdapter(List<StockAdjustmentRequestDetail> stockAdjustmentDetails, StockAdjustmentRequestDetailActivity activity) {
         this.stockAdjustmentDetails = stockAdjustmentDetails;
         this.activity = activity;
+    }
+
+    public StockAdjustmentRequestDetailAdapter(List<StockAdjustmentRequestDetail> stockAdjustmentDetails,NewStockAdjustmentActivity activity) {
+        this.stockAdjustmentDetails = stockAdjustmentDetails;
+
     }
 
     // Create new views (invoked by the layout manager)

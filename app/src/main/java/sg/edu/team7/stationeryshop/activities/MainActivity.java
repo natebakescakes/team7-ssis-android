@@ -199,4 +199,12 @@ public class MainActivity extends AppCompatActivity
     public void onFragmentInteraction(String title) {
         getSupportActionBar().setTitle(title);
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+
+        super.onActivityResult(requestCode,resultCode,data);
+
+    }
 }

@@ -40,7 +40,7 @@ public class StockAdjustmentRequestDetailActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Stock Adjustment - " + stockAdjustment.get("stockAdjustmentId").toString());
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        // Set Disbursement Details
+        // Set Request Details
         TextInputEditText dateRequested = findViewById(R.id.detail_date);
         TextInputEditText employeeName = findViewById(R.id.detail_employee);
         TextInputEditText status = findViewById(R.id.detail_status);
