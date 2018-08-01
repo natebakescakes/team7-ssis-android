@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import sg.edu.team7.stationeryshop.R;
+import sg.edu.team7.stationeryshop.fragments.StockAdjustmentRequestsFragment;
 import sg.edu.team7.stationeryshop.models.StockAdjustmentRequestDetail;
 import sg.edu.team7.stationeryshop.util.JSONParser;
 import sg.edu.team7.stationeryshop.util.StockAdjustmentRequestDetailAdapter;
@@ -40,7 +41,7 @@ public class StockAdjustmentRequestDetailActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Stock Adjustment - " + stockAdjustment.get("stockAdjustmentId").toString());
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        // Set Request Details
+        // Set Disbursement Details
         TextInputEditText dateRequested = findViewById(R.id.detail_date);
         TextInputEditText employeeName = findViewById(R.id.detail_employee);
         TextInputEditText status = findViewById(R.id.detail_status);
@@ -121,6 +122,7 @@ public class StockAdjustmentRequestDetailActivity extends AppCompatActivity {
                         StockAdjustmentRequestDetailActivity.this.progressDialog.dismiss();
                         Toast.makeText(StockAdjustmentRequestDetailActivity.this, message, Toast.LENGTH_SHORT).show();
                         StockAdjustmentRequestDetailActivity.this.finish();
+                        new StockAdjustmentRequestsFragment.UpdateStockAdjustment().execute();
                     }
                 }.execute();
             }
@@ -166,13 +168,13 @@ public class StockAdjustmentRequestDetailActivity extends AppCompatActivity {
                         StockAdjustmentRequestDetailActivity.this.progressDialog.dismiss();
                         Toast.makeText(StockAdjustmentRequestDetailActivity.this, message, Toast.LENGTH_SHORT).show();
                         StockAdjustmentRequestDetailActivity.this.finish();
+                        new StockAdjustmentRequestsFragment.UpdateStockAdjustment().execute();
                     }
                 }.execute();
             }
         });
 
-        if (stockAdjustment.get("status").toString().equals("Approved") ||
-                stockAdjustment.get("status").toString().equals("Rejected")) {
+        if (!stockAdjustment.get("status").toString().equals("Pending Approval")) {
             approveButton.setEnabled(false);
             rejectButton.setEnabled(false);
         }

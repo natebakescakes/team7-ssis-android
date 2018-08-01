@@ -178,7 +178,7 @@ public class RetrievalDetailAdapter extends RecyclerView.Adapter<RetrievalDetail
             // create new retrievalDetail with item key
             String itemCode = retrievalDetailByDept.get("itemCode").toString();
             int planQuantity = Integer.parseInt(retrievalDetailByDept.get("planQuantity").toString());
-            int actualQuantity = Integer.parseInt(retrievalDetailByDept.get("actualQuantity").toString());
+            int actualQuanttiy = Integer.parseInt(retrievalDetailByDept.get("actualQuantity").toString());
 
             // if retrievalDetails contains retrievalDetail that has same itemCode key
             if (this.retrievalDetails.stream().filter(rd -> rd.get("itemCode").toString().equals(itemCode)).count() > 0) {
@@ -190,7 +190,7 @@ public class RetrievalDetailAdapter extends RecyclerView.Adapter<RetrievalDetail
                 int currentActualQuantity = Integer.parseInt(retrievalDetail.get("actualQuantity").toString());
                 // Add RetrievalDetailByDept quantity
                 retrievalDetail.put("planQuantity", currentPlanQuantity + planQuantity);
-                retrievalDetail.put("actualQuantity", currentActualQuantity + actualQuantity);
+                retrievalDetail.put("actualQuantity", currentActualQuantity + actualQuanttiy);
             } else {
                 this.retrievalDetails.add(new RetrievalDetail(
                         itemCode,
@@ -199,7 +199,7 @@ public class RetrievalDetailAdapter extends RecyclerView.Adapter<RetrievalDetail
                         retrievalDetailByDept.get("uom").toString(),
                         retrievalDetailByDept.get("status").toString(),
                         planQuantity,
-                        actualQuantity));
+                        actualQuanttiy));
             }
         });
         notifyDataSetChanged();

@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +35,8 @@ public class RequisitionDetailActivity extends AppCompatActivity {
 
         // Set Title
         requisition = (Map) getIntent().getSerializableExtra("requisition");
+
+        Log.i("REQUISITION", requisition.toString());
         getSupportActionBar().setTitle("Requisition - " + requisition.get("requisitionId").toString());
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -62,6 +65,9 @@ public class RequisitionDetailActivity extends AppCompatActivity {
 
         // Get Item Details
         List genericList = (List) requisition.get("requisitionDetails");
+
+        Log.i("GENERIC LIST", genericList.toString());
+
         List<RequisitionDetail> requisitionDetails = new ArrayList<>();
 
         genericList.forEach(x -> requisitionDetails.add(new RequisitionDetail(
@@ -77,6 +83,8 @@ public class RequisitionDetailActivity extends AppCompatActivity {
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
+
+        Log.i("REQUISITION DETAILS", requisitionDetails.toString());
 
         // use a linear layout manager
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -107,8 +115,7 @@ public class RequisitionDetailActivity extends AppCompatActivity {
             }
         });
 
-        if (requisition.get("status").toString().equals("Approved") ||
-                requisition.get("status").toString().equals("Rejected")) {
+        if (!requisition.get("status").toString().equals("Pending Approval")) {
             approveButton.setEnabled(false);
             rejectButton.setEnabled(false);
         }

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import sg.edu.team7.stationeryshop.R;
+import sg.edu.team7.stationeryshop.fragments.DisbursementFragment;
 import sg.edu.team7.stationeryshop.models.DisbursementDetail;
 import sg.edu.team7.stationeryshop.util.DisbursementDetailAdapter;
 import sg.edu.team7.stationeryshop.util.JSONParser;
@@ -77,8 +78,12 @@ public class DisbursementDetailActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
-        // Initialize FAB
+        // Initialize Collect Button
         Button collectButton = findViewById(R.id.confirm_collection_button);
+        if (disbursement.get("status").toString().equals("Items Collected"))
+            collectButton.setEnabled(false);
+
+
         collectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,6 +119,7 @@ public class DisbursementDetailActivity extends AppCompatActivity {
                     protected void onPostExecute(String message) {
                         progressDialog.dismiss();
                         Toast.makeText(DisbursementDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                        new DisbursementFragment.UpdateDisbursements().execute();
                         finish();
                     }
                 }.execute();

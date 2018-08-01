@@ -149,9 +149,8 @@ public class NewStockAdjustmentActivity extends AppCompatActivity {
 
                             }.execute();
 
-                        Toast.makeText(getApplicationContext(),"Stock Adjustment Request Submitted "+message, Toast.LENGTH_LONG);
+                        Toast.makeText(getApplicationContext(),"Stock Adjustment Request Submitted ", Toast.LENGTH_LONG).show();
                         finish();
-
 
                     }
 

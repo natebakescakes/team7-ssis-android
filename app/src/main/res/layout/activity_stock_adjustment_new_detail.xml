@@ -65,7 +65,7 @@
         android:id="@+id/add_btn"
         style="@android:style/Widget.Material.Button"
         android:layout_width="wrap_content"
-        android:layout_height="37dp"
+        android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/add_reason"
         android:layout_below="@+id/add_reason"
         android:text="@string/add"

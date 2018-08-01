@@ -2,11 +2,11 @@ package sg.edu.team7.stationeryshop.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -35,17 +35,12 @@ import sg.edu.team7.stationeryshop.util.JSONParser;
  * create an instance of this fragment.
  */
 public class DepartmentOptionsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private static List<Delegation> delegations;
     public DepartmentOptionsAdapter mAdapter;
     public ProgressDialog progressDialog;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private OnFragmentInteractionListener mListener;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerView mRecyclerView;
 
     public DepartmentOptionsFragment() {
         // Required empty public constructor
@@ -59,24 +54,20 @@ public class DepartmentOptionsFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment DepartmentOptionsFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static DepartmentOptionsFragment newInstance(String param1, String param2) {
         DepartmentOptionsFragment fragment = new DepartmentOptionsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public RecyclerView getmRecyclerView() {
+        return mRecyclerView;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -89,7 +80,7 @@ public class DepartmentOptionsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_department_options, container, false);
 
         // Initialize RecyclerView
-        RecyclerView mRecyclerView = view.findViewById(R.id.department_options_recycler_view);
+        mRecyclerView = view.findViewById(R.id.department_options_recycler_view);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -104,14 +95,18 @@ public class DepartmentOptionsFragment extends Fragment {
         // Initialize Progress Dialog
         progressDialog = new ProgressDialog(getContext());
 
-        return view;
-    }
+        // Set SwipeLayoutRefresh
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new DepartmentOptionsTask(mRecyclerView).execute();
+                if (mSwipeRefreshLayout.isRefreshing())
+                    mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
+        return view;
     }
 
     @Override
@@ -126,6 +121,14 @@ public class DepartmentOptionsFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+
+        super.onResume();
+        new DepartmentOptionsTask(mRecyclerView).execute();
+    }
+
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
@@ -138,6 +141,21 @@ public class DepartmentOptionsFragment extends Fragment {
         delegateDialogFragment.setEmployees(employees);
         delegateDialogFragment.show(fm, "fragment_edit_name");
     }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(String title);
+    }
+
 
     public class DepartmentOptionsTask extends AsyncTask<Void, Void, DepartmentOptions> {
 
@@ -212,21 +230,5 @@ public class DepartmentOptionsFragment extends Fragment {
                     DepartmentOptionsFragment.this);
             recyclerView.setAdapter(mAdapter);
         }
-    }
-
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(String title);
     }
 }

@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,16 +39,13 @@ public class RequisitionRequestFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    public static RequisitionAdapter mAdapter;
+    private static List<Requisition> requisitions;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
-
-    public static RequisitionAdapter mAdapter;
-
-    private static List<Requisition> requisitions;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public RequisitionRequestFragment() {
         // Required empty public constructor
@@ -112,31 +111,25 @@ public class RequisitionRequestFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(getActivity(), RequisitionDetailActivity.class);
+                Log.i("REQUISITION", requisitions.get(position).toString());
                 intent.putExtra("requisition", requisitions.get(position));
                 startActivity(intent);
             }
         });
         mRecyclerView.setAdapter(mAdapter);
 
-        new AsyncTask<Void, Void, List<Requisition>>() {
-            @Override
-            protected List<Requisition> doInBackground(Void... voids) {
-                try {
-                    return Requisition.findAllRequisitions();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
+        new UpdateRequisition().execute();
 
+        // Set SwipeLayoutRefresh
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            protected void onPostExecute(List<Requisition> requisitions) {
-                if (requisitions != null) {
-                    RequisitionRequestFragment.requisitions = requisitions;
-                    RequisitionRequestFragment.mAdapter.update(requisitions);
-                }
+            public void onRefresh() {
+                new UpdateRequisition().execute();
+                if (mSwipeRefreshLayout.isRefreshing())
+                    mSwipeRefreshLayout.setRefreshing(false);
             }
-        }.execute();
+        });
 
         // Set Button onClickListener
         allButton.setOnClickListener(new View.OnClickListener() {
@@ -186,7 +179,6 @@ public class RequisitionRequestFragment extends Fragment {
             }
         });
 
-
         // Inflate the layout for this fragment
         return view;
     }
@@ -220,5 +212,26 @@ public class RequisitionRequestFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(String title);
+    }
+
+    public static class UpdateRequisition extends AsyncTask<Void, Void, List<Requisition>> {
+
+        @Override
+        protected List<Requisition> doInBackground(Void... voids) {
+            try {
+                return Requisition.findAllRequisitions();
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<Requisition> requisitions) {
+            if (requisitions != null) {
+                RequisitionRequestFragment.requisitions = requisitions;
+                RequisitionRequestFragment.mAdapter.update(requisitions);
+            }
+        }
     }
 }

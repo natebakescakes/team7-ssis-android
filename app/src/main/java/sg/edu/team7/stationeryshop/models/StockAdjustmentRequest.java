@@ -14,7 +14,6 @@ import java.util.List;
 
 import sg.edu.team7.stationeryshop.R;
 import sg.edu.team7.stationeryshop.activities.MainActivity;
-import sg.edu.team7.stationeryshop.fragments.StockAdjustmentRequestsFragment;
 import sg.edu.team7.stationeryshop.util.JSONParser;
 
 public class StockAdjustmentRequest extends HashMap<String, Object> implements Serializable {
@@ -28,10 +27,10 @@ public class StockAdjustmentRequest extends HashMap<String, Object> implements S
         put("stockAdjustmentRequestDetails", stockAdjustmentRequestDetails);
     }
 
-    public static List<StockAdjustmentRequest> findAllStockAdjustments(StockAdjustmentRequestsFragment fragment) throws JSONException {
+    public static List<StockAdjustmentRequest> findAllStockAdjustments() throws JSONException {
         JSONObject emailJson = new JSONObject();
         emailJson.put("Email",
-                fragment.getContext().getSharedPreferences(MainActivity.getContext().getString(R.string.preference_file_key), Context.MODE_PRIVATE).getString("email", ""));
+                MainActivity.getContext().getSharedPreferences(MainActivity.getContext().getString(R.string.preference_file_key), Context.MODE_PRIVATE).getString("email", ""));
         Log.i("EMAIL", emailJson.getString("Email"));
         String result = JSONParser.postStream(
                 MainActivity.getContext().getString(R.string.default_hostname) + "/api/stockadjustment/supervisor",
@@ -49,7 +48,7 @@ public class StockAdjustmentRequest extends HashMap<String, Object> implements S
             List<StockAdjustmentRequestDetail> stockAdjustmentDetails = new ArrayList<>();
 
             for (int j = 0; j < stockAdjustmentJson.getJSONArray("StockAdjustmentRequestDetails").length(); j++) {
-                JSONObject stockAdjustmentDetailJson = stockAdjustmentJson.getJSONArray("StockAdjustmentRequestDetails").getJSONObject(i);
+                JSONObject stockAdjustmentDetailJson = stockAdjustmentJson.getJSONArray("StockAdjustmentRequestDetails").getJSONObject(j);
 
                 StockAdjustmentRequestDetail stockAdustmentDetail = new StockAdjustmentRequestDetail(
                         stockAdjustmentDetailJson.getString("ItemCode"),

@@ -109,11 +109,10 @@ public class ApproveRequisitionDialogFragment extends DialogFragment {
                         RequisitionDetailActivity.progressDialog.dismiss();
                         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                         getActivity().finish();
+                        new RequisitionRequestFragment.UpdateRequisition().execute();
                     }
                 }.execute();
             }
         });
-
-
     }
 }

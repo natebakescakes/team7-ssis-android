@@ -6,9 +6,16 @@
     android:orientation="vertical"
     tools:context=".fragments.DepartmentOptionsFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/department_options_recycler_view"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal" />
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/department_options_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 </LinearLayout>

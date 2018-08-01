@@ -93,19 +93,20 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
 
         // Fill Navigation Menu Items based on Roles
-        if (roles.contains("Employee") || roles.contains("DepartmentHead")) {
+        if (roles.contains("Admin")) {
             navigationView.getMenu().clear();
-            navigationView.inflateMenu(R.menu.activity_main_department_drawer);
-        } else if (roles.contains("StoreClerk")) {
-            navigationView.getMenu().clear();
-            navigationView.inflateMenu(R.menu.activity_main_store_drawer);
+            navigationView.inflateMenu(R.menu.activity_main_admin_drawer);
         } else if (roles.contains("StoreSupervisor") || roles.contains("StoreManager")) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_main_manager_drawer);
-        } else {
+        } else if (roles.contains("StoreClerk")) {
             navigationView.getMenu().clear();
-            navigationView.inflateMenu(R.menu.activity_main_admin_drawer);
+            navigationView.inflateMenu(R.menu.activity_main_store_drawer);
+        } else if (roles.contains("DepartmentHead")) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.activity_main_department_drawer);
         }
+
         navigationView.setNavigationItemSelectedListener(this);
 
         // Show email address of logged in user
@@ -157,7 +158,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_disbursements) {
             fragmentClass = DisbursementFragment.class;
         } else if (id == R.id.nav_make_stock_adjustments) {
-            fragmentClass = MakeStockAdjustmentFragment.class;
+            fragmentClass = StockAdjustmentRequestsFragment.class;
         } else if (id == R.id.nav_requisition_request) {
             fragmentClass = RequisitionRequestFragment.class;
         } else if (id == R.id.nav_department_options) {
