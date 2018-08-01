@@ -29,7 +29,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // ...
 
         // TODO(developer): Handle FCM messages here.
-        this.sendNotification(remoteMessage.getNotification().getBody());
+        this.sendNotification(remoteMessage.getNotification().getBody(),remoteMessage.getNotification().getTitle());
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
@@ -74,7 +74,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "Short lived task is done.");
     }
 
-    private void sendNotification(String messageBody) {
+    private void sendNotification(String messageBody, String messageTitle) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
@@ -86,7 +86,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Notification.Builder notificationBuilder =
                 new Notification.Builder(this)
                         .setSmallIcon(R.drawable.ic_widgets_primary_24dp)
-                        .setContentTitle("FCM Message")
+                        .setContentTitle(messageTitle)
                          .setContentText(messageBody)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)

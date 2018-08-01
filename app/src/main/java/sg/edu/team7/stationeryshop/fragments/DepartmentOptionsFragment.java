@@ -124,7 +124,8 @@ public class DepartmentOptionsFragment extends Fragment {
     public void onResume() {
 
         super.onResume();
-        new DepartmentOptionsTask(mRecyclerView).execute();
+       // mAdapter.notifyDataSetChanged();
+       new DepartmentOptionsTask(mRecyclerView).execute();
     }
 
 
@@ -229,6 +230,9 @@ public class DepartmentOptionsFragment extends Fragment {
                             employees),
                     DepartmentOptionsFragment.this);
             recyclerView.setAdapter(mAdapter);
+
         }
+
+
     }
 }

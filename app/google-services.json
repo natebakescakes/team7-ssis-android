@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "317099332510",
+    "firebase_url": "https://team7-ssis-android.firebaseio.com",
+    "project_id": "team7-ssis-android",
+    "storage_bucket": "team7-ssis-android.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:317099332510:android:edfeb6b9276e2551",
+        "android_client_info": {
+          "package_name": "sg.edu.team7.stationeryshop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "317099332510-9uvbu7ah0kr66a1c8ej9512m013b70cg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "sg.edu.team7.stationeryshop",
+            "certificate_hash": "7e9df595b8b420863e322910b2900fb807573c68"
+          }
+        },
+        {
+          "client_id": "317099332510-te4ea3ssb93urs2u7g1hki0fpu3n8r51.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmVlWHMG7fNy8k0StfkKpvXZY5bx6M7sk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "317099332510-te4ea3ssb93urs2u7g1hki0fpu3n8r51.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
