@@ -1,15 +1,13 @@
 package sg.edu.team7.stationeryshop.activities;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,11 +15,12 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.DataOutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,13 +29,15 @@ import java.util.Locale;
 import sg.edu.team7.stationeryshop.R;
 import sg.edu.team7.stationeryshop.models.StockAdjustmentRequestDetail;
 import sg.edu.team7.stationeryshop.util.JSONParser;
+import sg.edu.team7.stationeryshop.util.RetrievalDetailAdapter;
 import sg.edu.team7.stationeryshop.util.StockAdjustmentRequestDetailAdapter;
 
 public class NewStockAdjustmentActivity extends AppCompatActivity {
 
-    private static StockAdjustmentRequestDetailAdapter saAdapter;
+    private StockAdjustmentRequestDetailAdapter saAdapter;
     private static int mRequestCode = 1;
     private static String userName;
+    private static String message;
 
 
     //List of Stock Adjustment Details
@@ -93,12 +94,65 @@ public class NewStockAdjustmentActivity extends AppCompatActivity {
                 if(saDetails.size()==0){
                     Toast.makeText(getApplicationContext(), "Please add Item to this Stock Adjustment Request",
                             Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
+                }
                 else
                     {
-                        sendDetails(saDetails);
+
+                        new AsyncTask<Void, Void, String>() {
+                            @Override
+                            protected String doInBackground(Void... voids) {
+                                JSONArray jsonArray = new JSONArray();
+
+
+                                try{
+                                    for(StockAdjustmentRequestDetail r : saDetails)
+                                    {
+                                        JSONObject detail = new JSONObject();
+                                        detail.put("ItemCode",r.get("itemCode"));
+                                        detail. put("OriginalQuantity", r.get("originalQuantity"));
+                                        detail.put("AfterQuantity", r.get("afterQuantity"));
+                                        detail.put("Reason",r.get("reason"));
+                                        detail.put("UserName",userName);
+
+                                        jsonArray.put(detail);
+                                    }
+
+                                   message = JSONParser.postStream(
+                                            MainActivity.getContext().getString(R.string.default_hostname) + "/api/stockadjustment/mobile/save",
+                                            jsonArray.toString()
+                                    );
+
+
+
+                                    return message;
+                                }
+                                catch (Exception e){
+                                    e.printStackTrace();
+
+                                }
+
+                                return "Unknown error";
+
+                                }
+
+                            @Override
+                            protected void onPostExecute(String s) {
+                                super.onPostExecute(s);
+                            }
+
+                            @Override
+                            protected void onPreExecute() {
+                                super.onPreExecute();
+                            }
+
+
+                            }.execute();
+
+                        Toast.makeText(getApplicationContext(),"Stock Adjustment Request Submitted "+message, Toast.LENGTH_LONG);
+                        finish();
+
+
                     }
 
                 }
@@ -127,30 +181,5 @@ public class NewStockAdjustmentActivity extends AppCompatActivity {
 
     }
 
-    public String sendDetails(List<StockAdjustmentRequestDetail> list) {
-        List<StockAdjustmentRequestDetail> ObjList = new ArrayList<>();
-
-        for (StockAdjustmentRequestDetail detail:list) {
-            ObjList.add(new StockAdjustmentRequestDetail(
-                    detail.get("itemCode"),
-                    detail.get("itemName"),
-                    detail.get("originalQuantity"),
-                    detail.get("afterQuantity"),
-                    detail.get("reason"),
-                    userName
-                    ));
-
-        }
-        String url = MainActivity.getContext().getString(R.string.default_hostname)+"/api/stockadjustment/mobile/save";
-
-        String json = new Gson().toJson(ObjList);
-
-        JSONParser.postStream(url, json);
-        Log.i("JSONOutput",  json);
-
-        return json;
-
-    }
-
-
 }
+
