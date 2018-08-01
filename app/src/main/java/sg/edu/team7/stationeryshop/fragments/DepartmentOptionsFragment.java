@@ -121,6 +121,15 @@ public class DepartmentOptionsFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+
+        super.onResume();
+       // mAdapter.notifyDataSetChanged();
+       new DepartmentOptionsTask(mRecyclerView).execute();
+    }
+
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
@@ -147,6 +156,7 @@ public class DepartmentOptionsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(String title);
     }
+
 
     public class DepartmentOptionsTask extends AsyncTask<Void, Void, DepartmentOptions> {
 
@@ -220,6 +230,10 @@ public class DepartmentOptionsFragment extends Fragment {
                             employees),
                     DepartmentOptionsFragment.this);
             recyclerView.setAdapter(mAdapter);
+
+        }
+
+
         }
     }
 }

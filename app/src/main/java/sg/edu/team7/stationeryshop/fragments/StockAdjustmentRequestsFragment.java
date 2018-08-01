@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +22,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import sg.edu.team7.stationeryshop.R;
+import sg.edu.team7.stationeryshop.activities.AddStockAdjustmentDetailActivity;
+import sg.edu.team7.stationeryshop.activities.NewStockAdjustmentActivity;
 import sg.edu.team7.stationeryshop.activities.StockAdjustmentRequestDetailActivity;
 import sg.edu.team7.stationeryshop.models.StockAdjustmentRequest;
 import sg.edu.team7.stationeryshop.util.StockAdjustmentRequestAdapter;
@@ -92,6 +95,7 @@ public class StockAdjustmentRequestsFragment extends Fragment {
         Button pendingButton = view.findViewById(R.id.button_pending);
         allButton.setEnabled(false);
         pendingButton.setEnabled(true);
+        FloatingActionButton fab = view.findViewById(R.id.new_sa);
 
         // Initialize Requisition;
         stockAdjustmentRequests = new ArrayList<>();
@@ -138,6 +142,17 @@ public class StockAdjustmentRequestsFragment extends Fragment {
                         .collect(Collectors.toList()));
             }
         });
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), NewStockAdjustmentActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
+
 
         // Initialize SearchView
         SearchView searchView = view.findViewById(R.id.search_view);
@@ -191,6 +206,13 @@ public class StockAdjustmentRequestsFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        new UpdateStockAdjustment().execute();
+
     }
 
     @Override

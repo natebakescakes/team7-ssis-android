@@ -1,5 +1,6 @@
 package sg.edu.team7.stationeryshop.util;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -8,6 +9,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,6 +17,9 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
+
+import static java.net.Proxy.Type.HTTP;
 
 public class JSONParser {
 
@@ -106,6 +111,31 @@ public class JSONParser {
             e.printStackTrace();
         }
         return (sb.toString());
+    }
+
+    @NonNull
+    public static String postStream2(String url, String data){
+
+        try {
+            URL u = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) u.openConnection();
+            con.setDoOutput(true);
+            con.setDoInput(true);
+            con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+            con.setRequestMethod("POST");
+
+            DataOutputStream localDataOutputStream = new DataOutputStream(con.getOutputStream());
+            localDataOutputStream.writeBytes(data);
+            localDataOutputStream.flush();
+            localDataOutputStream.close();
+        }
+        catch (Exception e)
+        {
+            Log.i("SubmitError", e.toString());
+            return "Submit failed";
+
+        }
+        return "Submitted";
     }
 
 }

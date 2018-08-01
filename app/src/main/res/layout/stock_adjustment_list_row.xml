@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+
+    <TextView
+        android:id="@+id/sa_item_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop = "true"
+        android:text="POO6"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/sa_reason"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sa_item_code"
+        android:text="Items Broken"
+        android:textSize="12sp"
+        android:textStyle="italic" />
+
+    <TextView
+        android:id="@+id/sa_quantity"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/detail_description"
+        android:text="5"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/sa_type"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_alignTop="@+id/detail_description"
+        android:layout_toStartOf="@+id/sa_quantity"
+        android:paddingRight="5dp"
+        android:text="-"
+        android:textSize="18sp" />
+
+</RelativeLayout>
