@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import java.util.Set;
 
 import sg.edu.team7.stationeryshop.R;
@@ -113,6 +115,9 @@ public class MainActivity extends AppCompatActivity
         View headerView = navigationView.getHeaderView(0);
         TextView navEmail = headerView.findViewById(R.id.textView);
         navEmail.setText(getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", "no email"));
+
+        //Show app token for firebase
+        System.out.println("MainActivityOnCreate: "+ FirebaseInstanceId.getInstance().getToken());
     }
 
     @Override

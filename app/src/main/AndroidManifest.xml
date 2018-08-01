@@ -12,6 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+
+        <!-- [START fcm_default_channel] -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id"/>
+        <!-- [END fcm_default_channel] -->
+
         <activity
             android:name=".activities.LoginActivity"
             android:label="@string/title_activity_login">
@@ -80,6 +87,22 @@
 
         <activity android:name=".activities.AddStockAdjustmentDetailActivity" />
         <activity android:name=".activities.NewStockAdjustmentActivity"></activity>
+
+        <service
+            android:name=".services.MyFirebaseInstanceIdService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+        <service android:name=".services.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".services.MyJobService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
