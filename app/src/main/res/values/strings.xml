@@ -95,17 +95,18 @@
     <string name="pref_title_system_sync_settings">System sync settings</string>
 
     <!-- Example settings for Notifications -->
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="pref_header_notifications">Notifications</string>
-
     <string name="pref_title_new_message_notifications">New message notifications</string>
-
     <string name="pref_title_ringtone">Ringtone</string>
     <string name="pref_ringtone_silent">Silent</string>
-
     <string name="pref_title_vibrate">Vibrate</string>
+
+
     <string name="menu_option_1">Settings</string>
-    <string name="default_hostname">http://stationeryshopdebug.azurewebsites.net/</string>
-    <!--<string name="default_hostname">http://172.17.185.218/StationeryShop</string>-->
+    <!--<string name="default_hostname">http://stationeryshopdebug.azurewebsites.net/</string>-->
+    <string name="default_hostname">http://172.17.107.161/StationeryShop</string>
+    <!--   <string name="default_hostname">http://172.17.185.218/StationeryShop</string>-->
     <string name="pref_title_hostname">Hostname</string>
     <string name="radio_button_active">Active</string>
     <string name="radio_button_all">All</string>
@@ -139,4 +140,14 @@
     <string name="confirm_retrieval">Confirm Retrieval</string>
     <string name="label_item_name">Item Name</string>
     <string name="label_bin">Bin</string>
+
+    <!--strings for Make Stock Adjustment-->
+    <string name="add_item">Add Item</string>
+    <string name="item_code">Item Code</string>
+    <string name="item_name">Item Name</string>
+    <string name="reason">Reason</string>
+    <string name="submit">Submit</string>
+    <string name="add">Add</string>
+
+
 </resources>
