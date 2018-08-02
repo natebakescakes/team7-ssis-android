@@ -124,8 +124,8 @@ public class DepartmentOptionsFragment extends Fragment {
     public void onResume() {
 
         super.onResume();
-       // mAdapter.notifyDataSetChanged();
-       new DepartmentOptionsTask(mRecyclerView).execute();
+        // mAdapter.notifyDataSetChanged();
+        new DepartmentOptionsTask(mRecyclerView).execute();
     }
 
 
