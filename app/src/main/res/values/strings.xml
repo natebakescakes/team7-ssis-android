@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Stationery Shop</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_login">Stationery Shop</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -16,7 +16,8 @@
     </string>
     <string name="stationery_retrievals">Stationery Retrievals</string>
     <string name="disbursements">Disbursements</string>
-    <string name="stock_adjustments">Stock Adjustments</string>
+    <string name="stock_adjustment_requests">Stock Adjustment Requests</string>
+    <string name="make_stock_adjustments">Make Stock Adjustment</string>
     <string name="logout">Logout</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -101,7 +102,6 @@
     <string name="pref_ringtone_silent">Silent</string>
     <string name="pref_title_vibrate">Vibrate</string>
 
-
     <string name="menu_option_1">Settings</string>
     <string name="default_hostname">http://stationeryshopdebug.azurewebsites.net/</string>
     <!--<string name="default_hostname">http://172.17.107.161/StationeryShop</string>-->
@@ -147,8 +147,7 @@
     <string name="reason">Reason</string>
     <string name="submit">Submit</string>
     <string name="add">Add</string>
-    <string name="make_stock_adjustments">Make Stock Adjustments</string>
-    <string name="stock_adjustment_requests">Stock Adjustment Requests</string>
+
 
 
 </resources>
