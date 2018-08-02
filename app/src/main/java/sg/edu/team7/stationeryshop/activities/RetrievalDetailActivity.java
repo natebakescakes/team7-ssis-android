@@ -76,8 +76,8 @@ public class RetrievalDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(RetrievalDetailActivity.this);
-                builder.setTitle(R.string.app_name);
-                builder.setMessage("Are you sure you want to Confirm Collection?");
+                builder.setTitle("Confirm Retrieval");
+                builder.setMessage("Are you sure you want to Confirm Retrieval?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();

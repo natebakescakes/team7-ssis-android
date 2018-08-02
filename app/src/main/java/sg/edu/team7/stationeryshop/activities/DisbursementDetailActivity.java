@@ -90,7 +90,7 @@ public class DisbursementDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(DisbursementDetailActivity.this);
-                builder.setTitle(R.string.app_name);
+                builder.setTitle("Confirm Collection");
                 builder.setMessage("Are you sure you want to Confirm Collection?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
