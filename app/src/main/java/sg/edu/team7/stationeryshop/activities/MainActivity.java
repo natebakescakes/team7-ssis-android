@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity
         navEmail.setText(getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", "no email"));
 
         //Show app token for firebase
-        System.out.println("MainActivityOnCreate: "+ FirebaseInstanceId.getInstance().getToken());
+        System.out.println("FCM token: "+ FirebaseInstanceId.getInstance().getToken());
     }
 
     @Override
