@@ -25,6 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/detail_description"
                 android:layout_below="@+id/detail_description"
+                android:visibility="gone"
                 android:text="E030"
                 android:textSize="12sp"
                 android:textStyle="italic" />

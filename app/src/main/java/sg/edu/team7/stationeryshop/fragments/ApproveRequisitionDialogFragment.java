@@ -1,5 +1,7 @@
 package sg.edu.team7.stationeryshop.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -73,45 +75,60 @@ public class ApproveRequisitionDialogFragment extends DialogFragment {
         approveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AsyncTask<Void, Void, String>() {
-                    @Override
-                    protected String doInBackground(Void... voids) {
-                        JSONObject requisitionId = new JSONObject();
-                        try {
-                            requisitionId.put("RequisitionId", RequisitionDetailActivity.requisition.get("requisitionId").toString());
-                            requisitionId.put("Email", getActivity().getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
-                            requisitionId.put("Remarks", editText.getText().toString());
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Approve Requisition");
+                builder.setMessage("Are you sure you want to approve this requisition?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        new AsyncTask<Void, Void, String>() {
+                            @Override
+                            protected String doInBackground(Void... voids) {
+                                JSONObject requisitionId = new JSONObject();
+                                try {
+                                    requisitionId.put("RequisitionId", RequisitionDetailActivity.requisition.get("requisitionId").toString());
+                                    requisitionId.put("Email", getActivity().getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
+                                    requisitionId.put("Remarks", editText.getText().toString());
 
-                            String message = JSONParser.postStream(
-                                    MainActivity.getContext().getString(R.string.default_hostname) + "/api/requisition/approve",
-                                    requisitionId.toString()
-                            );
+                                    String message = JSONParser.postStream(
+                                            MainActivity.getContext().getString(R.string.default_hostname) + "/api/requisition/approve",
+                                            requisitionId.toString()
+                                    );
 
-                            JSONObject result = new JSONObject(message);
+                                    JSONObject result = new JSONObject(message);
 
-                            return result.getString("Message");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                                    return result.getString("Message");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
 
-                        return "Unknown error";
+                                return "Unknown error";
+                            }
+
+                            @Override
+                            protected void onPreExecute() {
+                                super.onPreExecute();
+                                RequisitionDetailActivity.progressDialog.setTitle("Approving requisition");
+                                RequisitionDetailActivity.progressDialog.show();
+                            }
+
+                            @Override
+                            protected void onPostExecute(String message) {
+                                RequisitionDetailActivity.progressDialog.dismiss();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                                getActivity().finish();
+                                new RequisitionRequestFragment.UpdateRequisition().execute();
+                            }
+                        }.execute();
                     }
-
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        RequisitionDetailActivity.progressDialog.setTitle("Approving requisition");
-                        RequisitionDetailActivity.progressDialog.show();
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
                     }
-
-                    @Override
-                    protected void onPostExecute(String message) {
-                        RequisitionDetailActivity.progressDialog.dismiss();
-                        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-                        getActivity().finish();
-                        new RequisitionRequestFragment.UpdateRequisition().execute();
-                    }
-                }.execute();
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
             }
         });
     }

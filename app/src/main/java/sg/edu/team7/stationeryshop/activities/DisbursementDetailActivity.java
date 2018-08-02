@@ -1,6 +1,8 @@
 package sg.edu.team7.stationeryshop.activities;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
@@ -87,42 +89,58 @@ public class DisbursementDetailActivity extends AppCompatActivity {
         collectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AsyncTask<Void, Void, String>() {
-                    @Override
-                    protected String doInBackground(Void... voids) {
-                        JSONObject disbursementId = new JSONObject();
-                        try {
-                            disbursementId.put("DisbursementId", disbursement.get("disbursementId").toString());
+                AlertDialog.Builder builder = new AlertDialog.Builder(DisbursementDetailActivity.this);
+                builder.setTitle("Confirm Collection");
+                builder.setMessage("Are you sure you want to Confirm Collection?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        new AsyncTask<Void, Void, String>() {
+                            @Override
+                            protected String doInBackground(Void... voids) {
+                                JSONObject disbursementId = new JSONObject();
+                                try {
+                                    disbursementId.put("DisbursementId", disbursement.get("disbursementId").toString());
 
-                            String message = JSONParser.postStream(
-                                    MainActivity.getContext().getString(R.string.default_hostname) + "/api/disbursement/collect",
-                                    disbursementId.toString()
-                            );
+                                    String message = JSONParser.postStream(
+                                            MainActivity.getContext().getString(R.string.default_hostname) + "/api/disbursement/collect",
+                                            disbursementId.toString()
+                                    );
 
-                            JSONObject result = new JSONObject(message);
+                                    JSONObject result = new JSONObject(message);
 
-                            return result.getString("Message");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                                    return result.getString("Message");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
 
-                        return "Unknown error";
+                                return "Unknown error";
+                            }
+
+                            @Override
+                            protected void onPreExecute() {
+                                super.onPreExecute();
+                                progressDialog.show();
+                            }
+
+                            @Override
+                            protected void onPostExecute(String message) {
+                                progressDialog.dismiss();
+                                Toast.makeText(DisbursementDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                                new DisbursementFragment.UpdateDisbursements().execute();
+                                finish();
+                            }
+                        }.execute();
                     }
-
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        progressDialog.show();
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
                     }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
 
-                    @Override
-                    protected void onPostExecute(String message) {
-                        progressDialog.dismiss();
-                        Toast.makeText(DisbursementDetailActivity.this, message, Toast.LENGTH_SHORT).show();
-                        new DisbursementFragment.UpdateDisbursements().execute();
-                        finish();
-                    }
-                }.execute();
             }
         });
 

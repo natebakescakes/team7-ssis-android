@@ -1,5 +1,7 @@
 package sg.edu.team7.stationeryshop.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -91,50 +93,63 @@ public class DelegateDialogFragment extends DialogFragment {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AsyncTask<Void, Void, String>() {
-                    @Override
-                    protected String doInBackground(Void... voids) {
-                        JSONObject delegation = new JSONObject();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Delegate Manager Role");
+                builder.setMessage("Are you sure you want to Delegate Manager Role");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        new AsyncTask<Void, Void, String>() {
+                            @Override
+                            protected String doInBackground(Void... voids) {
+                                JSONObject delegation = new JSONObject();
 
-                        try {
-                            delegation.put("RecipientEmail", employees.get(spinner.getSelectedItemPosition() - 1).get("email"));
-                            delegation.put("HeadEmail", getActivity().getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
-                            delegation.put("StartDate", calendar.getSelectedDates().get(0).toString());
-                            delegation.put("EndDate", calendar.getSelectedDates().get(calendar.getSelectedDates().size() - 1).toString());
+                                try {
+                                    delegation.put("RecipientEmail", employees.get(spinner.getSelectedItemPosition() - 1).get("email"));
+                                    delegation.put("HeadEmail", getActivity().getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
+                                    delegation.put("StartDate", calendar.getSelectedDates().get(0).toString());
+                                    delegation.put("EndDate", calendar.getSelectedDates().get(calendar.getSelectedDates().size() - 1).toString());
 
-                            String message = JSONParser.postStream(
-                                    MainActivity.getContext().getString(R.string.default_hostname) + "/api/departmentoptions/delegate",
-                                    delegation.toString()
-                            );
+                                    String message = JSONParser.postStream(
+                                            MainActivity.getContext().getString(R.string.default_hostname) + "/api/departmentoptions/delegate",
+                                            delegation.toString()
+                                    );
 
-                            JSONObject result = new JSONObject(message);
+                                    JSONObject result = new JSONObject(message);
 
-                            return result.getString("Message");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                                    return result.getString("Message");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
 
-                        return "Unknown error";
+                                return "Unknown error";
+                            }
+
+                            @Override
+                            protected void onPreExecute() {
+                                super.onPreExecute();
+                                callingFragment.progressDialog.setTitle("Delegating manager role...");
+                                callingFragment.progressDialog.show();
+                            }
+
+                            @Override
+                            protected void onPostExecute(String message) {
+                                callingFragment.progressDialog.dismiss();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                                getDialog().dismiss();
+                            }
+                        }.execute();
                     }
-
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        callingFragment.progressDialog.setTitle("Delegating manager role...");
-                        callingFragment.progressDialog.show();
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
                     }
-
-                    @Override
-                    protected void onPostExecute(String message) {
-                        callingFragment.progressDialog.dismiss();
-                        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-                        getDialog().dismiss();
-                    }
-                }.execute();
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
             }
         });
-
-
     }
 
     public void setEmployees(List<Employee> employees) {
