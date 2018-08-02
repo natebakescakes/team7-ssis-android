@@ -104,6 +104,7 @@ public class DepartmentOptionsAdapter extends RecyclerView.Adapter<RecyclerView.
                                             fragment.progressDialog.dismiss();
                                             Toast.makeText(fragment.getContext(), message, Toast.LENGTH_SHORT).show();
                                             dialog.dismiss();
+
                                         }
                                     }.execute();
                                     // Change Representative

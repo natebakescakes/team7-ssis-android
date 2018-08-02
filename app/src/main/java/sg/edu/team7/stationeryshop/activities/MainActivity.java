@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import java.util.Set;
 
 import sg.edu.team7.stationeryshop.R;
@@ -113,6 +115,9 @@ public class MainActivity extends AppCompatActivity
         View headerView = navigationView.getHeaderView(0);
         TextView navEmail = headerView.findViewById(R.id.textView);
         navEmail.setText(getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", "no email"));
+
+        //Show app token for firebase
+        System.out.println("MainActivityOnCreate: "+ FirebaseInstanceId.getInstance().getToken());
     }
 
     @Override
@@ -158,7 +163,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_disbursements) {
             fragmentClass = DisbursementFragment.class;
         } else if (id == R.id.nav_make_stock_adjustments) {
-            fragmentClass = MakeStockAdjustmentFragment.class;
+            fragmentClass = StockAdjustmentRequestsFragment.class;
         } else if (id == R.id.nav_requisition_request) {
             fragmentClass = RequisitionRequestFragment.class;
         } else if (id == R.id.nav_department_options) {
@@ -199,5 +204,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(String title) {
         getSupportActionBar().setTitle(title);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+
+        super.onActivityResult(requestCode,resultCode,data);
+
     }
 }

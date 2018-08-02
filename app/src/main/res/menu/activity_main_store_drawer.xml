@@ -14,9 +14,10 @@
                 android:icon="@drawable/ic_menu_gallery"
                 android:title="@string/disbursements" />
             <item
-                android:id="@+id/nav_make_stock_adjustments"
+                android:id="@+id/nav_stock_adjustment_requests"
                 android:icon="@drawable/ic_menu_gallery"
                 android:title="@string/make_stock_adjustments" />
+
         </menu>
     </item>
 
