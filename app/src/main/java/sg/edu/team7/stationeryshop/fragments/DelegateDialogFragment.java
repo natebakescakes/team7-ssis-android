@@ -94,7 +94,7 @@ public class DelegateDialogFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Change Representative");
+                builder.setTitle("Delegate Manager Role");
                 builder.setMessage("Are you sure you want to Delegate Manager Role");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {

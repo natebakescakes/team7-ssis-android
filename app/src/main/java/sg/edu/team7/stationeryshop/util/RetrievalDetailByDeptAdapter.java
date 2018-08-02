@@ -1,6 +1,9 @@
 package sg.edu.team7.stationeryshop.util;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
@@ -19,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sg.edu.team7.stationeryshop.R;
+import sg.edu.team7.stationeryshop.activities.NewStockAdjustmentActivity;
 import sg.edu.team7.stationeryshop.activities.RetrievalDetailActivity;
 import sg.edu.team7.stationeryshop.activities.RetrievalDetailByDeptActivity;
 import sg.edu.team7.stationeryshop.models.RetrievalDetailByDept;
@@ -80,69 +84,89 @@ public class RetrievalDetailByDeptAdapter extends RecyclerView.Adapter<Retrieval
     }
 
     public void updateActualQuantity() {
-        new AsyncTask<Void, Void, String>() {
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                RetrievalDetailByDeptAdapter.this.activity.getProgressDialog().setTitle("Updating actual quantity...");
-                RetrievalDetailByDeptAdapter.this.activity.getProgressDialog().show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("Make Stock Adjustment");
+        builder.setMessage("Would you want to create a new Stock Adjustment Request?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                new UpdateActualQuantityTask().execute();
+                dialog.dismiss();
+                Intent intent = new Intent(activity, NewStockAdjustmentActivity.class);
+                activity.startActivity(intent);
             }
-
-            @Override
-            protected String doInBackground(Void... voids) {
-                JSONObject updateActualQuantity = new JSONObject();
-
-                try {
-                    updateActualQuantity.put("RetrievalId", activity.getRetrievalId());
-                    updateActualQuantity.put("Email", activity.getSharedPreferences(activity.getString(R.string.preference_file_key), Context.MODE_PRIVATE).getString("email", ""));
-                    updateActualQuantity.put("ItemCode", activity.getItemCode());
-
-                    JSONArray departmentDetails = new JSONArray();
-
-                    views.forEach(view -> {
-                        JSONObject departmentDetail = new JSONObject();
-                        try {
-                            departmentDetail.put("DeptId", view.departmentCode.getText().toString());
-                            departmentDetail.put("Actual", view.actualQuantity.getText().toString());
-                            departmentDetails.put(departmentDetail);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    });
-
-                    updateActualQuantity.put("RetrievalDetails", departmentDetails);
-
-                    String message = JSONParser.postStream(
-                            RetrievalDetailByDeptAdapter.this.activity.getString(R.string.default_hostname) + "/api/retrieval/updatequantity",
-                            updateActualQuantity.toString()
-                    );
-
-                    JSONObject result = new JSONObject(message);
-
-                    return result.getString("Message");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                return "Unknown error";
-            }
-
-            @Override
-            protected void onPostExecute(String message) {
-                super.onPostExecute(message);
-                RetrievalDetailByDeptAdapter.this.activity.getProgressDialog().dismiss();
-                Toast.makeText(RetrievalDetailByDeptAdapter.this.activity, message, Toast.LENGTH_SHORT).show();
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                new UpdateActualQuantityTask().execute();
+                dialog.dismiss();
                 RetrievalDetailByDeptAdapter.this.activity.finish();
                 new RetrievalDetailActivity.UpdateRetrievalDetail(RetrievalDetailByDeptAdapter.this.retrievalId).execute();
             }
-        }.execute();
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     public void update(List<RetrievalDetailByDept> retrievalDetailByDepts) {
         this.retrievalDetailByDepts.clear();
         this.retrievalDetailByDepts.addAll(retrievalDetailByDepts);
         notifyDataSetChanged();
+    }
+
+    public class UpdateActualQuantityTask extends AsyncTask<Void, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            RetrievalDetailByDeptAdapter.this.activity.getProgressDialog().setTitle("Updating actual quantity...");
+            RetrievalDetailByDeptAdapter.this.activity.getProgressDialog().show();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            JSONObject updateActualQuantity = new JSONObject();
+
+            try {
+                updateActualQuantity.put("RetrievalId", activity.getRetrievalId());
+                updateActualQuantity.put("Email", activity.getSharedPreferences(activity.getString(R.string.preference_file_key), Context.MODE_PRIVATE).getString("email", ""));
+                updateActualQuantity.put("ItemCode", activity.getItemCode());
+
+                JSONArray departmentDetails = new JSONArray();
+
+                views.forEach(view -> {
+                    JSONObject departmentDetail = new JSONObject();
+                    try {
+                        departmentDetail.put("DeptId", view.departmentCode.getText().toString());
+                        departmentDetail.put("Actual", view.actualQuantity.getText().toString());
+                        departmentDetails.put(departmentDetail);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+                updateActualQuantity.put("RetrievalDetails", departmentDetails);
+
+                String message = JSONParser.postStream(
+                        RetrievalDetailByDeptAdapter.this.activity.getString(R.string.default_hostname) + "/api/retrieval/updatequantity",
+                        updateActualQuantity.toString()
+                );
+
+                JSONObject result = new JSONObject(message);
+
+                return result.getString("Message");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return "Unknown error";
+        }
+
+        @Override
+        protected void onPostExecute(String message) {
+            super.onPostExecute(message);
+            RetrievalDetailByDeptAdapter.this.activity.getProgressDialog().dismiss();
+            Toast.makeText(RetrievalDetailByDeptAdapter.this.activity, message, Toast.LENGTH_SHORT).show();
+
+        }
     }
 
     // Provide a reference to the views for each data item
