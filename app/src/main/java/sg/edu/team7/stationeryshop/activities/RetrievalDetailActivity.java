@@ -1,6 +1,8 @@
 package sg.edu.team7.stationeryshop.activities;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -73,44 +75,59 @@ public class RetrievalDetailActivity extends AppCompatActivity {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AsyncTask<Void, Void, String>() {
-                    @Override
-                    protected String doInBackground(Void... voids) {
-                        JSONObject retrievalId = new JSONObject();
-                        try {
-                            retrievalId.put("RetrievalId", RetrievalDetailActivity.this.retrievalId);
-                            retrievalId.put("Email", RetrievalDetailActivity.this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
+                AlertDialog.Builder builder = new AlertDialog.Builder(RetrievalDetailActivity.this);
+                builder.setTitle(R.string.app_name);
+                builder.setMessage("Are you sure you want to Confirm Collection?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        new AsyncTask<Void, Void, String>() {
+                            @Override
+                            protected String doInBackground(Void... voids) {
+                                JSONObject retrievalId = new JSONObject();
+                                try {
+                                    retrievalId.put("RetrievalId", RetrievalDetailActivity.this.retrievalId);
+                                    retrievalId.put("Email", RetrievalDetailActivity.this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
 
-                            String message = JSONParser.postStream(
-                                    RetrievalDetailActivity.this.getString(R.string.default_hostname) + "/api/retrieval/confirm",
-                                    retrievalId.toString()
-                            );
+                                    String message = JSONParser.postStream(
+                                            RetrievalDetailActivity.this.getString(R.string.default_hostname) + "/api/retrieval/confirm",
+                                            retrievalId.toString()
+                                    );
 
-                            JSONObject result = new JSONObject(message);
+                                    JSONObject result = new JSONObject(message);
 
-                            return result.getString("Message");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                                    return result.getString("Message");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
 
-                        return "Unknown error";
+                                return "Unknown error";
+                            }
+
+                            @Override
+                            protected void onPreExecute() {
+                                super.onPreExecute();
+                                RetrievalDetailActivity.this.progressDialog.setTitle("Confirming retrieval");
+                                RetrievalDetailActivity.this.progressDialog.show();
+                            }
+
+                            @Override
+                            protected void onPostExecute(String message) {
+                                RetrievalDetailActivity.this.progressDialog.dismiss();
+                                Toast.makeText(RetrievalDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                                new StationeryRetrievalFragment.UpdateRetrievals().execute();
+                                RetrievalDetailActivity.this.finish();
+                            }
+                        }.execute();
                     }
-
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        RetrievalDetailActivity.this.progressDialog.setTitle("Confirming retrieval");
-                        RetrievalDetailActivity.this.progressDialog.show();
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
                     }
-
-                    @Override
-                    protected void onPostExecute(String message) {
-                        RetrievalDetailActivity.this.progressDialog.dismiss();
-                        Toast.makeText(RetrievalDetailActivity.this, message, Toast.LENGTH_SHORT).show();
-                        new StationeryRetrievalFragment.UpdateRetrievals().execute();
-                        RetrievalDetailActivity.this.finish();
-                    }
-                }.execute();
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
             }
         });
 
