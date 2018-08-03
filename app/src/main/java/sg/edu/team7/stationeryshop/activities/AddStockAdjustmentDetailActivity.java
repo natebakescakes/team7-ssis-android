@@ -25,7 +25,7 @@ public class AddStockAdjustmentDetailActivity extends AppCompatActivity {
 
         //Get texts
         EditText itemcode = (EditText)findViewById(R.id.add_itemcode);
-        EditText itemname = (EditText) findViewById(R.id.add_itemname);
+
         EditText bef_qty = (EditText)findViewById(R.id.add_before);
         EditText aft_qty = (EditText)findViewById(R.id.add_after);
         EditText reason = (EditText) findViewById(R.id.add_reason);
@@ -37,7 +37,7 @@ public class AddStockAdjustmentDetailActivity extends AppCompatActivity {
 
                 flag = true;
                     if (itemcode.getText().toString().equals("")) flag = false;
-                    if (itemname.getText().toString().equals("")) flag = false;
+
                     if (bef_qty.getText().toString().equals("")) flag = false;
                     if (aft_qty.getText().toString().equals("")) flag = false;
                     if (reason.getText().toString().equals("")) flag = false;
@@ -55,7 +55,7 @@ public class AddStockAdjustmentDetailActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), NewStockAdjustmentActivity.class);
 
                         intent.putExtra("itemcode", itemcode.getText().toString());
-                        intent.putExtra("itemname", itemname.getText().toString());
+                        intent.putExtra("itemname", ""); //this is intentional
                         intent.putExtra("bef_qty", bef_qty.getText().toString());
                         intent.putExtra("aft_qty", aft_qty.getText().toString());
                         intent.putExtra("reason", reason.getText().toString());
