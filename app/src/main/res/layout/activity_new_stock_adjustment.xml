@@ -28,14 +28,16 @@
         android:layout_marginEnd="0dp"
         android:text="Submit"
         android:textSize="18sp" />
+
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="32dp"
-        android:text="Date:" />
+        android:layout_marginTop="35dp"
+        android:text="Date:"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/label_requester"
@@ -43,8 +45,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="49dp"
-        android:text="Submitted By:" />
+        android:layout_marginTop="66dp"
+        android:text="Submitted By:"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/sa_date"
@@ -52,7 +55,8 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/clerk-name"
         android:layout_alignTop="@+id/textView4"
-        android:text="TextView" />
+        android:text="TextView"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/clerk-name"
@@ -61,7 +65,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignTop="@+id/label_requester"
         android:layout_marginStart="137dp"
-        android:text="TextView" />
+        android:text="TextView"
+        android:textSize="16sp" />
 
     <android.support.v7.widget.RecyclerView
 
@@ -71,5 +76,14 @@
         android:layout_below="@+id/addItem_btn"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"></android.support.v7.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/make_stock_adjustments"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
 </RelativeLayout>
