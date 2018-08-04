@@ -52,8 +52,6 @@ public class NewStockAdjustmentActivity extends AppCompatActivity {
         String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         userName = getSharedPreferences(MainActivity.getContext().getString(R.string.preference_file_key), Context.MODE_PRIVATE).getString("email", "");
 
-
-
         //Initialize button
         Button add_item = findViewById(R.id.addItem_btn);
         Button submit = findViewById(R.id.submit_btn);

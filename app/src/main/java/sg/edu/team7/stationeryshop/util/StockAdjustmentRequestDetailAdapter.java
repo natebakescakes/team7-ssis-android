@@ -1,6 +1,8 @@
 package sg.edu.team7.stationeryshop.util;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.RecyclerView;
@@ -48,9 +50,19 @@ public class StockAdjustmentRequestDetailAdapter extends RecyclerView.Adapter<St
 
         String originalQuantity = stockAdjustmentDetails.get(position).get("originalQuantity").toString();
         String afterQuantity = stockAdjustmentDetails.get(position).get("afterQuantity").toString();
+        String name = stockAdjustmentDetails.get(position).get("itemName").toString();
 
         viewHolder.itemCode.setText(stockAdjustmentDetails.get(position).get("itemCode").toString());
-        viewHolder.itemName.setText(stockAdjustmentDetails.get(position).get("itemName").toString());
+        if(name.equals(""))
+        {
+
+            viewHolder.itemName.setText(stockAdjustmentDetails.get(position).get("itemCode").toString());
+            viewHolder.itemCode.setTextColor(Color.WHITE);
+        }
+        else
+        {
+            viewHolder.itemName.setText(name);
+        }
         viewHolder.originalQuantity.setText(originalQuantity);
         viewHolder.afterQuantity.setText(afterQuantity);
         viewHolder.reason.setText(stockAdjustmentDetails.get(position).get("reason").toString());
