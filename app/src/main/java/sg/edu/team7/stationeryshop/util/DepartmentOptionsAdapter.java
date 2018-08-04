@@ -62,51 +62,68 @@ public class DepartmentOptionsAdapter extends RecyclerView.Adapter<RecyclerView.
                 @Override
                 public void onClick(View view) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(fragment.getContext());
-                    builder.setTitle("Choose a Representative:");
+                    builder.setTitle("Choose a Representative");
                     builder.setItems(
                             employees.stream().map(rep -> rep.get("name")).collect(Collectors.toList()).toArray(new String[employees.size()]),
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int position) {
-                                    new AsyncTask<Void, Void, String>() {
-                                        @Override
-                                        protected String doInBackground(Void... voids) {
-                                            JSONObject representative = new JSONObject();
-
-                                            try {
-                                                representative.put("RepresentativeEmail", employees.stream().map(r -> r.get("email").toString()).collect(Collectors.toList()).get(position));
-                                                representative.put("HeadEmail", fragment.getContext().getSharedPreferences(fragment.getContext().getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
-
-                                                String message = JSONParser.postStream(
-                                                        MainActivity.getContext().getString(R.string.default_hostname) + "/api/departmentoptions/representative",
-                                                        representative.toString()
-                                                );
-
-                                                JSONObject result = new JSONObject(message);
-
-                                                return result.getString("Message");
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-
-                                            return "Unknown error";
-                                        }
-
-                                        @Override
-                                        protected void onPreExecute() {
-                                            super.onPreExecute();
-                                            fragment.progressDialog.setTitle("Changing representatives...");
-                                            fragment.progressDialog.show();
-                                        }
-
-                                        @Override
-                                        protected void onPostExecute(String message) {
-                                            fragment.progressDialog.dismiss();
-                                            Toast.makeText(fragment.getContext(), message, Toast.LENGTH_SHORT).show();
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(fragment.getContext());
+                                    builder.setTitle("Change Representative");
+                                    builder.setMessage(String.format("Are you sure you want to change the Department Representative to %s",
+                                            employees.stream().map(r -> r.get("name")).collect(Collectors.toList()).get(position)));
+                                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
                                             dialog.dismiss();
+                                            new AsyncTask<Void, Void, String>() {
+                                                @Override
+                                                protected String doInBackground(Void... voids) {
+                                                    JSONObject representative = new JSONObject();
 
+                                                    try {
+                                                        representative.put("RepresentativeEmail", employees.stream().map(r -> r.get("email")).collect(Collectors.toList()).get(position));
+                                                        representative.put("HeadEmail", fragment.getContext().getSharedPreferences(fragment.getContext().getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
+
+                                                        String message = JSONParser.postStream(
+                                                                MainActivity.getContext().getString(R.string.default_hostname) + "/api/departmentoptions/representative",
+                                                                representative.toString()
+                                                        );
+
+                                                        JSONObject result = new JSONObject(message);
+
+                                                        return result.getString("Message");
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
+
+                                                    return "Unknown error";
+                                                }
+
+                                                @Override
+                                                protected void onPreExecute() {
+                                                    super.onPreExecute();
+                                                    fragment.progressDialog.setTitle("Changing representatives...");
+                                                    fragment.progressDialog.show();
+                                                }
+
+                                                @Override
+                                                protected void onPostExecute(String message) {
+                                                    fragment.progressDialog.dismiss();
+                                                    Toast.makeText(fragment.getContext(), message, Toast.LENGTH_SHORT).show();
+                                                    dialog.dismiss();
+
+                                                }
+                                            }.execute();
                                         }
-                                    }.execute();
+                                    });
+                                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    AlertDialog alert = builder.create();
+                                    alert.show();
+
                                     // Change Representative
                                 }
                             });

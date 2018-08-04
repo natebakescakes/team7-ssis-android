@@ -1,5 +1,7 @@
 package sg.edu.team7.stationeryshop.util;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -125,46 +127,64 @@ public class RetrievalDetailAdapter extends RecyclerView.Adapter<RetrievalDetail
         viewHolder.retrieveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AsyncTask<Void, Void, String>() {
-                    @Override
-                    protected String doInBackground(Void... voids) {
-                        JSONObject retrieval = new JSONObject();
-                        try {
-                            retrieval.put("RetrievalId", RetrievalDetailAdapter.this.retrievalId);
-                            retrieval.put("Email", activity.getSharedPreferences(activity.getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
-                            retrieval.put("ItemCode", retrievalDetails.get(position).get("itemCode").toString());
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle("Retrieve Item");
+                builder.setMessage(String.format("Are you sure you want to retrieve %s %s of %s (%s)?",
+                        retrievalDetails.get(position).get("actualQuantity").toString(),
+                        retrievalDetails.get(position).get("uom").toString(),
+                        retrievalDetails.get(position).get("itemCode").toString(),
+                        retrievalDetails.get(position).get("itemName").toString()));
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        new AsyncTask<Void, Void, String>() {
+                            @Override
+                            protected String doInBackground(Void... voids) {
+                                JSONObject retrieval = new JSONObject();
+                                try {
+                                    retrieval.put("RetrievalId", RetrievalDetailAdapter.this.retrievalId);
+                                    retrieval.put("Email", activity.getSharedPreferences(activity.getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
+                                    retrieval.put("ItemCode", retrievalDetails.get(position).get("itemCode").toString());
 
 
-                            String message = JSONParser.postStream(
-                                    RetrievalDetailAdapter.this.activity.getString(R.string.default_hostname) + "/api/retrieval/retrieveitem",
-                                    retrieval.toString()
-                            );
+                                    String message = JSONParser.postStream(
+                                            RetrievalDetailAdapter.this.activity.getString(R.string.default_hostname) + "/api/retrieval/retrieveitem",
+                                            retrieval.toString()
+                                    );
 
-                            JSONObject result = new JSONObject(message);
+                                    JSONObject result = new JSONObject(message);
 
-                            return result.getString("Message");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                                    return result.getString("Message");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
 
-                        return "Unknown error";
+                                return "Unknown error";
+                            }
+
+                            @Override
+                            protected void onPreExecute() {
+                                super.onPreExecute();
+                                RetrievalDetailAdapter.this.activity.getProgressDialog().setTitle("Retrieving item");
+                                RetrievalDetailAdapter.this.activity.getProgressDialog().show();
+                            }
+
+                            @Override
+                            protected void onPostExecute(String message) {
+                                super.onPostExecute(message);
+                                RetrievalDetailAdapter.this.activity.getProgressDialog().dismiss();
+                                Toast.makeText(RetrievalDetailAdapter.this.activity, message, Toast.LENGTH_SHORT).show();
+                            }
+                        }.execute();
                     }
-
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        RetrievalDetailAdapter.this.activity.getProgressDialog().setTitle("Retrieving item");
-                        RetrievalDetailAdapter.this.activity.getProgressDialog().show();
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
                     }
-
-                    @Override
-                    protected void onPostExecute(String message) {
-                        super.onPostExecute(message);
-                        RetrievalDetailAdapter.this.activity.getProgressDialog().dismiss();
-                        Toast.makeText(RetrievalDetailAdapter.this.activity, message, Toast.LENGTH_SHORT).show();
-                    }
-                }.execute();
-
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
             }
         });
     }

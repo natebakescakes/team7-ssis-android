@@ -17,6 +17,7 @@
                 android:id="@+id/nav_stock_adjustment_requests"
                 android:icon="@drawable/ic_menu_gallery"
                 android:title="@string/make_stock_adjustments" />
+
         </menu>
     </item>
 

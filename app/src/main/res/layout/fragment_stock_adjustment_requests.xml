@@ -12,20 +12,20 @@
         android:layout_alignParentTop="true"
         android:orientation="vertical">
 
-        <android.support.v7.widget.SearchView
-            android:id="@+id/search_view"
+    <android.support.v7.widget.SearchView
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:queryHint="@string/search_hint_stock_adjustment_request" />
+
+    <TableRow>
+
+        <Button
+            android:id="@+id/button_all"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:queryHint="@string/search_hint_stock_adjustment_request" />
-
-        <TableRow>
-
-            <Button
-                android:id="@+id/button_all"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/radio_button_all" />
+            android:layout_weight="1"
+            android:text="@string/radio_button_all" />
 
             <Button
                 android:id="@+id/button_pending"

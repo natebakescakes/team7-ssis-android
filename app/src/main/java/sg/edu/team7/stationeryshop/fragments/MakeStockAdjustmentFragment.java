@@ -1,19 +1,13 @@
 package sg.edu.team7.stationeryshop.fragments;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import sg.edu.team7.stationeryshop.R;
-import sg.edu.team7.stationeryshop.activities.AddStockAdjustmentDetailActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,36 +68,8 @@ public class MakeStockAdjustmentFragment extends Fragment {
         }
 
         // Inflate the layout for this fragment
-      View view =  inflater.inflate(R.layout.fragment_make_stock_adjustment, container, false);
-
-/*        //Initialize button
-        Button add_item = view.findViewById(R.id.addItem_btn);
-        Button submit = view.findViewById(R.id.submit_btn);*/
-
-    /*    //initialize recycler-view
-        RecyclerView mRecyclerView = view.findViewById(R.id.sa_recycler_view);
-
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
-
-        //set onClickListener
-        add_item.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent(getActivity(), AddStockAdjustmentDetailActivity.class);
-                startActivity(intent);
-            }
-        });*/
-
-
-        // Inflate the layout for this fragment
-        return view;
+        return inflater.inflate(R.layout.fragment_make_stock_adjustment, container, false);
     }
-
-
 
     @Override
     public void onAttach(Context context) {
