@@ -66,9 +66,9 @@ public class MainActivity extends AppCompatActivity
 
         Set<String> roles = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getStringSet("roles", null);
 
-        if (roles.contains("Employee") || roles.contains("DepartmentHead"))
+        if (roles.contains("Employee") || roles.contains("Department Head"))
             fragmentClass = RequisitionRequestFragment.class;
-        else if (roles.contains("StoreClerk"))
+        else if (roles.contains("Store Clerk"))
             fragmentClass = StationeryRetrievalFragment.class;
         else
             fragmentClass = StockAdjustmentRequestsFragment.class;
@@ -98,13 +98,13 @@ public class MainActivity extends AppCompatActivity
         if (roles.contains("Admin")) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_main_admin_drawer);
-        } else if (roles.contains("StoreSupervisor") || roles.contains("StoreManager")) {
+        } else if (roles.contains("Store Supervisor") || roles.contains("Store Manager")) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_main_manager_drawer);
-        } else if (roles.contains("StoreClerk")) {
+        } else if (roles.contains("Store Clerk")) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_main_store_drawer);
-        } else if (roles.contains("DepartmentHead")) {
+        } else if (roles.contains("Department Head")) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_main_department_drawer);
         }

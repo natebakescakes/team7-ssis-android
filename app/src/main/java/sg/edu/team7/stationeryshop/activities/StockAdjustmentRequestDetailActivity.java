@@ -7,6 +7,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import sg.edu.team7.stationeryshop.R;
 import sg.edu.team7.stationeryshop.fragments.StockAdjustmentRequestsFragment;
@@ -35,6 +37,9 @@ public class StockAdjustmentRequestDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_adjustment_request_detail);
+
+        //get roles of the user
+        Set<String> roles = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getStringSet("roles", null);
 
         // Set Title
         stockAdjustment = (Map) getIntent().getSerializableExtra("stockAdjustment");
@@ -174,9 +179,20 @@ public class StockAdjustmentRequestDetailActivity extends AppCompatActivity {
             }
         });
 
+        //hide and disable the buttons if they are not Store Manager/Supervisor
+        if (roles.contains("Store Clerk"))
+        {
+            approveButton.setVisibility(View.GONE);
+            approveButton.setEnabled(false);
+            rejectButton.setVisibility(View.GONE);
+            rejectButton.setEnabled(false);
+
+        }
+
         if (!stockAdjustment.get("status").toString().equals("Pending Approval")) {
             approveButton.setEnabled(false);
             rejectButton.setEnabled(false);
+
         }
     }
 
