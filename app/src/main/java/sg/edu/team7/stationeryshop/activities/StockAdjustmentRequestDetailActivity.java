@@ -1,13 +1,14 @@
 package sg.edu.team7.stationeryshop.activities;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -92,44 +93,59 @@ public class StockAdjustmentRequestDetailActivity extends AppCompatActivity {
         approveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AsyncTask<Void, Void, String>() {
-                    @Override
-                    protected String doInBackground(Void... voids) {
-                        JSONObject stockAdjustmentId = new JSONObject();
-                        try {
-                            stockAdjustmentId.put("StockAdjustmentId", StockAdjustmentRequestDetailActivity.this.stockAdjustment.get("stockAdjustmentId").toString());
-                            stockAdjustmentId.put("Email", StockAdjustmentRequestDetailActivity.this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
+                AlertDialog.Builder builder = new AlertDialog.Builder(StockAdjustmentRequestDetailActivity.this);
+                builder.setTitle("Approve Stock Adjustment");
+                builder.setMessage("Are you sure you want to approve this stock adjustment?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        new AsyncTask<Void, Void, String>() {
+                            @Override
+                            protected String doInBackground(Void... voids) {
+                                JSONObject stockAdjustmentId = new JSONObject();
+                                try {
+                                    stockAdjustmentId.put("StockAdjustmentId", StockAdjustmentRequestDetailActivity.this.stockAdjustment.get("stockAdjustmentId").toString());
+                                    stockAdjustmentId.put("Email", StockAdjustmentRequestDetailActivity.this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
 
-                            String message = JSONParser.postStream(
-                                    StockAdjustmentRequestDetailActivity.this.getString(R.string.default_hostname) + "/api/stockadjustment/supervisor/approve",
-                                    stockAdjustmentId.toString()
-                            );
+                                    String message = JSONParser.postStream(
+                                            StockAdjustmentRequestDetailActivity.this.getString(R.string.default_hostname) + "/api/stockadjustment/supervisor/approve",
+                                            stockAdjustmentId.toString()
+                                    );
 
-                            JSONObject result = new JSONObject(message);
+                                    JSONObject result = new JSONObject(message);
 
-                            return result.getString("Message");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                                    return result.getString("Message");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
 
-                        return "Unknown error";
+                                return "Unknown error";
+                            }
+
+                            @Override
+                            protected void onPreExecute() {
+                                super.onPreExecute();
+                                StockAdjustmentRequestDetailActivity.this.progressDialog.setTitle("Approving stock adjustment");
+                                StockAdjustmentRequestDetailActivity.this.progressDialog.show();
+                            }
+
+                            @Override
+                            protected void onPostExecute(String message) {
+                                StockAdjustmentRequestDetailActivity.this.progressDialog.dismiss();
+                                Toast.makeText(StockAdjustmentRequestDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                                StockAdjustmentRequestDetailActivity.this.finish();
+                                new StockAdjustmentRequestsFragment.UpdateStockAdjustment().execute();
+                            }
+                        }.execute();
                     }
-
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        StockAdjustmentRequestDetailActivity.this.progressDialog.setTitle("Approving stock adjustment");
-                        StockAdjustmentRequestDetailActivity.this.progressDialog.show();
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
                     }
-
-                    @Override
-                    protected void onPostExecute(String message) {
-                        StockAdjustmentRequestDetailActivity.this.progressDialog.dismiss();
-                        Toast.makeText(StockAdjustmentRequestDetailActivity.this, message, Toast.LENGTH_SHORT).show();
-                        StockAdjustmentRequestDetailActivity.this.finish();
-                        new StockAdjustmentRequestsFragment.UpdateStockAdjustment().execute();
-                    }
-                }.execute();
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
             }
         });
 
@@ -138,44 +154,59 @@ public class StockAdjustmentRequestDetailActivity extends AppCompatActivity {
         rejectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AsyncTask<Void, Void, String>() {
-                    @Override
-                    protected String doInBackground(Void... voids) {
-                        JSONObject stockAdjustmentId = new JSONObject();
-                        try {
-                            stockAdjustmentId.put("StockAdjustmentId", StockAdjustmentRequestDetailActivity.this.stockAdjustment.get("stockAdjustmentId").toString());
-                            stockAdjustmentId.put("Email", StockAdjustmentRequestDetailActivity.this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
+                AlertDialog.Builder builder = new AlertDialog.Builder(StockAdjustmentRequestDetailActivity.this);
+                builder.setTitle("Reject Stock Adjustment");
+                builder.setMessage("Are you sure you want to reject this stock adjustment?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        new AsyncTask<Void, Void, String>() {
+                            @Override
+                            protected String doInBackground(Void... voids) {
+                                JSONObject stockAdjustmentId = new JSONObject();
+                                try {
+                                    stockAdjustmentId.put("StockAdjustmentId", StockAdjustmentRequestDetailActivity.this.stockAdjustment.get("stockAdjustmentId").toString());
+                                    stockAdjustmentId.put("Email", StockAdjustmentRequestDetailActivity.this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE).getString("email", ""));
 
-                            String message = JSONParser.postStream(
-                                    StockAdjustmentRequestDetailActivity.this.getString(R.string.default_hostname) + "/api/stockadjustment/supervisor/reject",
-                                    stockAdjustmentId.toString()
-                            );
+                                    String message = JSONParser.postStream(
+                                            StockAdjustmentRequestDetailActivity.this.getString(R.string.default_hostname) + "/api/stockadjustment/supervisor/reject",
+                                            stockAdjustmentId.toString()
+                                    );
 
-                            JSONObject result = new JSONObject(message);
+                                    JSONObject result = new JSONObject(message);
 
-                            return result.getString("Message");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                                    return result.getString("Message");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
 
-                        return "Unknown error";
+                                return "Unknown error";
+                            }
+
+                            @Override
+                            protected void onPreExecute() {
+                                super.onPreExecute();
+                                StockAdjustmentRequestDetailActivity.this.progressDialog.setTitle("Rejecting stock adjustment");
+                                StockAdjustmentRequestDetailActivity.this.progressDialog.show();
+                            }
+
+                            @Override
+                            protected void onPostExecute(String message) {
+                                StockAdjustmentRequestDetailActivity.this.progressDialog.dismiss();
+                                Toast.makeText(StockAdjustmentRequestDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                                StockAdjustmentRequestDetailActivity.this.finish();
+                                new StockAdjustmentRequestsFragment.UpdateStockAdjustment().execute();
+                            }
+                        }.execute();
                     }
-
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        StockAdjustmentRequestDetailActivity.this.progressDialog.setTitle("Rejecting stock adjustment");
-                        StockAdjustmentRequestDetailActivity.this.progressDialog.show();
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
                     }
-
-                    @Override
-                    protected void onPostExecute(String message) {
-                        StockAdjustmentRequestDetailActivity.this.progressDialog.dismiss();
-                        Toast.makeText(StockAdjustmentRequestDetailActivity.this, message, Toast.LENGTH_SHORT).show();
-                        StockAdjustmentRequestDetailActivity.this.finish();
-                        new StockAdjustmentRequestsFragment.UpdateStockAdjustment().execute();
-                    }
-                }.execute();
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
             }
         });
 
