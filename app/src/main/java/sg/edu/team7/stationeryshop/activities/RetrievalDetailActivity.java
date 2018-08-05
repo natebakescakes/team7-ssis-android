@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,8 +32,9 @@ public class RetrievalDetailActivity extends AppCompatActivity {
     private static List<RetrievalDetailByDept> retrievalDetailByDepts;
     private static RetrievalDetailAdapter mAdapter;
     private static Button confirmButton;
-    private ProgressDialog progressDialog;
+    private static ProgressDialog progressDialog;
     private String retrievalId;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public ProgressDialog getProgressDialog() {
         return progressDialog;
@@ -107,13 +109,13 @@ public class RetrievalDetailActivity extends AppCompatActivity {
                             @Override
                             protected void onPreExecute() {
                                 super.onPreExecute();
-                                RetrievalDetailActivity.this.progressDialog.setTitle("Confirming retrieval");
-                                RetrievalDetailActivity.this.progressDialog.show();
+                                progressDialog.setTitle("Confirming retrieval");
+                                progressDialog.show();
                             }
 
                             @Override
                             protected void onPostExecute(String message) {
-                                RetrievalDetailActivity.this.progressDialog.dismiss();
+                                progressDialog.dismiss();
                                 Toast.makeText(RetrievalDetailActivity.this, message, Toast.LENGTH_SHORT).show();
                                 new StationeryRetrievalFragment.UpdateRetrievals().execute();
                                 RetrievalDetailActivity.this.finish();
@@ -128,6 +130,17 @@ public class RetrievalDetailActivity extends AppCompatActivity {
                 });
                 AlertDialog alert = builder.create();
                 alert.show();
+            }
+        });
+
+        // Set SwipeLayoutRefresh
+        mSwipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new UpdateRetrievalDetail(retrievalId).execute();
+                if (mSwipeRefreshLayout.isRefreshing())
+                    mSwipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -157,7 +170,15 @@ public class RetrievalDetailActivity extends AppCompatActivity {
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            RetrievalDetailActivity.progressDialog.setTitle("Loading Retrieval Details...");
+            RetrievalDetailActivity.progressDialog.show();
+        }
+
+        @Override
         protected void onPostExecute(List<RetrievalDetailByDept> retrievalDetailByDepts) {
+            RetrievalDetailActivity.progressDialog.hide();
             if (retrievalDetailByDepts != null) {
                 RetrievalDetailActivity.retrievalDetailByDepts = retrievalDetailByDepts;
                 Log.i("RETRIEVALDETAIL", retrievalDetailByDepts.toString());

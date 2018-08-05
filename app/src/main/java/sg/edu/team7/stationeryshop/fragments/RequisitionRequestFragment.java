@@ -1,5 +1,6 @@
 package sg.edu.team7.stationeryshop.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -41,6 +42,7 @@ public class RequisitionRequestFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     public static RequisitionAdapter mAdapter;
     private static List<Requisition> requisitions;
+    private static ProgressDialog progressDialog;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -117,6 +119,12 @@ public class RequisitionRequestFragment extends Fragment {
             }
         });
         mRecyclerView.setAdapter(mAdapter);
+
+        // Initialize ProgressDialog
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Please wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         new UpdateRequisition().execute();
 
@@ -227,7 +235,15 @@ public class RequisitionRequestFragment extends Fragment {
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            RequisitionRequestFragment.progressDialog.setTitle("Loading Requisitions");
+            RequisitionRequestFragment.progressDialog.show();
+        }
+
+        @Override
         protected void onPostExecute(List<Requisition> requisitions) {
+            RequisitionRequestFragment.progressDialog.hide();
             if (requisitions != null) {
                 RequisitionRequestFragment.requisitions = requisitions;
                 RequisitionRequestFragment.mAdapter.update(requisitions);
