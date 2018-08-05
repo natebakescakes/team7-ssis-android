@@ -19,7 +19,7 @@ import sg.edu.team7.stationeryshop.util.JSONParser;
 
 
 public class AddStockAdjustmentDetailActivity extends AppCompatActivity {
-    static int counter =0;
+    static int counter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,17 +32,16 @@ public class AddStockAdjustmentDetailActivity extends AppCompatActivity {
         Button plus = findViewById(R.id.plus);
 
 
-
         //Get texts
-        EditText itemcode = (EditText)findViewById(R.id.add_itemcode);
-        EditText adj_qty = (EditText)findViewById(R.id.adj_qty);
-        EditText reason = (EditText) findViewById(R.id.add_reason);
+        EditText itemcode = findViewById(R.id.add_itemcode);
+        EditText adj_qty = findViewById(R.id.adj_qty);
+        EditText reason = findViewById(R.id.add_reason);
         adj_qty.setText(String.valueOf(counter));
         plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 counter = Integer.parseInt(adj_qty.getText().toString());
-                counter = counter +1;
+                counter = counter + 1;
                 adj_qty.setText(String.valueOf(counter));
 
             }
@@ -52,32 +51,33 @@ public class AddStockAdjustmentDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 counter = Integer.parseInt(adj_qty.getText().toString());
-                counter = counter -1;
+                counter = counter - 1;
                 adj_qty.setText(String.valueOf(counter));
             }
         });
 
         submit.setOnClickListener(new View.OnClickListener() {
             boolean flag;
+
             @Override
             public void onClick(View view) {
 
                 flag = true;
                 final String[] bef_qty = new String[1];
-                    if (itemcode.getText().toString().equals("")) flag = false;
-                    if (reason.getText().toString().equals("")) flag = false;
+                if (itemcode.getText().toString().equals("")) flag = false;
+                if (reason.getText().toString().equals("")) flag = false;
 
 
-                if(flag == true) {
+                if (flag == true) {
 
                     Intent intent = new Intent(getApplicationContext(), NewStockAdjustmentActivity.class);
 
-                  new AsyncTask<Void, Void, String>() {
+                    new AsyncTask<Void, Void, String>() {
                         @Override
                         protected String doInBackground(Void... voids) {
                             JSONObject msg = new JSONObject();
-                            String url = getApplicationContext().getString(R.string.default_hostname)+"/api/manage/quantity/" + itemcode.getText().toString();
-                            Log.i("URL for Quantity",url);
+                            String url = getApplicationContext().getString(R.string.default_hostname) + "/api/manage/quantity/" + itemcode.getText().toString();
+                            Log.i("URL for Quantity", url);
 
                             try {
 
@@ -85,7 +85,7 @@ public class AddStockAdjustmentDetailActivity extends AppCompatActivity {
 
                                 Log.i("API response", message.getString("Message"));
 
-                               bef_qty[0] = message.getString("Message");
+                                bef_qty[0] = message.getString("Message");
 
                                 return message.getString("Message");
 
@@ -93,7 +93,6 @@ public class AddStockAdjustmentDetailActivity extends AppCompatActivity {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
 
 
                             return "Unknown error";
@@ -108,28 +107,18 @@ public class AddStockAdjustmentDetailActivity extends AppCompatActivity {
                         @Override
                         protected void onPostExecute(String message) {
                             super.onPostExecute(message);
+                            intent.putExtra("itemcode", itemcode.getText().toString());
+                            intent.putExtra("itemname", ""); //this is intentional
+                            intent.putExtra("bef_qty", message);
+                            intent.putExtra("aft_qty", String.valueOf(Integer.parseInt(message) + Integer.parseInt(adj_qty.getText().toString())));
+                            intent.putExtra("reason", reason.getText().toString());
+
+                            setResult(RESULT_OK, intent);
+                            finish();
                         }
                     }.execute();
-
-
-                  int change = Integer.parseInt(bef_qty[0]) + Integer.parseInt(adj_qty.getText().toString());
-
-
-
-                        intent.putExtra("itemcode", itemcode.getText().toString());
-                        intent.putExtra("itemname", ""); //this is intentional
-                        intent.putExtra("bef_qty", bef_qty[0]);
-                        intent.putExtra("aft_qty", String.valueOf(change));
-                        intent.putExtra("reason", reason.getText().toString());
-
-                        setResult(RESULT_OK, intent);
-                        finish();
-
-
-                }
-                else
-                {
-                    Toast.makeText(getApplicationContext(),"Please fill in ALL details",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please fill in ALL details", Toast.LENGTH_SHORT).show();
                 }
 
             }
