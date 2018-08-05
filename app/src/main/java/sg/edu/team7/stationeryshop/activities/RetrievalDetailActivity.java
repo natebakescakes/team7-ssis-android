@@ -31,7 +31,7 @@ public class RetrievalDetailActivity extends AppCompatActivity {
     private static List<RetrievalDetailByDept> retrievalDetailByDepts;
     private static RetrievalDetailAdapter mAdapter;
     private static Button confirmButton;
-    private ProgressDialog progressDialog;
+    private static ProgressDialog progressDialog;
     private String retrievalId;
 
     public ProgressDialog getProgressDialog() {
@@ -107,13 +107,13 @@ public class RetrievalDetailActivity extends AppCompatActivity {
                             @Override
                             protected void onPreExecute() {
                                 super.onPreExecute();
-                                RetrievalDetailActivity.this.progressDialog.setTitle("Confirming retrieval");
-                                RetrievalDetailActivity.this.progressDialog.show();
+                                progressDialog.setTitle("Confirming retrieval");
+                                progressDialog.show();
                             }
 
                             @Override
                             protected void onPostExecute(String message) {
-                                RetrievalDetailActivity.this.progressDialog.dismiss();
+                                progressDialog.dismiss();
                                 Toast.makeText(RetrievalDetailActivity.this, message, Toast.LENGTH_SHORT).show();
                                 new StationeryRetrievalFragment.UpdateRetrievals().execute();
                                 RetrievalDetailActivity.this.finish();
@@ -157,7 +157,15 @@ public class RetrievalDetailActivity extends AppCompatActivity {
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            RetrievalDetailActivity.progressDialog.setTitle("Loading Retrieval Details...");
+            RetrievalDetailActivity.progressDialog.show();
+        }
+
+        @Override
         protected void onPostExecute(List<RetrievalDetailByDept> retrievalDetailByDepts) {
+            RetrievalDetailActivity.progressDialog.hide();
             if (retrievalDetailByDepts != null) {
                 RetrievalDetailActivity.retrievalDetailByDepts = retrievalDetailByDepts;
                 Log.i("RETRIEVALDETAIL", retrievalDetailByDepts.toString());

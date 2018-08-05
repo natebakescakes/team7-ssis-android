@@ -94,6 +94,8 @@ public class DepartmentOptionsFragment extends Fragment {
 
         // Initialize Progress Dialog
         progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // Set SwipeLayoutRefresh
         mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
@@ -216,11 +218,20 @@ public class DepartmentOptionsFragment extends Fragment {
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog.setTitle("Loading Department Options...");
+            progressDialog.show();
+        }
+
+        @Override
         protected void onPostExecute(DepartmentOptions departmentOptions) {
             List<Delegation> delegations = new ArrayList<>();
             List<Employee> employees = new ArrayList<>();
             ((List) departmentOptions.get("delegations")).stream().forEach(d -> delegations.add((Delegation) d));
             ((List) departmentOptions.get("employees")).stream().forEach(e -> employees.add((Employee) e));
+
+            progressDialog.hide();
 
             mAdapter = new DepartmentOptionsAdapter(
                     new DepartmentOptions(

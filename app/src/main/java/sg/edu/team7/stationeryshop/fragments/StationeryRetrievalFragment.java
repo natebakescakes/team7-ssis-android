@@ -1,5 +1,6 @@
 package sg.edu.team7.stationeryshop.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -39,14 +40,13 @@ public class StationeryRetrievalFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private static List<Retrieval> retrievals;
+    private static RetrievalAdapter mAdapter;
+    private static ProgressDialog progressDialog;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
-    private static List<Retrieval> retrievals;
-    private static RetrievalAdapter mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public StationeryRetrievalFragment() {
@@ -180,6 +180,10 @@ public class StationeryRetrievalFragment extends Fragment {
             }
         });
 
+        // Initialize ProgressDialog
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // Inflate the layout for this fragment
         return view;
@@ -209,26 +213,6 @@ public class StationeryRetrievalFragment extends Fragment {
         mListener = null;
     }
 
-    public static class UpdateRetrievals extends AsyncTask<Void, Void, List<Retrieval>> {
-        @Override
-        protected void onPostExecute(List<Retrieval> retrievals) {
-            if (retrievals != null) {
-                StationeryRetrievalFragment.retrievals = retrievals;
-                StationeryRetrievalFragment.mAdapter.update(retrievals);
-            }
-        }
-
-        @Override
-        protected List<Retrieval> doInBackground(Void... voids) {
-            try {
-                return Retrieval.findAllRetrievals();
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-    }
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -241,5 +225,33 @@ public class StationeryRetrievalFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(String title);
+    }
+
+    public static class UpdateRetrievals extends AsyncTask<Void, Void, List<Retrieval>> {
+        @Override
+        protected void onPostExecute(List<Retrieval> retrievals) {
+            StationeryRetrievalFragment.progressDialog.hide();
+            if (retrievals != null) {
+                StationeryRetrievalFragment.retrievals = retrievals;
+                StationeryRetrievalFragment.mAdapter.update(retrievals);
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            StationeryRetrievalFragment.progressDialog.setTitle("Loading Retrievals...");
+            StationeryRetrievalFragment.progressDialog.show();
+        }
+
+        @Override
+        protected List<Retrieval> doInBackground(Void... voids) {
+            try {
+                return Retrieval.findAllRetrievals();
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
     }
 }

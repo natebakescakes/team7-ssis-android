@@ -1,5 +1,6 @@
 package sg.edu.team7.stationeryshop.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -22,7 +23,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import sg.edu.team7.stationeryshop.R;
-import sg.edu.team7.stationeryshop.activities.AddStockAdjustmentDetailActivity;
 import sg.edu.team7.stationeryshop.activities.NewStockAdjustmentActivity;
 import sg.edu.team7.stationeryshop.activities.StockAdjustmentRequestDetailActivity;
 import sg.edu.team7.stationeryshop.models.StockAdjustmentRequest;
@@ -43,6 +43,7 @@ public class StockAdjustmentRequestsFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private static StockAdjustmentRequestAdapter mAdapter;
     private static List<StockAdjustmentRequest> stockAdjustmentRequests;
+    private static ProgressDialog progressDialog;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -153,7 +154,6 @@ public class StockAdjustmentRequestsFragment extends Fragment {
         });
 
 
-
         // Initialize SearchView
         SearchView searchView = view.findViewById(R.id.search_view);
         searchView.setOnClickListener(v -> searchView.setIconified(false));
@@ -191,6 +191,11 @@ public class StockAdjustmentRequestsFragment extends Fragment {
                     mSwipeRefreshLayout.setRefreshing(false);
             }
         });
+
+        // Initialize ProgressDialog
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
 
         // Inflate the layout for this fragment
@@ -238,10 +243,18 @@ public class StockAdjustmentRequestsFragment extends Fragment {
     public static class UpdateStockAdjustment extends AsyncTask<Void, Void, List<StockAdjustmentRequest>> {
         @Override
         protected void onPostExecute(List<StockAdjustmentRequest> stockAdjustmentRequests) {
+            StockAdjustmentRequestsFragment.progressDialog.hide();
             if (stockAdjustmentRequests != null) {
                 StockAdjustmentRequestsFragment.stockAdjustmentRequests = stockAdjustmentRequests;
                 StockAdjustmentRequestsFragment.mAdapter.update(stockAdjustmentRequests);
             }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            StockAdjustmentRequestsFragment.progressDialog.setTitle("Loading Stock Adjustment Requests...");
+            StockAdjustmentRequestsFragment.progressDialog.show();
         }
 
         @Override
