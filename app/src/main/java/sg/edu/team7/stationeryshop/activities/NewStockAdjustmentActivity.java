@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 import sg.edu.team7.stationeryshop.R;
 import sg.edu.team7.stationeryshop.models.StockAdjustmentRequestDetail;
@@ -161,7 +162,7 @@ public class NewStockAdjustmentActivity extends AppCompatActivity {
 
     //what to do when receiving result from AddStockAdjustmentDetail Activity
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)  {
         super.onActivityResult(requestCode, resultCode, data);
         if( resultCode == RESULT_OK){
             String itemcode = data.getStringExtra("itemcode");
@@ -169,6 +170,8 @@ public class NewStockAdjustmentActivity extends AppCompatActivity {
             String reason = data.getStringExtra("reason");
             String bef_qty = data.getStringExtra("bef_qty");
             String aft_qty = data.getStringExtra("aft_qty");
+
+
 
             saDetails.add(new StockAdjustmentRequestDetail(itemcode, itemname, bef_qty, aft_qty, reason));
 
@@ -178,5 +181,7 @@ public class NewStockAdjustmentActivity extends AppCompatActivity {
 
     }
 
+
 }
+
 
