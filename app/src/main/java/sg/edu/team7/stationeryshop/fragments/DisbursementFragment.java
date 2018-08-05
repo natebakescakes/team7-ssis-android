@@ -1,5 +1,6 @@
 package sg.edu.team7.stationeryshop.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -41,6 +42,7 @@ public class DisbursementFragment extends Fragment {
     public static DisbursementAdapter mAdapter;
     private static List<Disbursement> disbursements;
     private static SwipeRefreshLayout mSwipeRefreshLayout;
+    private static ProgressDialog progressDialog;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -121,6 +123,12 @@ public class DisbursementFragment extends Fragment {
         });
         mRecyclerView.setAdapter(mAdapter);
 
+        // Initialize Progress Dialog
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Please wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
         new UpdateDisbursements().execute();
 
         // Set SwipeLayoutRefresh
@@ -184,7 +192,6 @@ public class DisbursementFragment extends Fragment {
             }
         });
 
-
         // Inflate the layout for this fragment
         return view;
     }
@@ -233,7 +240,15 @@ public class DisbursementFragment extends Fragment {
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            DisbursementFragment.progressDialog.setTitle("Loading Disbursements");
+            DisbursementFragment.progressDialog.show();
+        }
+
+        @Override
         protected void onPostExecute(List<Disbursement> disbursements) {
+            DisbursementFragment.progressDialog.hide();
             if (disbursements != null) {
                 DisbursementFragment.disbursements = disbursements;
                 DisbursementFragment.mAdapter.update(disbursements);
