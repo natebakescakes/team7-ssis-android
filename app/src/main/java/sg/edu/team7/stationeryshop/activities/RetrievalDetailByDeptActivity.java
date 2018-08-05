@@ -128,7 +128,15 @@ public class RetrievalDetailByDeptActivity extends AppCompatActivity {
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog.setTitle("Loading Retrieval Breakdown Details");
+            progressDialog.show();
+        }
+
+        @Override
         protected void onPostExecute(List<RetrievalDetailByDept> retrievalDetailByDepts) {
+            progressDialog.hide();
             if (retrievalDetailByDepts != null) {
                 RetrievalDetailByDeptActivity.this.retrievalDetailByDepts = retrievalDetailByDepts;
                 RetrievalDetailByDeptActivity.this.mAdapter.update(retrievalDetailByDepts.stream().filter(x -> x.get("itemCode").toString().equals(RetrievalDetailByDeptActivity.this.itemCode)).collect(Collectors.toList()));

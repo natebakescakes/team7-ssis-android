@@ -90,12 +90,13 @@ public class DepartmentOptionsFragment extends Fragment {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        new DepartmentOptionsTask(mRecyclerView).execute();
-
         // Initialize Progress Dialog
         progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Please wait...");
         progressDialog.setCancelable(false);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+        new DepartmentOptionsTask(mRecyclerView).execute();
 
         // Set SwipeLayoutRefresh
         mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
@@ -220,7 +221,7 @@ public class DepartmentOptionsFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog.setTitle("Loading Department Options...");
+            progressDialog.setTitle("Loading Department Options");
             progressDialog.show();
         }
 

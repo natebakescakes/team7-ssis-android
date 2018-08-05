@@ -123,6 +123,12 @@ public class DisbursementFragment extends Fragment {
         });
         mRecyclerView.setAdapter(mAdapter);
 
+        // Initialize Progress Dialog
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Please wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
         new UpdateDisbursements().execute();
 
         // Set SwipeLayoutRefresh
@@ -186,11 +192,6 @@ public class DisbursementFragment extends Fragment {
             }
         });
 
-        // Initialize Progress Dialog
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setCancelable(false);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-
         // Inflate the layout for this fragment
         return view;
     }
@@ -241,7 +242,7 @@ public class DisbursementFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            DisbursementFragment.progressDialog.setTitle("Loading Disbursements...");
+            DisbursementFragment.progressDialog.setTitle("Loading Disbursements");
             DisbursementFragment.progressDialog.show();
         }
 

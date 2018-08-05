@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,6 +34,7 @@ public class RetrievalDetailActivity extends AppCompatActivity {
     private static Button confirmButton;
     private static ProgressDialog progressDialog;
     private String retrievalId;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public ProgressDialog getProgressDialog() {
         return progressDialog;
@@ -128,6 +130,17 @@ public class RetrievalDetailActivity extends AppCompatActivity {
                 });
                 AlertDialog alert = builder.create();
                 alert.show();
+            }
+        });
+
+        // Set SwipeLayoutRefresh
+        mSwipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new UpdateRetrievalDetail(retrievalId).execute();
+                if (mSwipeRefreshLayout.isRefreshing())
+                    mSwipeRefreshLayout.setRefreshing(false);
             }
         });
 

@@ -121,6 +121,12 @@ public class StockAdjustmentRequestsFragment extends Fragment {
         });
         mRecyclerView.setAdapter(mAdapter);
 
+        // Initialize ProgressDialog
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Please wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
         new UpdateStockAdjustment().execute();
 
         // Set Button onClickListener
@@ -192,12 +198,6 @@ public class StockAdjustmentRequestsFragment extends Fragment {
             }
         });
 
-        // Initialize ProgressDialog
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setCancelable(false);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-
-
         // Inflate the layout for this fragment
         return view;
     }
@@ -253,7 +253,7 @@ public class StockAdjustmentRequestsFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            StockAdjustmentRequestsFragment.progressDialog.setTitle("Loading Stock Adjustment Requests...");
+            StockAdjustmentRequestsFragment.progressDialog.setTitle("Loading Stock Adjustment Requests");
             StockAdjustmentRequestsFragment.progressDialog.show();
         }
 

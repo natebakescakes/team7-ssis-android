@@ -119,6 +119,12 @@ public class StationeryRetrievalFragment extends Fragment {
         });
         mRecyclerView.setAdapter(mAdapter);
 
+        // Initialize ProgressDialog
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Please wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
         new UpdateRetrievals().execute();
 
         // Set Button onClickListener
@@ -180,11 +186,6 @@ public class StationeryRetrievalFragment extends Fragment {
             }
         });
 
-        // Initialize ProgressDialog
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setCancelable(false);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-
         // Inflate the layout for this fragment
         return view;
     }
@@ -240,7 +241,7 @@ public class StationeryRetrievalFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            StationeryRetrievalFragment.progressDialog.setTitle("Loading Retrievals...");
+            StationeryRetrievalFragment.progressDialog.setTitle("Loading Retrievals");
             StationeryRetrievalFragment.progressDialog.show();
         }
 

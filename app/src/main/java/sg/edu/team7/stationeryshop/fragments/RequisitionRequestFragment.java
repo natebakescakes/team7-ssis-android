@@ -120,6 +120,12 @@ public class RequisitionRequestFragment extends Fragment {
         });
         mRecyclerView.setAdapter(mAdapter);
 
+        // Initialize ProgressDialog
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Please wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
         new UpdateRequisition().execute();
 
         // Set SwipeLayoutRefresh
@@ -181,11 +187,6 @@ public class RequisitionRequestFragment extends Fragment {
             }
         });
 
-        // Initialize ProgressDialog
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setCancelable(false);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-
         // Inflate the layout for this fragment
         return view;
     }
@@ -236,7 +237,7 @@ public class RequisitionRequestFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            RequisitionRequestFragment.progressDialog.setTitle("Loading Requisitions...");
+            RequisitionRequestFragment.progressDialog.setTitle("Loading Requisitions");
             RequisitionRequestFragment.progressDialog.show();
         }
 
