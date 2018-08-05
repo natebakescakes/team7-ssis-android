@@ -1,7 +1,6 @@
 package sg.edu.team7.stationeryshop.activities;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,11 +15,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import sg.edu.team7.stationeryshop.R;
-import sg.edu.team7.stationeryshop.fragments.DisbursementFragment;
 import sg.edu.team7.stationeryshop.util.JSONParser;
 
 
 public class AddStockAdjustmentDetailActivity extends AppCompatActivity {
+    static int counter =0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,13 +28,34 @@ public class AddStockAdjustmentDetailActivity extends AppCompatActivity {
 
         //Initialize button
         Button submit = findViewById(R.id.add_btn);
+        Button minus = findViewById(R.id.minus);
+        Button plus = findViewById(R.id.plus);
+
+
 
         //Get texts
         EditText itemcode = (EditText)findViewById(R.id.add_itemcode);
-
-        EditText bef_qty = (EditText)findViewById(R.id.add_before);
-        EditText aft_qty = (EditText)findViewById(R.id.add_after);
+        EditText adj_qty = (EditText)findViewById(R.id.adj_qty);
         EditText reason = (EditText) findViewById(R.id.add_reason);
+        adj_qty.setText(String.valueOf(counter));
+        plus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                counter = Integer.parseInt(adj_qty.getText().toString());
+                counter = counter +1;
+                adj_qty.setText(String.valueOf(counter));
+
+            }
+        });
+
+        minus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                counter = Integer.parseInt(adj_qty.getText().toString());
+                counter = counter -1;
+                adj_qty.setText(String.valueOf(counter));
+            }
+        });
 
         submit.setOnClickListener(new View.OnClickListener() {
             boolean flag;
@@ -45,13 +65,7 @@ public class AddStockAdjustmentDetailActivity extends AppCompatActivity {
                 flag = true;
                 final String[] bef_qty = new String[1];
                     if (itemcode.getText().toString().equals("")) flag = false;
-
-                    //if (bef_qty.getText().toString().equals("")) flag = false;
-                    if (aft_qty.getText().toString().equals("")) flag = false;
                     if (reason.getText().toString().equals("")) flag = false;
-
-
-
 
 
                 if(flag == true) {
@@ -98,12 +112,14 @@ public class AddStockAdjustmentDetailActivity extends AppCompatActivity {
                     }.execute();
 
 
+                  int change = Integer.parseInt(bef_qty[0]) + Integer.parseInt(adj_qty.getText().toString());
+
 
 
                         intent.putExtra("itemcode", itemcode.getText().toString());
                         intent.putExtra("itemname", ""); //this is intentional
                         intent.putExtra("bef_qty", bef_qty[0]);
-                        intent.putExtra("aft_qty", aft_qty.getText().toString());
+                        intent.putExtra("aft_qty", String.valueOf(change));
                         intent.putExtra("reason", reason.getText().toString());
 
                         setResult(RESULT_OK, intent);
