@@ -169,7 +169,6 @@ public class NewStockAdjustmentActivity extends AppCompatActivity {
             String itemname = data.getStringExtra("itemname");
             String reason = data.getStringExtra("reason");
             String bef_qty = data.getStringExtra("bef_qty");
-            //String bef_qty = "69";
             String aft_qty = data.getStringExtra("aft_qty");
 
 
