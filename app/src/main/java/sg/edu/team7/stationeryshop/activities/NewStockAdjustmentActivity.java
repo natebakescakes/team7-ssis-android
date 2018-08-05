@@ -1,48 +1,40 @@
 package sg.edu.team7.stationeryshop.activities;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.DataOutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
 
 import sg.edu.team7.stationeryshop.R;
 import sg.edu.team7.stationeryshop.models.StockAdjustmentRequestDetail;
 import sg.edu.team7.stationeryshop.util.JSONParser;
-import sg.edu.team7.stationeryshop.util.RetrievalDetailAdapter;
 import sg.edu.team7.stationeryshop.util.StockAdjustmentRequestDetailAdapter;
 
 public class NewStockAdjustmentActivity extends AppCompatActivity {
 
-    private StockAdjustmentRequestDetailAdapter saAdapter;
     private static int mRequestCode = 1;
     private static String userName;
     private static String message;
-
-
     //List of Stock Adjustment Details
     List<StockAdjustmentRequestDetail> saDetails = new ArrayList<>();
+    private StockAdjustmentRequestDetailAdapter saAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +44,10 @@ public class NewStockAdjustmentActivity extends AppCompatActivity {
 
         String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         userName = getSharedPreferences(MainActivity.getContext().getString(R.string.preference_file_key), Context.MODE_PRIVATE).getString("email", "");
+
+        // Set Title
+        getSupportActionBar().setTitle("Create New Stock Adjustment");
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         //Initialize button
         Button add_item = findViewById(R.id.addItem_btn);
@@ -70,10 +66,10 @@ public class NewStockAdjustmentActivity extends AppCompatActivity {
         saAdapter = new StockAdjustmentRequestDetailAdapter(saDetails, this);
         mRecyclerView.setAdapter(saAdapter);
 
-        TextView textView = findViewById(R.id.sa_date);
+        TextInputEditText textView = findViewById(R.id.sa_date);
         textView.setText(currentDate);
 
-        TextView requester = findViewById(R.id.clerk_name);
+        TextInputEditText requester = findViewById(R.id.clerk_name);
         requester.setText(userName);
 
         //set onClickListener for add item button
@@ -90,70 +86,65 @@ public class NewStockAdjustmentActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(saDetails.size()==0){
+                if (saDetails.size() == 0) {
                     Toast.makeText(getApplicationContext(), "Please add Item to this Stock Adjustment Request",
                             Toast.LENGTH_SHORT).show();
 
-                }
-                else
-                    {
+                } else {
 
-                        new AsyncTask<Void, Void, String>() {
-                            @Override
-                            protected String doInBackground(Void... voids) {
-                                JSONArray jsonArray = new JSONArray();
+                    new AsyncTask<Void, Void, String>() {
+                        @Override
+                        protected String doInBackground(Void... voids) {
+                            JSONArray jsonArray = new JSONArray();
 
 
-                                try{
-                                    for(StockAdjustmentRequestDetail r : saDetails)
-                                    {
-                                        JSONObject detail = new JSONObject();
-                                        detail.put("ItemCode",r.get("itemCode"));
-                                        detail. put("OriginalQuantity", r.get("originalQuantity"));
-                                        detail.put("AfterQuantity", r.get("afterQuantity"));
-                                        detail.put("Reason",r.get("reason"));
-                                        detail.put("UserName",userName);
+                            try {
+                                for (StockAdjustmentRequestDetail r : saDetails) {
+                                    JSONObject detail = new JSONObject();
+                                    detail.put("ItemCode", r.get("itemCode"));
+                                    detail.put("OriginalQuantity", r.get("originalQuantity"));
+                                    detail.put("AfterQuantity", r.get("afterQuantity"));
+                                    detail.put("Reason", r.get("reason"));
+                                    detail.put("UserName", userName);
 
-                                        jsonArray.put(detail);
-                                    }
-
-                                   message = JSONParser.postStream(
-                                            MainActivity.getContext().getString(R.string.default_hostname) + "/api/stockadjustment/mobile/save",
-                                            jsonArray.toString()
-                                    );
-
-
-
-                                    return message;
-                                }
-                                catch (Exception e){
-                                    e.printStackTrace();
-
+                                    jsonArray.put(detail);
                                 }
 
-                                return "Unknown error";
+                                message = JSONParser.postStream(
+                                        MainActivity.getContext().getString(R.string.default_hostname) + "/api/stockadjustment/mobile/save",
+                                        jsonArray.toString()
+                                );
 
-                                }
 
-                            @Override
-                            protected void onPostExecute(String s) {
-                                super.onPostExecute(s);
+                                return message;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+
                             }
 
-                            @Override
-                            protected void onPreExecute() {
-                                super.onPreExecute();
-                            }
+                            return "Unknown error";
+
+                        }
+
+                        @Override
+                        protected void onPostExecute(String s) {
+                            super.onPostExecute(s);
+                        }
+
+                        @Override
+                        protected void onPreExecute() {
+                            super.onPreExecute();
+                        }
 
 
-                            }.execute();
+                    }.execute();
 
-                        Toast.makeText(getApplicationContext(),"Stock Adjustment Request Submitted ", Toast.LENGTH_LONG).show();
-                        finish();
-
-                    }
+                    Toast.makeText(getApplicationContext(), "Stock Adjustment Request Submitted ", Toast.LENGTH_LONG).show();
+                    finish();
 
                 }
+
+            }
 
         });
 
@@ -162,15 +153,14 @@ public class NewStockAdjustmentActivity extends AppCompatActivity {
 
     //what to do when receiving result from AddStockAdjustmentDetail Activity
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)  {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if( resultCode == RESULT_OK){
+        if (resultCode == RESULT_OK) {
             String itemcode = data.getStringExtra("itemcode");
             String itemname = data.getStringExtra("itemname");
             String reason = data.getStringExtra("reason");
             String bef_qty = data.getStringExtra("bef_qty");
             String aft_qty = data.getStringExtra("aft_qty");
-
 
 
             saDetails.add(new StockAdjustmentRequestDetail(itemcode, itemname, bef_qty, aft_qty, reason));
@@ -181,7 +171,16 @@ public class NewStockAdjustmentActivity extends AppCompatActivity {
 
     }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+            default:
+                return true;
+        }
+    }
 }
 
 

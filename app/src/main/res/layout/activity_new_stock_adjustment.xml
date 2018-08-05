@@ -1,90 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:orientation="vertical">
 
-    <Button
-        android:id="@+id/addItem_btn"
-        style="@android:style/Widget.Material.Button"
-        android:layout_width="140dp"
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight=".05"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="20dp">
 
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="105dp"
-        android:text="@string/add_item"
-        android:textSize="18sp" />
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/sa_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="false"
+            android:hint="Date Created"
+            android:inputType="text"
+            android:text="Items Collected" />
 
-    <Button
-        android:id="@+id/submit_btn"
-        style="@android:style/Widget.Material.Button"
-        android:layout_width="140dp"
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/addItem_btn"
-        android:layout_marginEnd="0dp"
-        android:text="Submit"
-        android:textSize="18sp" />
+        android:layout_weight=".05"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/label_requester"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="-67dp"
-        android:text="Date:"
-        android:textSize="16sp" />
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/clerk-name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="false"
+            android:hint="Submitted By"
+            android:inputType="text"
+            android:text="Items Collected" />
 
-    <TextView
-        android:id="@+id/label_requester"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="67dp"
-        android:text="Submitted By:"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/sa_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/clerk-name"
-        android:layout_alignTop="@+id/textView4"
-        android:text="TextView"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/clerk-name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/label_requester"
-        android:layout_marginStart="137dp"
-        android:text="TextView"
-        android:textSize="16sp" />
+    </android.support.design.widget.TextInputLayout>
 
     <android.support.v7.widget.RecyclerView
 
         android:id="@+id/sa_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="403dp"
-        android:layout_below="@+id/addItem_btn"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"></android.support.v7.widget.RecyclerView>
+        android:layout_height="512dp"
+        android:layout_weight="1" />
 
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/make_stock_adjustments"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:orientation="horizontal">
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/addItem_btn"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:text="@string/add_item" />
+
+        <Button
+            android:id="@+id/submit_btn"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:text="Submit" />
+    </LinearLayout>
+
+</LinearLayout>

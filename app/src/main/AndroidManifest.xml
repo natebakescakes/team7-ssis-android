@@ -16,7 +16,7 @@
         <!-- [START fcm_default_channel] -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="@string/default_notification_channel_id"/>
+            android:value="@string/default_notification_channel_id" />
         <!-- [END fcm_default_channel] -->
 
         <activity
@@ -85,13 +85,24 @@
                 android:value=".activities.MainActivity" />
         </activity>
 
-        <activity android:name=".activities.AddStockAdjustmentDetailActivity" />
-        <activity android:name=".activities.NewStockAdjustmentActivity"></activity>
+        <activity
+            android:name=".activities.AddStockAdjustmentDetailActivity"
+            android:parentActivityName=".activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activities.NewStockAdjustmentActivity"
+            android:parentActivityName=".activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
 
-        <service
-            android:name=".services.MyFirebaseInstanceIdService">
+        <service android:name=".services.MyFirebaseInstanceIdService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <service android:name=".services.MyFirebaseMessagingService">
