@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:layout_height="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="match_parent">
 
     <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:orientation="vertical">
 
-    <android.support.v7.widget.SearchView
-        android:id="@+id/search_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:queryHint="@string/search_hint_stock_adjustment_request" />
-
-    <TableRow>
-
-        <Button
-            android:id="@+id/button_all"
+        <android.support.v7.widget.SearchView
+            android:id="@+id/search_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/radio_button_all" />
+            android:queryHint="@string/search_hint_stock_adjustment_request" />
+
+        <TableRow>
+
+            <Button
+                android:id="@+id/button_all"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/radio_button_all" />
 
             <Button
                 android:id="@+id/button_pending"
@@ -35,18 +33,21 @@
                 android:text="@string/radio_button_pending" />
         </TableRow>
 
-    <android.support.v4.widget.SwipeRefreshLayout android:id="@+id/swipe_refresh_layout">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/stock_adjustment_requests_recycler_view"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/stock_adjustment_requests_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true" />
+        </android.support.v4.widget.SwipeRefreshLayout>
 
 
-</TableLayout>
+    </TableLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/new_sa"
